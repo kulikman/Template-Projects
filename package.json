@@ -9,7 +9,7 @@
   "scripts": {
     "init:structure": "bash scripts/init-project-structure.sh",
     "post-clone": "bash scripts/post-clone.sh",
-    "dev": "next dev",
+    "dev": "node scripts/remind-rename-if-template.mjs && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings 0",

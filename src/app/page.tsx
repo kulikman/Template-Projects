@@ -15,7 +15,7 @@ export default function Home() {
       <div className="border-border bg-card w-full max-w-3xl rounded-2xl border p-10 shadow-sm">
         <div className="flex flex-col gap-6">
           <span className="bg-primary text-primary-foreground w-fit rounded-full px-3 py-1 text-xs font-semibold tracking-wide uppercase">
-            Template Starter
+            {siteConfig.name}
           </span>
           <h1 className="text-foreground text-3xl font-semibold tracking-tight sm:text-4xl">
             A consistent base for Next.js apps with Supabase and Tailwind.
