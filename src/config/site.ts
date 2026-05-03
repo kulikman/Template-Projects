@@ -33,7 +33,7 @@ export const siteConfig = {
   // Override per-route by adding app/<route>/opengraph-image.tsx.
   ogImage: "/opengraph-image",
   links: {
-    github: "https://github.com/kulikman/template-starter",
+    github: "https://github.com/kulikman/Template-Projects",
   },
   nav: [
     { title: "Home", href: "/" },

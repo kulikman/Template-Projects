@@ -8,12 +8,29 @@
 
 ## Быстрый старт
 
+После копии шаблона **сразу переименуйте проект** — иначе при каждом `pnpm dev` в консоли будет напоминание (для разработки самого шаблона: `TEMPLATE_DEV=1 pnpm dev`).
+
+### Через git clone
+
 ```bash
-git clone https://github.com/kulikman/template-starter.git my-app
+git clone https://github.com/kulikman/Template-Projects.git my-app
 cd my-app
-bash scripts/post-clone.sh "My Product" "my-product" "https://myproduct.com"
+pnpm post-clone "My Product" "my-product" "https://myproduct.com"
 pnpm install
 cp .env.example .env.local   # заполните ключи Supabase
+pnpm dev
+```
+
+### Локальная копия каталога шаблона
+
+Канонический путь шаблона на машине владельца: `/Users/DEV/TEMLATES/Template-Projects`. Скопируйте в новый каталог проекта и выполните те же шаги:
+
+```bash
+cp -R /Users/DEV/TEMLATES/Template-Projects ~/Projects/my-app
+cd ~/Projects/my-app
+pnpm post-clone "My Product" "my-product" "https://myproduct.com"
+pnpm install
+cp .env.example .env.local
 pnpm dev
 ```
 
