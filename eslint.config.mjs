@@ -105,7 +105,44 @@ const eslintConfig = defineConfig([
       "import/no-default-export": "error",
     },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  // Ban raw `process.env` access — must go through `getServerEnv()` /
+  // `getClientEnv()` from `@/lib/env`. Deliberate exceptions are listed
+  // in `ignores` (they document why they need raw access).
+  {
+    files: ["src/**/*.{ts,tsx}"],
+    ignores: [
+      "src/lib/env.ts",
+      "src/lib/flags.ts",
+      "src/instrumentation.ts",
+      "src/proxy.ts",
+      "src/lib/security-headers.ts",
+      "src/**/*.test.{ts,tsx}",
+    ],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            "MemberExpression[object.type='MemberExpression'][object.object.name='process'][object.property.name='env']",
+          message:
+            "Не используй raw `process.env`. Импортируй `getServerEnv()` / `getClientEnv()` из `@/lib/env`.",
+        },
+        {
+          selector:
+            "MemberExpression[object.name='process'][property.name='env']",
+          message:
+            "Не используй raw `process.env`. Импортируй `getServerEnv()` / `getClientEnv()` из `@/lib/env`.",
+        },
+      ],
+    },
+  },
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    ".sprint-backups/**",
+  ]),
 ]);
 
 export default eslintConfig;

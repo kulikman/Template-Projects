@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
+import { logger } from "@/lib/logger";
 
 /**
  * Global error boundary.
@@ -22,8 +23,7 @@ export default function GlobalError({
   reset: () => void;
 }): React.ReactElement {
   useEffect(() => {
-    // TODO: Replace with Sentry.captureException(error) or your tracker
-    console.error("Unhandled error:", error);
+    logger.error("unhandled error in client tree", error, { digest: error.digest });
   }, [error]);
 
   return (

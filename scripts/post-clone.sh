@@ -20,6 +20,32 @@ if [[ -z "$DISPLAY_NAME" || -z "$SLUG" || -z "$PROD_URL" ]]; then
   exit 1
 fi
 
+# ── Footgun guard ────────────────────────────────────────────────────────────
+# This script ends with `rm -rf .git && git init`. Running it in an existing
+# project nukes history. Refuse unless the repo looks like a fresh template
+# checkout (≤5 commits) or the user explicitly opts in via --force-reinit.
+FORCE_REINIT=false
+for arg in "$@"; do
+  [[ "$arg" == "--force-reinit" ]] && FORCE_REINIT=true
+done
+
+if [[ -d .git && "$FORCE_REINIT" != "true" ]]; then
+  COMMITS=$(git log --oneline 2>/dev/null | wc -l | tr -d ' ')
+  if [[ "$COMMITS" -gt 5 ]]; then
+    echo "✋ Refusing to reinit git: this repo has $COMMITS commits." >&2
+    echo "   This script is meant for fresh template checkouts." >&2
+    echo "   If you really mean it, re-run with --force-reinit." >&2
+    exit 1
+  fi
+fi
+
+# Refuse if package.json doesn't look like our template (already renamed).
+if [[ -f package.json ]] && ! grep -q '"name": "template-starter"' package.json; then
+  echo "✋ package.json is not template-starter — looks already personalized." >&2
+  echo "   Re-run with --force-reinit if you really want to overwrite." >&2
+  [[ "$FORCE_REINIT" != "true" ]] && exit 1
+fi
+
 echo "→ Personalizing project: $DISPLAY_NAME ($SLUG)"
 
 # ── package.json ─────────────────────────────────────────────────────────────
@@ -32,26 +58,21 @@ fi
 # ── .env.example ─────────────────────────────────────────────────────────────
 if [[ -f .env.example ]]; then
   sed -i.bak "s|NEXT_PUBLIC_APP_URL=http://localhost:3000|NEXT_PUBLIC_APP_URL=http://localhost:3000|" .env.example
-  sed -i.bak "s|NEXT_PUBLIC_APP_NAME=ProjectName|NEXT_PUBLIC_APP_NAME=$DISPLAY_NAME|" .env.example
+  sed -i.bak "s|NEXT_PUBLIC_APP_NAME=Template Starter|NEXT_PUBLIC_APP_NAME=$DISPLAY_NAME|" .env.example
   rm -f .env.example.bak
   echo "  ✓ .env.example APP_NAME → $DISPLAY_NAME"
 fi
 
 # ── src/config/site.ts ───────────────────────────────────────────────────────
+# `siteConfig` is the single source of truth — `layout.tsx` reads from it,
+# so we only need to touch site.ts (no separate layout sed).
 if [[ -f src/config/site.ts ]]; then
   sed -i.bak "s|name: \"Template Starter\"|name: \"$DISPLAY_NAME\"|" src/config/site.ts
   sed -i.bak "s|Universal Next.js + Supabase starter — fork and rename for your product.|$DISPLAY_NAME — powered by Next.js + Supabase.|" src/config/site.ts
+  sed -i.bak "s|url: \"http://localhost:3000\"|url: \"$PROD_URL\"|" src/config/site.ts
   sed -i.bak "s|https://github.com/kulikman/template-starter|https://github.com/kulikman/$SLUG|" src/config/site.ts
   rm -f src/config/site.ts.bak
-  echo "  ✓ site.ts name → $DISPLAY_NAME"
-fi
-
-# ── src/app/layout.tsx ───────────────────────────────────────────────────────
-if [[ -f src/app/layout.tsx ]]; then
-  sed -i.bak "s|title: \"Template Starter\"|title: \"$DISPLAY_NAME\"|" src/app/layout.tsx
-  sed -i.bak "s|Next.js App Router, TypeScript, Tailwind, Supabase — clone and customize.|$DISPLAY_NAME|" src/app/layout.tsx
-  rm -f src/app/layout.tsx.bak
-  echo "  ✓ layout.tsx metadata → $DISPLAY_NAME"
+  echo "  ✓ site.ts → $DISPLAY_NAME ($PROD_URL)"
 fi
 
 # ── public/robots.txt ────────────────────────────────────────────────────────

@@ -1,9 +1,0 @@
-# Robots.txt — template-starter
-# Update the Sitemap URL when deploying to production.
-
-User-agent: *
-Allow: /
-Disallow: /api/
-Disallow: /dashboard/
-
-Sitemap: https://example.com/sitemap.xml
