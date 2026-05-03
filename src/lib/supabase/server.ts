@@ -1,13 +1,23 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+
+import { getServerEnv } from "@/lib/env";
 import type { Database } from "@/types/database";
 
+/**
+ * Cookie-aware Supabase client for Server Components, Server Actions,
+ * and Route Handlers. Subject to RLS — uses the anon key.
+ *
+ * Always pair with `supabase.auth.getUser()` (not `getSession()`) to
+ * revalidate the session against Supabase Auth.
+ */
 export async function createClient() {
+  const env = getServerEnv();
   const cookieStore = await cookies();
 
   return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
         getAll() {
@@ -19,8 +29,9 @@ export async function createClient() {
               cookieStore.set(name, value, options)
             );
           } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing sessions.
+            // setAll() called from a Server Component — refreshing cookies
+            // there is not allowed. Safe to ignore: src/proxy.ts handles
+            // session refresh on every request.
           }
         },
       },

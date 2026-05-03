@@ -42,25 +42,39 @@ pnpm dev
 
 ```text
 src/
-├── app/                  # Next.js App Router
-│   ├── error.tsx         # Глобальный error boundary
-│   ├── not-found.tsx     # 404 страница
-│   ├── loading.tsx       # Глобальный loading skeleton
-│   ├── sitemap.ts        # Динамический sitemap
-│   └── dashboard/        # Пример вложенного маршрута с breadcrumbs
+├── app/                          # Next.js App Router
+│   ├── (auth)/login/             # Server Action + useActionState скелет
+│   ├── dashboard/                # Защищённый shell с breadcrumbs
+│   ├── error.tsx                 # Глобальный error boundary → logger
+│   ├── not-found.tsx             # 404
+│   ├── loading.tsx               # Loading skeleton
+│   ├── sitemap.ts                # Динамический sitemap (через getClientEnv)
+│   ├── layout.tsx                # Header + Providers + <main>
+│   └── globals.css               # Tailwind v4 theme tokens
 ├── components/
-│   ├── ui/               # shadcn/ui примитивы
-│   └── layout/           # Header, Breadcrumbs
+│   ├── ui/                       # shadcn/ui примитивы
+│   ├── forms/submit-button.tsx   # useFormStatus pending state
+│   ├── layout/                   # Header, Breadcrumbs
+│   ├── providers.tsx             # ThemeProvider + Toaster (sonner)
+│   └── theme-toggle.tsx          # next-themes light/dark/system
 ├── lib/
-│   ├── supabase/         # Клиенты Supabase (client, server, admin, middleware)
-│   ├── env.ts            # Zod-валидация переменных окружения
-│   ├── validations.ts    # Общие Zod-схемы
-│   ├── utils.ts          # cn() и утилиты
-│   └── constants.ts      # ROUTES и константы
-├── hooks/                # React-хуки
-├── types/                # TypeScript-типы
-├── config/site.ts        # Метаданные сайта и навигация
-└── proxy.ts              # Session refresh + security headers (Next 16)
+│   ├── supabase/                 # client, server, admin (server-only), middleware
+│   ├── auth.ts                   # getUser() + requireUser()
+│   ├── env.ts                    # Zod env validation (server + client)
+│   ├── logger.ts                 # Структурированный logger (Sentry-ready)
+│   ├── rate-limit.ts             # In-memory limiter, Upstash-совместимый
+│   ├── security-headers.ts       # CSP + HSTS для proxy.ts
+│   ├── validations.ts            # Общие Zod-схемы
+│   ├── utils.ts                  # cn()
+│   └── constants.ts              # ROUTES, APP_NAME
+├── hooks/use-mounted.ts          # Anti-hydration хук для ThemeToggle
+├── types/database.ts             # Supabase types (regenerated)
+├── config/site.ts                # siteConfig (single source of truth)
+├── instrumentation.ts            # Fail-fast env validation на старте
+└── proxy.ts                      # Session refresh + security headers
+
+supabase/migrations/0001_*.sql    # Канонический пример таблицы с RLS
+tests/e2e/                        # Playwright (опционально, README внутри)
 ```
 
 Подробная структура и правила: [`CLAUDE.md`](CLAUDE.md).

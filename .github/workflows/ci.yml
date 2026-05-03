@@ -72,6 +72,24 @@ jobs:
       # Block merge on HIGH/CRITICAL CVEs in production deps.
       # CVE-2025-66478 (React2Shell) was the reason for adding this gate.
       - run: pnpm audit --prod --audit-level=high
+      # Dev-deps audit is a soft signal — don't block PRs but surface issues.
+      - name: Dev deps (advisory)
+        run: pnpm audit --audit-level=high || true
+
+  config-integrity:
+    name: Config Integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate audit/rules.json is valid JSON
+        run: |
+          if [[ -f audit/rules.json ]]; then
+            python3 -c "import json; json.load(open('audit/rules.json'))"
+          fi
+      - name: Validate .github/dependabot.yml YAML
+        run: |
+          python3 -c "import yaml; yaml.safe_load(open('.github/dependabot.yml'))" \
+            || pip install pyyaml && python3 -c "import yaml; yaml.safe_load(open('.github/dependabot.yml'))"
 
   build:
     name: Build

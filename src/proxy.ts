@@ -32,14 +32,20 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
 export const config = {
   /**
    * Match everything except:
-   *   - _next/static  (static assets, never need session refresh or CSP)
-   *   - _next/image   (image optimization)
-   *   - favicon.ico, sitemap.xml, robots.txt (public roots)
-   *   - common file extensions (images, fonts)
+   *   - _next/static, _next/image  — static assets / image optimization
+   *   - favicon.ico, sitemap.xml, robots.txt, opengraph-image, icon — file conventions
+   *   - api/webhooks/*             — external webhooks have no cookies; refreshing
+   *                                  Supabase session on every Stripe event wastes
+   *                                  a roundtrip and can race with the cookie store
+   *   - api/cron/*                 — internal scheduled jobs use CRON_SECRET, not session
+   *   - common static file extensions
    *
-   * This matcher is recommended by @supabase/ssr. Adjust only if you know why.
+   * Auth-bearing API routes (`/api/auth/*`, `/api/me/*`, etc.) **are** matched —
+   * they need the session refresh.
+   *
+   * @see https://supabase.com/docs/guides/auth/server-side/nextjs
    */
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|woff|woff2|ttf)$).*)",
+    "/((?!_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|opengraph-image|icon|api/webhooks|api/cron|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|woff|woff2|ttf)$).*)",
   ],
 };

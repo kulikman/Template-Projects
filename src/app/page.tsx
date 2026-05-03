@@ -1,41 +1,42 @@
 import Link from "next/link";
 
+import { siteConfig } from "@/config/site";
+import { ROUTES } from "@/lib/constants";
+import { Button } from "@/components/ui/button";
+
+/**
+ * Landing page. Replace with your product's marketing surface when forking.
+ * Uses theme tokens (bg-background, text-foreground, …) so dark mode and
+ * tenant theming stay automatic.
+ */
 export default function Home() {
   return (
-    <div className="flex flex-1 items-center justify-center bg-zinc-50 px-6 py-16 font-sans dark:bg-black">
-      <main className="w-full max-w-3xl rounded-2xl border border-zinc-200 bg-white p-10 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+    <section className="bg-muted/40 flex flex-1 items-center justify-center px-6 py-16">
+      <div className="border-border bg-card w-full max-w-3xl rounded-2xl border p-10 shadow-sm">
         <div className="flex flex-col gap-6">
-          <span className="w-fit rounded-full bg-zinc-900 px-3 py-1 text-xs font-semibold tracking-wide text-white uppercase dark:bg-zinc-100 dark:text-black">
+          <span className="bg-primary text-primary-foreground w-fit rounded-full px-3 py-1 text-xs font-semibold tracking-wide uppercase">
             Template Starter
           </span>
-          <h1 className="text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl dark:text-zinc-50">
+          <h1 className="text-foreground text-3xl font-semibold tracking-tight sm:text-4xl">
             A consistent base for Next.js apps with Supabase and Tailwind.
           </h1>
-          <p className="max-w-2xl text-base leading-7 text-zinc-600 sm:text-lg dark:text-zinc-400">
-            Fork this repo, set your app name in{" "}
-            <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-sm dark:bg-zinc-800">
-              .env.local
-            </code>
-            , and build your product — this template stays product-agnostic.
+          <p className="text-muted-foreground max-w-2xl text-base leading-7 sm:text-lg">
+            Fork this repo, run{" "}
+            <code className="bg-muted rounded px-1.5 py-0.5 text-sm">pnpm post-clone</code>, and
+            ship your product — the template stays product-agnostic.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/dashboard"
-              className="inline-flex h-11 items-center justify-center rounded-full bg-zinc-900 px-6 text-sm font-medium text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-300"
-            >
-              Open dashboard
-            </Link>
-            <a
-              href="https://github.com/kulikman/template-starter"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-11 items-center justify-center rounded-full border border-zinc-300 px-6 text-sm font-medium text-zinc-800 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-900"
-            >
-              Repository
-            </a>
+            <Button size="lg" asChild>
+              <Link href={ROUTES.dashboard}>Open dashboard</Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <a href={siteConfig.links.github} target="_blank" rel="noopener noreferrer">
+                Repository
+              </a>
+            </Button>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </section>
   );
 }

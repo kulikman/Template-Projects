@@ -7,6 +7,7 @@ import { useState } from "react";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 /** Mobile menu toggle icon — renders hamburger or X based on open state. */
 function MenuIcon({ isOpen }: { isOpen: boolean }): React.ReactElement {
@@ -119,16 +120,19 @@ export function Header(): React.ReactElement {
 
         <DesktopNav pathname={pathname} />
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden"
-          aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={isMobileMenuOpen}
-          onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-        >
-          <MenuIcon isOpen={isMobileMenuOpen} />
-        </Button>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMobileMenuOpen}
+            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+          >
+            <MenuIcon isOpen={isMobileMenuOpen} />
+          </Button>
+        </div>
       </div>
 
       <MobileNav isOpen={isMobileMenuOpen} pathname={pathname} />

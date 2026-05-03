@@ -35,6 +35,14 @@ const serverSchema = z.object({
 
   // Email (optional)
   RESEND_API_KEY: z.string().optional(),
+  RESEND_FROM_EMAIL: z.string().email().optional(),
+
+  // Cron jobs (required when you wire scheduled routes)
+  CRON_SECRET: z.string().min(16).optional(),
+
+  // Rate limiting in production (optional — falls back to in-memory limiter)
+  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+  UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
 });
 
 /**

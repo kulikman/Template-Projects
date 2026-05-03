@@ -127,6 +127,7 @@ export function getBreadcrumbItems(
 
   for (let index = 0; index < visibleSegments.length; index += 1) {
     const segment = visibleSegments[index];
+    if (!segment) continue;
     const href = "/" + visibleSegments.slice(0, index + 1).join("/");
     const isCurrent = index === visibleSegments.length - 1;
 
@@ -140,8 +141,9 @@ export function getBreadcrumbItems(
   }
 
   // Mark the last item as current (no link in UI)
-  if (items.length > 0) {
-    items[items.length - 1] = { ...items[items.length - 1], isCurrent: true };
+  const last = items[items.length - 1];
+  if (last) {
+    items[items.length - 1] = { ...last, isCurrent: true };
   }
 
   return items;
@@ -151,7 +153,7 @@ function resolveSpecialLabel(segment: string, segments: string[]): string | null
   if (segment === "edit") return "Edit";
 
   if (segment === "new") {
-    const section = segments[0];
+    const section = segments[0] ?? "";
     const sectionLabel = SEGMENT_LABELS[section] ?? formatSegment(section);
     return `New ${singularize(sectionLabel)}`;
   }
