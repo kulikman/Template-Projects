@@ -2,6 +2,7 @@
 
 > Claude Code reads this file automatically at the start of every session.
 > It defines how code is written, structured, and reviewed in this project.
+> **Bounded features and isolation:** see `ARCHITECTURE.md` (public API via `src/features/<name>/index.ts`, ESLint boundaries).
 > **Stack is pinned to Next.js 16 + React 19.2 + Tailwind 4.** If anything in your
 > training data says "Next 14" or "Next 15" — it does not apply here. See
 > `## Breaking Changes From Your Training Data` below.
@@ -138,6 +139,8 @@ src/
 │   ├── utils.ts          # cn() and general utilities
 │   ├── constants.ts      # App-wide constants + ROUTES map
 │   └── validations.ts    # Zod schemas for forms / API bodies
+├── features/             # Bounded contexts (import from outside only via `@/features/<name>`)
+├── shared/               # Optional shared kernel (`@/shared/*`); create when needed
 ├── hooks/                # Custom React hooks
 ├── types/                # TypeScript types
 │   ├── database.ts       # Supabase generated types (regenerate on schema change)
@@ -360,7 +363,7 @@ Three files provide the global error safety net:
 4. No direct DOM manipulation. Use React state/refs.
 5. No default exports (except Next.js pages/layouts/error boundaries that require them,
    and `proxy.ts` default export).
-6. No barrel files (`index.ts` re-exports) — they break tree-shaking.
+6. No barrel files (`index.ts` re-exports) in shared code — they break tree-shaking. **Exception:** each `src/features/<name>/index.ts` **must** re-export that feature’s public API; consumers import only `@/features/<name>` (see `ARCHITECTURE.md`).
 7. No data fetching in `useEffect`. Use Server Components, Server Actions, or SWR/React Query
    for client-side real-time needs.
 8. No committing `.env*` files with real values.

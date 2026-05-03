@@ -2,18 +2,56 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
+import boundaries from "eslint-plugin-boundaries";
+import importPlugin from "eslint-plugin-import";
+
+/** Restricted import patterns for cross-feature / deep feature paths (see ARCHITECTURE.md). */
+const featureIsolationPatterns = [
+  {
+    group: [
+      "**/features/*/lib/**",
+      "**/features/*/_internal/**",
+      "**/features/*/api/**",
+    ],
+    message:
+      "Импорт внутренних путей чужого модуля запрещён. Используй публичный API: `@/features/<name>`.",
+  },
+  {
+    group: ["../../features/**", "../../../features/**", "../../../../features/**"],
+    message:
+      "Относительные импорты между фичами запрещены. Используй `@/features/<name>`.",
+  },
+];
 
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   eslintConfigPrettier,
   {
+    plugins: {
+      boundaries,
+      import: importPlugin,
+    },
+    settings: {
+      "boundaries/elements": [
+        { type: "app", pattern: "src/app/**" },
+        {
+          type: "foundation",
+          pattern: "src/{components,lib,hooks,types,config}/**",
+        },
+        { type: "foundation", pattern: "src/proxy.ts" },
+        {
+          type: "feature",
+          pattern: "src/features/*/**",
+          capture: ["featureName"],
+        },
+      ],
+    },
     rules: {
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
       "@typescript-eslint/no-explicit-any": "error",
       "prefer-const": "error",
       "no-console": ["warn", { allow: ["warn", "error"] }],
-      // Block deprecated Next 14/15 patterns
       "no-restricted-imports": [
         "error",
         {
@@ -21,16 +59,46 @@ const eslintConfig = defineConfig([
             {
               group: ["**/index", "**/index.ts", "**/index.tsx"],
               message:
-                "Barrel files break tree-shaking. Import from the source file directly.",
+                "Barrel files break tree-shaking in shared code. Import from the source file. Exception: feature public API is `src/features/<name>/index.ts` — import via `@/features/<name>` only (not `.../index`).",
+            },
+            ...featureIsolationPatterns,
+          ],
+        },
+      ],
+      "boundaries/dependencies": [
+        "error",
+        {
+          default: "allow",
+          rules: [
+            {
+              allow: {
+                dependency: { relationship: { to: "internal" } },
+              },
+            },
+            {
+              from: { type: "feature" },
+              disallow: { to: { type: "feature" } },
+            },
+            {
+              from: { type: "feature" },
+              allow: {
+                to: {
+                  type: "feature",
+                  captured: { featureName: "{{from.captured.featureName}}" },
+                },
+              },
             },
           ],
         },
       ],
     },
   },
-  // Allow default exports only where Next.js requires them (pages, layouts,
-  // error boundaries, proxy.ts, route handlers). For components and hooks,
-  // use named exports.
+  {
+    files: ["src/features/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": ["error", { patterns: [...featureIsolationPatterns] }],
+    },
+  },
   {
     files: ["src/components/**/*.tsx", "src/hooks/**/*.ts", "src/lib/**/*.ts"],
     rules: {

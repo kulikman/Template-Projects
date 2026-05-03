@@ -1,10 +1,12 @@
 # Dependencies
 node_modules/
 .pnpm-store/
-# Cursor: track shared agent commands only; keep local IDE state untracked
+# Cursor: track shared commands + rules; keep other IDE state untracked
 .cursor/*
 !.cursor/commands/
 !.cursor/commands/**
+!.cursor/rules/
+!.cursor/rules/**
 
 # Environment variables (NEVER commit secrets)
 .env

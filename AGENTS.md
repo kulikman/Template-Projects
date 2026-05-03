@@ -21,6 +21,7 @@ Do not apply older patterns blindly.
 ### Use `CLAUDE.md` as the authoritative stack reference
 
 For full rules (style, Supabase, security, pre-commit) → read `CLAUDE.md`.
+For module boundaries and feature public APIs → read `ARCHITECTURE.md`.
 For architectural decisions → read `.claude/instincts.md`.
 For session state → read `.claude/memory/project-state.md`.
 
