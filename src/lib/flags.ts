@@ -27,6 +27,9 @@ export const flags = {
   billing: isOn(process.env.NEXT_PUBLIC_FF_BILLING),
   ai: isOn(process.env.NEXT_PUBLIC_FF_AI),
   analytics: isOn(process.env.NEXT_PUBLIC_FF_ANALYTICS),
+  onboarding: isOn(process.env.NEXT_PUBLIC_FF_ONBOARDING),
+  notifications: isOn(process.env.NEXT_PUBLIC_FF_NOTIFICATIONS),
+  apiKeys: isOn(process.env.NEXT_PUBLIC_FF_API_KEYS),
 } as const;
 
 /** @public */

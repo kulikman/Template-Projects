@@ -478,3 +478,52 @@ When starting a new feature:
 - Keep `next` on a patched version (16.2.4+) due to CVE-2025-66478.
 - For new features involving money, auth, or multi-tenancy: write the RLS policy
   **in the same migration** that creates the table.
+
+---
+
+## Built-in Features (added to this template)
+
+These features are scaffolded and ready to wire up. Read their `index.ts` for the public API.
+
+### PostHog Analytics (`src/components/analytics/`, `src/lib/analytics.ts`)
+- Client: wrap `usePostHog()` → `ph.capture("event_name", props)`
+- Server: `trackServerEvent("event", userId, props)` from `@/lib/analytics`
+- Identify after login: `ph.identify(user.id, { email, plan })`
+- Reset on sign-out: `ph.reset()`
+- Enable: set `NEXT_PUBLIC_POSTHOG_KEY` env var
+
+### Onboarding Wizard (`src/features/onboarding/`)
+- Route: `/onboarding` — auto-redirects new users after signup
+- Steps defined in `src/features/onboarding/lib/steps.ts` — add/remove/reorder freely
+- Profile column: `profiles.onboarding_completed` (migration 0005)
+- Enable redirect in auth callback: check `onboarding_completed` and redirect to `/onboarding`
+
+### Plan Limits + PlanGate (`src/lib/plan-limits.ts`, `src/components/plan-gate.tsx`)
+- Map Stripe product IDs → limits in `src/lib/plan-limits.ts` `PRODUCT_PLAN_MAP`
+- Gate any feature: `<PlanGate allowed={limits.aiEnabled} feature="AI Assistant">...</PlanGate>`
+- Usage page at `/settings/usage` — shows per-resource bars
+- Replace placeholder usage queries with real ones when tables exist
+
+### In-app Notifications (`src/features/notifications/`)
+- Bell component with Supabase Realtime badge: `<NotificationsBell initialNotifications={...} userId={...} />`
+- Send from server: `sendNotification(userId, { title, body, kind, href })`
+- Table: `public.notifications` (migration 0006)
+- Enable flag: `NEXT_PUBLIC_FF_NOTIFICATIONS=true`
+
+### API Keys (`src/features/api-keys/`)
+- Management UI at `/settings/api-keys`
+- Verify in Route Handlers: `const userId = await verifyApiKey(request.headers.get("x-api-key"))`
+- Only SHA-256 hash stored — plain key shown once on creation
+- Table: `public.api_keys` (migration 0007)
+- Enable flag: `NEXT_PUBLIC_FF_API_KEYS=true`
+
+### Releases & Changelog
+- `release.config.ts` — semantic-release config
+- `.github/workflows/release.yml` — auto-release on push to `main`
+- `CHANGELOG.md` — auto-generated from Conventional Commits
+- Install devDeps to activate: `pnpm add -D semantic-release @semantic-release/changelog @semantic-release/git`
+
+### Development Seed
+- `pnpm seed` — creates 3 test users + sample data
+- Credentials: `alice@example.com / password123`, etc.
+- Safe to run multiple times (upserts)
