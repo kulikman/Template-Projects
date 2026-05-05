@@ -6,9 +6,9 @@
 
 ---
 
-## Audit & Cursor (template-starter)
+## Audit & Cursor (Template-SAAS-Projects)
 
-- **`audit/`** — `rules.json` (33 правил), `AUDIT_PROMPT.md`, `audit-history.json`, `conflicts.log`; инструкция в `audit/README.md`.
+- **`audit/`** — `rules.json`, `AUDIT_PROMPT.md`, `audit-history.json`, `conflicts.log`; инструкция в `audit/README.md`.
 - **`.cursorrules`** — приоритет: `CLAUDE.md` → эта память → `audit/rules.json`.
 - **`.cursor/commands/`** — Run audit, Fix all critical, Show rules.
 
@@ -19,14 +19,14 @@
 ## Current Session
 
 **Last Updated:** 2026-05-03
-**Project:** template-starter (fork → rename under your product)
-**Template root (локально):** `/Users/DEV/TEMLATES/Template-Projects`
+**Project:** Template-SAAS-Projects (`package.json`: `template-saas-projects`; после `pnpm post-clone` — slug продукта)
+**Template root (локально):** `/Users/DEV/TEMLATES/Template-SAAS-Projects`
 **Current Feature:** Напоминание переименования при `pnpm dev`, README + локальный быстрый старт
 **Status:** `done`
 
 ### What Was Done This Session
-- [x] `scripts/remind-rename-if-template.mjs` + `pnpm dev` выводит напоминание про `pnpm post-clone`, пока `name` = `template-starter`; отключение: `TEMPLATE_DEV=1` или `SKIP_TEMPLATE_RENAME_REMINDER=1`
-- [x] README: быстрый старт с локальным путём `/Users/DEV/TEMLATES/Template-Projects`, бейдж на лендинге из `siteConfig.name`
+- [x] `scripts/remind-rename-if-template.mjs` + `pnpm dev` выводит напоминание про `pnpm post-clone`, пока `name` = `template-saas-projects`; отключение: `TEMPLATE_DEV=1` или `SKIP_TEMPLATE_RENAME_REMINDER=1`
+- [x] README: быстрый старт с локальным путём `/Users/DEV/TEMLATES/Template-SAAS-Projects`, бейдж на лендинге из `siteConfig.name`
 
 ### What Was Done Last Session
 - [x] Added `<Breadcrumbs />` component (`src/components/layout/breadcrumbs.tsx`)
@@ -47,7 +47,7 @@
 
 ### Next Steps
 1. Подключить Supabase / `.env.local` при старте продукта
-2. Запустить `pnpm post-clone "ProductName" "product-slug" "https://product.com"` (пока `package.json` = `template-starter`, при `pnpm dev` показывается напоминание; для правок самого шаблона: `TEMPLATE_DEV=1 pnpm dev`)
+2. Запустить `pnpm post-clone "ProductName" "product-slug" "https://product.com"` (пока `package.json` = `template-saas-projects`, при `pnpm dev` показывается напоминание; для правок самого шаблона: `TEMPLATE_DEV=1 pnpm dev`)
 3. Заполнить `public/llms.txt` актуальными данными продукта
 4. Подключить Sentry в `error.tsx` при продакшн-деплое
 

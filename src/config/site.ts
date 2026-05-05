@@ -26,14 +26,14 @@ export interface SiteConfig {
 }
 
 export const siteConfig = {
-  name: "Template Starter",
-  description: "Universal Next.js + Supabase starter — fork and rename for your product.",
+  name: "Template-SAAS-Projects",
+  description: "Template-SAAS-Projects — Next.js 16 + Supabase SaaS starter.",
   url: "http://localhost:3000",
   // Generated dynamically at /opengraph-image (see src/app/opengraph-image.tsx).
   // Override per-route by adding app/<route>/opengraph-image.tsx.
   ogImage: "/opengraph-image",
   links: {
-    github: "https://github.com/kulikman/Template-Projects",
+    github: "https://github.com/kulikman/Template-SAAS-Projects",
   },
   nav: [
     { title: "Home", href: "/" },

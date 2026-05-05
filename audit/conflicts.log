@@ -1,4 +1,4 @@
-# audit/conflicts.log — template-starter
+# audit/conflicts.log — Template-SAAS-Projects
 #
 # When two or more rules in audit/rules.json disagree or cannot both be satisfied,
 # log the resolution here so the next audit stays consistent.
