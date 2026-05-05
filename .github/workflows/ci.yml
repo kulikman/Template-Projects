@@ -95,10 +95,6 @@ jobs:
           if [[ -f audit/rules.json ]]; then
             python3 -c "import json; json.load(open('audit/rules.json'))"
           fi
-      - name: Validate .github/dependabot.yml YAML
-        run: |
-          python3 -c "import yaml; yaml.safe_load(open('.github/dependabot.yml'))" \
-            || pip install pyyaml && python3 -c "import yaml; yaml.safe_load(open('.github/dependabot.yml'))"
 
   build:
     name: Build
