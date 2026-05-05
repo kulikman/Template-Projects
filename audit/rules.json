@@ -1,9 +1,9 @@
 {
   "meta": {
-    "version": "1.0.0",
+    "version": "1.1.0",
     "source": "template-starter",
-    "ruleCount": 41,
-    "lastReviewed": null
+    "ruleCount": 46,
+    "lastReviewed": "2026-05-05"
   },
   "rules": [
     {
@@ -371,8 +371,53 @@
       "title": "robots.txt и sitemap.ts",
       "severity": "LOW",
       "category": "seo",
-      "description": "public/robots.txt существует с правильным Sitemap URL. src/app/sitemap.ts генерирует актуальную карту сайта.",
-      "verify": "Файлы существуют. Sitemap URL соответствует NEXT_PUBLIC_APP_URL.",
+      "description": "Динамический src/app/robots.ts существует и эмитит корректный Sitemap URL. src/app/sitemap.ts генерирует актуальную карту сайта.",
+      "verify": "src/app/robots.ts читает baseUrl из getPublicMetadataEnv() (NEXT_PUBLIC_APP_URL). Статический public/robots.txt отсутствует — единый источник правды.",
+      "autoFixable": false
+    },
+    {
+      "id": "SEC-005",
+      "title": "Защищённые route-groups имеют auth-gate",
+      "severity": "HIGH",
+      "category": "security",
+      "description": "Layout каждого защищённого route-group вызывает requireUser() (или эквивалентную проверку Supabase auth.getUser()) до рендеринга детей.",
+      "verify": "src/app/{dashboard,(app),(protected)}/layout.tsx содержит await requireUser() или явный redirect при отсутствии сессии.",
+      "autoFixable": false
+    },
+    {
+      "id": "METADATA-001",
+      "title": "metadataBase читается из валидированного env",
+      "severity": "MEDIUM",
+      "category": "seo",
+      "description": "Корневой app/layout.tsx использует getPublicMetadataEnv().NEXT_PUBLIC_APP_URL для metadataBase и openGraph.url, не хардкод из siteConfig.url.",
+      "verify": "src/app/layout.tsx импортирует getPublicMetadataEnv из @/lib/env и передаёт NEXT_PUBLIC_APP_URL в metadataBase.",
+      "autoFixable": false
+    },
+    {
+      "id": "A11Y-002",
+      "title": "Mobile-меню закрывается на навигацию",
+      "severity": "LOW",
+      "category": "a11y",
+      "description": "Заголовок/Header автоматически закрывает раскрытое мобильное меню при смене маршрута, чтобы следующая страница была видна без ручного закрытия.",
+      "verify": "Header содержит useEffect, сбрасывающий isMobileMenuOpen в false на изменение pathname.",
+      "autoFixable": false
+    },
+    {
+      "id": "CSP-001",
+      "title": "Заголовки безопасности — единый источник",
+      "severity": "MEDIUM",
+      "category": "security",
+      "description": "CSP/HSTS/X-Frame-Options и т.п. задаются в одном месте (src/proxy.ts). next.config.ts.headers() допустим только как дублирующая страховка для статических ассетов и не должен конфликтовать с proxy.",
+      "verify": "buildSecurityHeaders в src/lib/security-headers.ts — единственный источник CSP. next.config.ts.headers() ограничивается X-Content-Type-Options/X-Frame-Options/Referrer-Policy.",
+      "autoFixable": false
+    },
+    {
+      "id": "TEST-002",
+      "title": "Zod-схемы границ покрыты тестами",
+      "severity": "LOW",
+      "category": "testing",
+      "description": "Каждая публично экспортируемая Zod-схема в src/lib/validations.ts имеет тесты на happy-path, дефолты, coercion и отказ на невалидном входе.",
+      "verify": "src/lib/validations.test.ts покрывает emailSchema, paginationSchema, uuidParamSchema (и каждую новую).",
       "autoFixable": false
     }
   ]

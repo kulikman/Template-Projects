@@ -100,5 +100,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
         env:
+          # Placeholders only — every build path that touches Supabase must
+          # be `dynamic = "force-dynamic"` so these are never actually used.
           NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
           NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder_anon_key
+          SUPABASE_SERVICE_ROLE_KEY: placeholder_service_role_key

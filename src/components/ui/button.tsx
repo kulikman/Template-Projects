@@ -9,7 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+        default: "bg-primary text-primary-foreground hover:bg-primary/80",
         outline:
           "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         secondary:
@@ -41,16 +41,19 @@ const buttonVariants = cva(
   }
 );
 
-function Button({
+export interface ButtonProps
+  extends React.ComponentProps<"button">, VariantProps<typeof buttonVariants> {
+  /** Render the child element with button styles instead of a `<button>` (radix Slot pattern). */
+  asChild?: boolean;
+}
+
+export function Button({
   className,
   variant = "default",
   size = "default",
   asChild = false,
   ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean;
-  }) {
+}: ButtonProps): React.ReactElement {
   const Comp = asChild ? Slot.Root : "button";
 
   return (
@@ -64,4 +67,4 @@ function Button({
   );
 }
 
-export { Button, buttonVariants };
+export { buttonVariants };

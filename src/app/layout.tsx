@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { siteConfig } from "@/config/site";
+import { getPublicMetadataEnv } from "@/lib/env";
 import { Header } from "@/components/layout/header";
 import { Providers } from "@/components/providers";
 
@@ -16,17 +17,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Read the canonical URL from validated env so prod prerender doesn't bake in
+// `localhost`. Falls back to the same default as `siteConfig.url`
+// (`http://localhost:3000`) when the env var is unset.
+const { NEXT_PUBLIC_APP_URL: appUrl } = getPublicMetadataEnv();
+
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
     template: `%s — ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  metadataBase: new URL(siteConfig.url),
+  metadataBase: new URL(appUrl),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: siteConfig.url,
+    url: appUrl,
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
@@ -47,7 +53,7 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>): React.ReactElement {
   return (
     <html
       lang="en"

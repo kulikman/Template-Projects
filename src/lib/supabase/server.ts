@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
 import { getServerEnv } from "@/lib/env";
@@ -11,7 +12,7 @@ import type { Database } from "@/types/database";
  * Always pair with `supabase.auth.getUser()` (not `getSession()`) to
  * revalidate the session against Supabase Auth.
  */
-export async function createClient() {
+export async function createClient(): Promise<SupabaseClient<Database>> {
   const env = getServerEnv();
   const cookieStore = await cookies();
 

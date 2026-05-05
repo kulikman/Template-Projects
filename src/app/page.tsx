@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
  * Uses theme tokens (bg-background, text-foreground, …) so dark mode and
  * tenant theming stay automatic.
  */
-export default function Home() {
+export default function Home(): React.ReactElement {
   return (
     <section className="bg-muted/40 flex flex-1 items-center justify-center px-6 py-16">
       <div className="border-border bg-card w-full max-w-3xl rounded-2xl border p-10 shadow-sm">
