@@ -48,6 +48,8 @@ export async function markAllAsRead(): Promise<void> {
  * Send a notification to a specific user.
  * Server-side only — uses the service-role key to bypass RLS.
  *
+ * @public
+ *
  * @example
  *   await sendNotification(userId, {
  *     title: "Payment received",
