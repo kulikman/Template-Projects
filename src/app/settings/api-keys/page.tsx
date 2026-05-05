@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 
-import { createServerClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { ApiKeysManager } from "@/features/api-keys";
 
 export const metadata = { title: "API Keys" };
 
 export default async function ApiKeysPage(): Promise<React.ReactElement> {
-  const supabase = await createServerClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
@@ -25,8 +25,8 @@ export default async function ApiKeysPage(): Promise<React.ReactElement> {
       <div>
         <h1 className="text-foreground text-2xl font-bold">API Keys</h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Use API keys to authenticate requests from your server-side integrations.
-          Keys are shown once — store them in a secret manager, not in source code.
+          Use API keys to authenticate requests from your server-side integrations. Keys are shown
+          once — store them in a secret manager, not in source code.
         </p>
       </div>
 
@@ -34,9 +34,11 @@ export default async function ApiKeysPage(): Promise<React.ReactElement> {
 
       <div className="border-border bg-muted/30 space-y-2 rounded-lg border p-4 text-xs">
         <p className="text-foreground font-semibold">Using your API key</p>
-        <p className="text-muted-foreground">Pass the key in the <code className="bg-muted rounded px-1">x-api-key</code> header:</p>
+        <p className="text-muted-foreground">
+          Pass the key in the <code className="bg-muted rounded px-1">x-api-key</code> header:
+        </p>
         <pre className="bg-muted text-foreground overflow-x-auto rounded px-3 py-2 text-xs">
-{`curl https://your-app.com/api/endpoint \\
+          {`curl https://your-app.com/api/endpoint \\
   -H "x-api-key: sk_live_..."`}
         </pre>
       </div>

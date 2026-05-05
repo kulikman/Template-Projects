@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { createServerClient } from "@/lib/supabase/server";
-import { generateApiKey, hashApiKey, keyPrefix } from "@/features/api-keys/lib/crypto";
+import { createClient } from "@/lib/supabase/server";
+import { generateApiKey, hashApiKey, keyPrefix } from "../lib/crypto";
 
 export interface CreateApiKeyResult {
   /** The full raw key — shown ONCE, not stored. */
@@ -19,7 +19,7 @@ export interface CreateApiKeyResult {
  * After this call the raw key cannot be recovered.
  */
 export async function createApiKey(name: string): Promise<CreateApiKeyResult> {
-  const supabase = await createServerClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -52,7 +52,7 @@ export async function createApiKey(name: string): Promise<CreateApiKeyResult> {
  * RLS ensures users can only delete their own keys.
  */
 export async function deleteApiKey(keyId: string): Promise<void> {
-  const supabase = await createServerClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -67,7 +67,7 @@ export async function deleteApiKey(keyId: string): Promise<void> {
  * Rename an existing API key.
  */
 export async function renameApiKey(keyId: string, newName: string): Promise<void> {
-  const supabase = await createServerClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -94,7 +94,7 @@ export async function verifyApiKey(rawKey: string | null): Promise<string | null
   if (!rawKey) return null;
 
   const hash = await hashApiKey(rawKey);
-  const supabase = await createServerClient();
+  const supabase = await createClient();
 
   const { data } = await supabase
     .from("api_keys")

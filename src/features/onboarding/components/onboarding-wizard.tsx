@@ -3,8 +3,8 @@
 import { useTransition } from "react";
 import { toast } from "sonner";
 
-import { advanceOnboardingStep, skipOnboarding, saveOnboardingProfile } from "@/features/onboarding/api/actions";
-import { ONBOARDING_STEPS, TOTAL_STEPS } from "@/features/onboarding/lib/steps";
+import { advanceOnboardingStep, skipOnboarding, saveOnboardingProfile } from "../api/actions";
+import { ONBOARDING_STEPS, TOTAL_STEPS } from "../lib/steps";
 
 interface Props {
   currentStep: number;
@@ -19,11 +19,7 @@ function StepIndicator({ current }: { current: number }): React.ReactElement {
           key={step.id}
           className={[
             "size-2 rounded-full transition-all",
-            i < current
-              ? "bg-primary"
-              : i === current
-                ? "bg-primary size-2.5"
-                : "bg-muted",
+            i < current ? "bg-primary" : i === current ? "bg-primary size-2.5" : "bg-muted",
           ].join(" ")}
           aria-current={i === current ? "step" : undefined}
         />
@@ -39,7 +35,7 @@ function WelcomeStep(): React.ReactElement {
       <span className="text-5xl">👋</span>
       <h2 className="text-foreground text-2xl font-bold">Welcome aboard!</h2>
       <p className="text-muted-foreground text-sm">
-        This quick setup takes about 2 minutes. Let's get your workspace ready.
+        This quick setup takes about 2 minutes. Let&apos;s get your workspace ready.
       </p>
     </div>
   );
@@ -106,7 +102,9 @@ function WorkspaceStep(): React.ReactElement {
           placeholder="Acme Inc."
           className="border-input bg-background placeholder:text-muted-foreground focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none"
         />
-        <p className="text-muted-foreground text-xs">This is how your team will see your workspace.</p>
+        <p className="text-muted-foreground text-xs">
+          This is how your team will see your workspace.
+        </p>
       </div>
     </div>
   );
@@ -115,8 +113,19 @@ function WorkspaceStep(): React.ReactElement {
 /** Step 3 — Plan selection (placeholder; hook up to Stripe in billing feature) */
 function PlanStep(): React.ReactElement {
   const plans = [
-    { id: "free", name: "Free", price: "$0/mo", features: ["Up to 3 projects", "5 GB storage", "Community support"] },
-    { id: "pro", name: "Pro", price: "$12/mo", features: ["Unlimited projects", "50 GB storage", "Priority support"], recommended: true },
+    {
+      id: "free",
+      name: "Free",
+      price: "$0/mo",
+      features: ["Up to 3 projects", "5 GB storage", "Community support"],
+    },
+    {
+      id: "pro",
+      name: "Pro",
+      price: "$12/mo",
+      features: ["Unlimited projects", "50 GB storage", "Priority support"],
+      recommended: true,
+    },
   ];
 
   return (
@@ -165,9 +174,9 @@ function DoneStep(): React.ReactElement {
   return (
     <div className="space-y-3 text-center">
       <span className="text-5xl">🎉</span>
-      <h2 className="text-foreground text-2xl font-bold">You're all set!</h2>
+      <h2 className="text-foreground text-2xl font-bold">You&apos;re all set!</h2>
       <p className="text-muted-foreground text-sm">
-        Your workspace is ready. Click "Go to dashboard" to start building.
+        Your workspace is ready. Click &ldquo;Go to dashboard&rdquo; to start building.
       </p>
     </div>
   );
@@ -208,22 +217,16 @@ export function OnboardingWizard({ currentStep }: Props): React.ReactElement {
 
         {/* Step header */}
         <div className="space-y-1 text-center">
-          <p className="text-muted-foreground text-xs font-medium uppercase tracking-widest">
+          <p className="text-muted-foreground text-xs font-medium tracking-widest uppercase">
             Step {currentStep + 1} of {TOTAL_STEPS}
           </p>
           <h1 className="text-foreground text-xl font-bold">{step?.title}</h1>
-          {step?.description && (
-            <p className="text-muted-foreground text-sm">{step.description}</p>
-          )}
+          {step?.description && <p className="text-muted-foreground text-sm">{step.description}</p>}
         </div>
 
         {/* Step content — profile step needs a form wrapper */}
         {currentStep === 1 ? (
-          <form
-            id="step-form"
-            action={(formData) => handleNext(formData)}
-            className="space-y-4"
-          >
+          <form id="step-form" action={(formData) => handleNext(formData)} className="space-y-4">
             {STEP_COMPONENTS[currentStep]}
           </form>
         ) : (
