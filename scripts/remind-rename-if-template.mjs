@@ -28,14 +28,14 @@ try {
   process.exit(0);
 }
 
-if (name !== "template-starter") {
+if (name !== "template-saas-projects") {
   process.exit(0);
 }
 
 // stderr so the message stays visible above Turbopack logs
 console.warn(`
 ┌─────────────────────────────────────────────────────────────────────
-│  Шаблон: проект ещё называется «template-starter»
+│  Шаблон: package.json ещё «template-saas-projects» (Template-SAAS-Projects)
 │  Переименуйте под продукт (отображаемое имя, slug, продакшен-URL):
 │    pnpm post-clone "Мой продукт" "my-product" "https://myproduct.com"
 │  Разрабатываете сам шаблон?  TEMPLATE_DEV=1 pnpm dev — без этого текста
