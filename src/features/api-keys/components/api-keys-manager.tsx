@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
-import { createApiKey, deleteApiKey } from "@/features/api-keys/api/actions";
+import { createApiKey, deleteApiKey } from "../api/actions";
 
 interface ApiKeyRow {
   id: string;
@@ -20,7 +20,11 @@ interface Props {
 
 function formatDate(iso: string | null): string {
   if (!iso) return "Never";
-  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  return new Date(iso).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
 /** One-time reveal panel after key creation. */
@@ -42,10 +46,10 @@ function NewKeyReveal({
   return (
     <div className="border-primary/30 bg-primary/5 space-y-3 rounded-lg border p-4">
       <p className="text-foreground text-sm font-semibold">
-        ⚠️ Copy this key now — it won't be shown again.
+        ⚠️ Copy this key now — it won&apos;t be shown again.
       </p>
       <div className="flex items-center gap-2">
-        <code className="bg-muted text-foreground flex-1 break-all rounded px-3 py-2 font-mono text-xs">
+        <code className="bg-muted text-foreground flex-1 rounded px-3 py-2 font-mono text-xs break-all">
           {rawKey}
         </code>
         <button
@@ -61,7 +65,7 @@ function NewKeyReveal({
         onClick={onDismiss}
         className="text-muted-foreground hover:text-foreground text-xs underline transition-colors"
       >
-        I've saved my key — dismiss
+        I&apos;ve saved my key — dismiss
       </button>
     </div>
   );
@@ -104,7 +108,8 @@ export function ApiKeysManager({ initialKeys }: Props): React.ReactElement {
   }
 
   function handleDelete(keyId: string, keyName: string): void {
-    if (!confirm(`Delete API key "${keyName}"? Any integrations using it will stop working.`)) return;
+    if (!confirm(`Delete API key "${keyName}"? Any integrations using it will stop working.`))
+      return;
 
     startTransition(async () => {
       try {
@@ -120,9 +125,7 @@ export function ApiKeysManager({ initialKeys }: Props): React.ReactElement {
   return (
     <div className="space-y-6">
       {/* Revealed key banner */}
-      {revealedKey && (
-        <NewKeyReveal rawKey={revealedKey} onDismiss={() => setRevealedKey(null)} />
-      )}
+      {revealedKey && <NewKeyReveal rawKey={revealedKey} onDismiss={() => setRevealedKey(null)} />}
 
       {/* Create new key */}
       <div className="flex gap-2">
@@ -157,7 +160,9 @@ export function ApiKeysManager({ initialKeys }: Props): React.ReactElement {
               <div className="min-w-0 flex-1 space-y-0.5">
                 <p className="text-foreground text-sm font-medium">{key.name}</p>
                 <div className="text-muted-foreground flex items-center gap-3 text-xs">
-                  <code className="bg-muted rounded px-1.5 py-0.5 font-mono">{key.key_prefix}…</code>
+                  <code className="bg-muted rounded px-1.5 py-0.5 font-mono">
+                    {key.key_prefix}…
+                  </code>
                   <span>Created {formatDate(key.created_at)}</span>
                   <span>Last used {formatDate(key.last_used_at)}</span>
                 </div>

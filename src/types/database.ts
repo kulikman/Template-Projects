@@ -15,6 +15,8 @@ export type Database = {
           full_name: string | null;
           avatar_url: string | null;
           stripe_customer_id: string | null;
+          onboarding_completed: boolean;
+          onboarding_step: number;
           created_at: string;
           updated_at: string;
         };
@@ -24,6 +26,8 @@ export type Database = {
           full_name?: string | null;
           avatar_url?: string | null;
           stripe_customer_id?: string | null;
+          onboarding_completed?: boolean;
+          onboarding_step?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -33,6 +37,8 @@ export type Database = {
           full_name?: string | null;
           avatar_url?: string | null;
           stripe_customer_id?: string | null;
+          onboarding_completed?: boolean;
+          onboarding_step?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -227,11 +233,94 @@ export type Database = {
           },
         ];
       };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          title: string;
+          body: string | null;
+          href: string | null;
+          read: boolean;
+          kind: "info" | "success" | "warning" | "error";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          title: string;
+          body?: string | null;
+          href?: string | null;
+          read?: boolean;
+          kind?: "info" | "success" | "warning" | "error";
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          title?: string;
+          body?: string | null;
+          href?: string | null;
+          read?: boolean;
+          kind?: "info" | "success" | "warning" | "error";
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      api_keys: {
+        Row: {
+          id: string;
+          user_id: string;
+          name: string;
+          key_hash: string;
+          key_prefix: string;
+          last_used_at: string | null;
+          expires_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          name: string;
+          key_hash: string;
+          key_prefix: string;
+          last_used_at?: string | null;
+          expires_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          name?: string;
+          key_hash?: string;
+          key_prefix?: string;
+          last_used_at?: string | null;
+          expires_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "api_keys_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
     Enums: {
       org_role: "owner" | "admin" | "member";
     };
+    CompositeTypes: Record<string, never>;
   };
 };

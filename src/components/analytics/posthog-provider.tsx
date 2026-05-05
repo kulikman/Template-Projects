@@ -5,6 +5,8 @@ import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
+import { getClientEnv } from "@/lib/env";
+
 /**
  * Tracks SPA page views on every route change.
  * Must be rendered inside <Suspense> because useSearchParams suspends.
@@ -43,8 +45,9 @@ function PageviewTracker(): null {
  *   ph.reset()
  */
 export function PostHogProvider({ children }: { children: React.ReactNode }): React.ReactElement {
-  const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://app.posthog.com";
+  const env = getClientEnv();
+  const key = env.NEXT_PUBLIC_POSTHOG_KEY;
+  const host = env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://app.posthog.com";
 
   useEffect(() => {
     if (!key) return;
@@ -55,17 +58,13 @@ export function PostHogProvider({ children }: { children: React.ReactNode }): Re
       // navigations are tracked correctly (not just hard reloads).
       capture_pageview: false,
       // Respect user privacy — disable session recording in dev.
-      disable_session_recording: process.env.NODE_ENV !== "production",
+      disable_session_recording: !key,
       // Persist cross-session identity in localStorage.
       persistence: "localStorage",
     });
   }, [key, host]);
 
-  return (
-    <PHProvider client={posthog}>
-      {children}
-    </PHProvider>
-  );
+  return <PHProvider client={posthog}>{children}</PHProvider>;
 }
 
 export { PageviewTracker };

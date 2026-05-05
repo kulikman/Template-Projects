@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { Route } from "next";
 import Link from "next/link";
 
-import { createBrowserClient } from "@/lib/supabase/client";
-import { markAsRead, markAllAsRead } from "@/features/notifications/api/actions";
-import { KIND_ICON } from "@/features/notifications/lib/types";
-import type { Notification } from "@/features/notifications/lib/types";
+import { createClient } from "@/lib/supabase/client";
+import { markAsRead, markAllAsRead } from "../api/actions";
+import { KIND_ICON } from "../lib/types";
+import type { Notification } from "../lib/types";
 
 interface Props {
   /** Pre-fetched notifications from the Server Component. */
@@ -39,7 +40,7 @@ export function NotificationsBell({ initialNotifications, userId }: Props): Reac
 
   // ── Supabase Realtime subscription ──────────────────────────────────────────
   useEffect(() => {
-    const supabase = createBrowserClient();
+    const supabase = createClient();
 
     const channel = supabase
       .channel(`notifications:${userId}`)
@@ -92,11 +93,21 @@ export function NotificationsBell({ initialNotifications, userId }: Props): Reac
         aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ""}`}
         className="text-muted-foreground hover:text-foreground relative rounded-md p-1.5 transition-colors"
       >
-        <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+        <svg
+          className="size-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={1.5}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+          />
         </svg>
         {unreadCount > 0 && (
-          <span className="bg-primary text-primary-foreground absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full text-[10px] font-bold leading-none">
+          <span className="bg-primary text-primary-foreground absolute -top-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full text-[10px] leading-none font-bold">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
@@ -104,7 +115,7 @@ export function NotificationsBell({ initialNotifications, userId }: Props): Reac
 
       {/* Dropdown panel */}
       {open && (
-        <div className="border-border bg-popover shadow-md absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-xl border">
+        <div className="border-border bg-popover absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-xl border shadow-md">
           <div className="flex items-center justify-between px-4 py-3">
             <span className="text-foreground text-sm font-semibold">Notifications</span>
             {unreadCount > 0 && (
@@ -120,19 +131,27 @@ export function NotificationsBell({ initialNotifications, userId }: Props): Reac
 
           <div className="divide-border max-h-96 divide-y overflow-y-auto">
             {notifications.length === 0 ? (
-              <p className="text-muted-foreground px-4 py-8 text-center text-sm">No notifications yet.</p>
+              <p className="text-muted-foreground px-4 py-8 text-center text-sm">
+                No notifications yet.
+              </p>
             ) : (
               notifications.slice(0, 20).map((n) => (
                 <div
                   key={n.id}
-                  className={["flex gap-3 px-4 py-3 transition-colors", !n.read ? "bg-primary/5" : ""].join(" ")}
+                  className={[
+                    "flex gap-3 px-4 py-3 transition-colors",
+                    !n.read ? "bg-primary/5" : "",
+                  ].join(" ")}
                 >
                   <span className="mt-0.5 text-base">{KIND_ICON[n.kind]}</span>
                   <div className="min-w-0 flex-1">
                     {n.href ? (
                       <Link
-                        href={n.href}
-                        onClick={() => { void handleMarkRead(n.id); setOpen(false); }}
+                        href={n.href as Route}
+                        onClick={() => {
+                          void handleMarkRead(n.id);
+                          setOpen(false);
+                        }}
                         className="text-foreground block text-sm font-medium hover:underline"
                       >
                         {n.title}

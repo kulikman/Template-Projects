@@ -2,15 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 
-import { createServerClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import type { NotificationKind } from "@/features/notifications/lib/types";
+import type { NotificationKind } from "../lib/types";
 
 /**
  * Mark a single notification as read.
  */
 export async function markAsRead(notificationId: string): Promise<void> {
-  const supabase = await createServerClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -29,7 +29,7 @@ export async function markAsRead(notificationId: string): Promise<void> {
  * Mark all unread notifications for the current user as read.
  */
 export async function markAllAsRead(): Promise<void> {
-  const supabase = await createServerClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

@@ -1,5 +1,7 @@
 import "server-only";
 
+import { getServerEnv } from "@/lib/env";
+
 /**
  * Server-side PostHog helper.
  *
@@ -18,8 +20,9 @@ export async function trackServerEvent(
   distinctId: string,
   properties?: Record<string, unknown>
 ): Promise<void> {
-  const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://app.posthog.com";
+  const env = getServerEnv();
+  const key = env.NEXT_PUBLIC_POSTHOG_KEY;
+  const host = env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://app.posthog.com";
 
   if (!key) return;
 

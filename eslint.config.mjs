@@ -142,6 +142,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     ".sprint-backups/**",
+    "scripts/**", // standalone Node scripts — console.log is intentional
   ]),
 ]);
 

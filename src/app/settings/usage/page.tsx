@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { createServerClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { getPlanLimits, formatBytes, formatLimit } from "@/lib/plan-limits";
 
 export const metadata = { title: "Usage" };
@@ -12,7 +12,12 @@ interface UsageRowProps {
   formatFn?: (n: number) => string;
 }
 
-function UsageRow({ label, used, limit, formatFn = formatLimit }: UsageRowProps): React.ReactElement {
+function UsageRow({
+  label,
+  used,
+  limit,
+  formatFn = formatLimit,
+}: UsageRowProps): React.ReactElement {
   const usedNum = typeof used === "number" ? used : 0;
   const pct = isFinite(limit) && limit > 0 ? Math.min(100, (usedNum / limit) * 100) : 0;
   const isWarning = pct >= 80;
@@ -29,7 +34,10 @@ function UsageRow({ label, used, limit, formatFn = formatLimit }: UsageRowProps)
       {isFinite(limit) && (
         <div className="bg-muted h-1.5 w-full overflow-hidden rounded-full">
           <div
-            className={["h-full rounded-full transition-all", isWarning ? "bg-yellow-500" : "bg-primary"].join(" ")}
+            className={[
+              "h-full rounded-full transition-all",
+              isWarning ? "bg-yellow-500" : "bg-primary",
+            ].join(" ")}
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -39,7 +47,7 @@ function UsageRow({ label, used, limit, formatFn = formatLimit }: UsageRowProps)
 }
 
 export default async function UsagePage(): Promise<React.ReactElement> {
-  const supabase = await createServerClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
@@ -81,9 +89,7 @@ export default async function UsagePage(): Promise<React.ReactElement> {
         <h1 className="text-foreground text-2xl font-bold">Usage</h1>
         <p className="text-muted-foreground mt-1 text-sm">
           Current plan: <span className="text-foreground font-semibold">{limits.name}</span>
-          {renewalDate && (
-            <span className="text-muted-foreground"> · Renews {renewalDate}</span>
-          )}
+          {renewalDate && <span className="text-muted-foreground"> · Renews {renewalDate}</span>}
         </p>
       </div>
 
@@ -107,7 +113,9 @@ export default async function UsagePage(): Promise<React.ReactElement> {
         <div className="border-primary/20 bg-primary/5 flex items-center justify-between rounded-lg border px-5 py-4">
           <div>
             <p className="text-foreground text-sm font-semibold">Unlock more with Pro</p>
-            <p className="text-muted-foreground text-xs">Unlimited projects, 50 GB storage, AI features.</p>
+            <p className="text-muted-foreground text-xs">
+              Unlimited projects, 50 GB storage, AI features.
+            </p>
           </div>
           <a
             href="/pricing"
