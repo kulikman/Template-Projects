@@ -120,8 +120,8 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
           NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder_anon_key
           SUPABASE_SERVICE_ROLE_KEY: placeholder_service_role_key
-          STRIPE_SECRET_KEY: sk_test_placeholder
-          STRIPE_WEBHOOK_SECRET: whsec_placeholder
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_placeholder
+          STRIPE_SECRET_KEY: stripe_secret_key_placeholder
+          STRIPE_WEBHOOK_SECRET: stripe_webhook_secret_placeholder
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: stripe_publishable_key_placeholder
           RESEND_API_KEY: re_placeholder
           RESEND_FROM_EMAIL: noreply@placeholder.example.com
