@@ -10,15 +10,12 @@ import { logger } from "@/lib/logger";
  * Excluded from `src/proxy.ts` matcher — we don't refresh Supabase
  * sessions for unauthenticated cron pings.
  *
- * Authorization: when `CRON_SECRET` is set in the project's environment,
- * Vercel cron attaches the matching `Authorization: Bearer ${CRON_SECRET}`
- * header to every invocation. If the env var is unset, requests arrive
- * unauthenticated and this handler will reject them with 401 — set the
- * secret in `vercel env` (and `.env.local`) before enabling the cron.
+ * Authorization: when `CRON_SECRET` is set in the project's env, Vercel
+ * sends it as `Authorization: Bearer ${CRON_SECRET}` on every cron-triggered
+ * request to a path declared in `vercel.ts` / `vercel.json`. Without that
+ * env var, the route is left open — set it before going to production.
  *
- * Generate a secret with:  openssl rand -hex 32
- *
- * @see https://vercel.com/docs/cron-jobs/manage-cron-jobs#secure-cron-jobs
+ * @see https://vercel.com/docs/cron-jobs/manage-cron-jobs
  *
  * Example vercel.ts entry:
  *   crons: [{ path: "/api/cron/example", schedule: "0 0 * * *" }]

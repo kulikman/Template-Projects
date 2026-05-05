@@ -5,34 +5,28 @@
  * flag, flip via Vercel env in seconds without redeploying.
  *
  * Usage:
+ *   import { flags } from "@/lib/flags"
  *   if (flags.billing) return <BillingPanel />
- *   else return <ComingSoon />
  *
- * Each flag reads a literal `NEXT_PUBLIC_FF_<NAME>=true|1` to enable;
- * anything else (including unset) is disabled.
+ * Each flag reads its own `NEXT_PUBLIC_FF_<NAME>` env var. Keys are
+ * spelled out literally so Next.js can statically inline them on the
+ * client at build time — dynamic `process.env[key]` access is NOT
+ * inlined and would silently always be `false` in the browser.
  *
- * Why static literals (not `process.env[`NEXT_PUBLIC_FF_${name}`]`)?
- *   Next.js / Turbopack inlines `process.env.NEXT_PUBLIC_*` references
- *   into the client bundle ONLY when the property name is a static
- *   identifier. Dynamic computed reads (`process.env[expr]`) are stripped
- *   to `undefined` on the client, so flags would always be `false` in
- *   the browser regardless of the env value. Keep the access static.
+ * `"true"` or `"1"` enables the flag; anything else (including unset)
+ * disables it.
  *
- * Public-prefixed so client and server agree without an extra round-trip;
- * safe to import from both server and client code (no `server-only`).
- *
- * For complex rollouts (% rollouts, user-targeted) swap to GrowthBook
- * or Vercel Edge Config.
+ * For complex rollouts (% gates, user-targeted) swap to GrowthBook
+ * or Vercel Edge Config / Flags.
  */
-
-function parse(raw: string | undefined): boolean {
-  return raw === "true" || raw === "1";
+function isOn(value: string | undefined): boolean {
+  return value === "true" || value === "1";
 }
 
 export const flags = {
-  billing: parse(process.env.NEXT_PUBLIC_FF_BILLING),
-  ai: parse(process.env.NEXT_PUBLIC_FF_AI),
-  analytics: parse(process.env.NEXT_PUBLIC_FF_ANALYTICS),
+  billing: isOn(process.env.NEXT_PUBLIC_FF_BILLING),
+  ai: isOn(process.env.NEXT_PUBLIC_FF_AI),
+  analytics: isOn(process.env.NEXT_PUBLIC_FF_ANALYTICS),
 } as const;
 
 export type FeatureFlag = keyof typeof flags;
