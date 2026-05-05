@@ -43,6 +43,12 @@ const serverSchema = z.object({
   // Rate limiting in production (optional — falls back to in-memory limiter)
   UPSTASH_REDIS_REST_URL: z.string().url().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+
+  // Error tracking (optional)
+  NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
+  SENTRY_AUTH_TOKEN: z.string().optional(),
+  SENTRY_ORG: z.string().optional(),
+  SENTRY_PROJECT: z.string().optional(),
 });
 
 /**
@@ -59,6 +65,7 @@ const clientSchema = z.object({
   NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().optional(),
   NEXT_PUBLIC_GTM_ID: z.string().optional(),
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
+  NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
 });
 
 /** Public site URL/name only — for `robots.ts`, `sitemap.ts`, and other metadata that must build without Supabase keys. */

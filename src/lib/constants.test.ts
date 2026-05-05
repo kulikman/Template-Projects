@@ -30,10 +30,13 @@ describe("ROUTES <-> SEGMENT_LABELS sync", () => {
       "projects",
       "analytics",
       "companies",
+      "orgs",
+      "admin",
+      "users",
     ]);
 
     const SPECIAL_DYNAMIC = new Set(["edit", "new"]);
-    const ROOT_LEVEL = new Set(["", "login", "signup"]);
+    const ROOT_LEVEL = new Set(["", "login", "signup", "forgot-password", "reset-password"]);
 
     for (const path of Object.values(ROUTES)) {
       const segments = path.split("/").filter(Boolean);
