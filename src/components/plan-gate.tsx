@@ -5,6 +5,8 @@ import Link from "next/link";
  * <PlanGate> — conditionally renders children based on whether the user's
  * plan satisfies a feature requirement.
  *
+ * @public
+ *
  * Server Component: receive the `allowed` boolean from the calling Server
  * Component (computed via `getPlanLimits()`), so this component stays
  * pure and testable without database calls.

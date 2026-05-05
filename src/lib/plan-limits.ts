@@ -81,6 +81,7 @@ export function getPlanLimits(productId: string | null | undefined): PlanLimits 
 
 /** All named plan tiers — for rendering upgrade modals / pricing tables. */
 export const PLANS = { FREE, PRO, TEAM } as const;
+/** @public */
 export type PlanName = keyof typeof PLANS;
 
 /** Helper: format bytes for UI (e.g. "5 GB", "500 MB"). */

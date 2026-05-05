@@ -65,6 +65,8 @@ export async function deleteApiKey(keyId: string): Promise<void> {
 
 /**
  * Rename an existing API key.
+ *
+ * @public
  */
 export async function renameApiKey(keyId: string, newName: string): Promise<void> {
   const supabase = await createClient();
@@ -87,6 +89,8 @@ export async function renameApiKey(keyId: string, newName: string): Promise<void
  * Call this from Route Handlers that support API key auth.
  *
  * @example
+ * @public
+ *
  *   const userId = await verifyApiKey(request.headers.get("x-api-key"))
  *   if (!userId) return Response.json({ error: "Unauthorized" }, { status: 401 })
  */

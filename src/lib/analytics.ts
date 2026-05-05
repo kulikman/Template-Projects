@@ -11,6 +11,8 @@ import { getServerEnv } from "@/lib/env";
  * Requires NEXT_PUBLIC_POSTHOG_KEY to be set. If absent, all calls are
  * no-ops — safe in dev/test.
  *
+ * @public
+ *
  * @example
  *   import { trackServerEvent } from "@/lib/analytics"
  *   await trackServerEvent("subscription_upgraded", userId, { plan: "pro" })
