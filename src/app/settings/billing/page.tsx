@@ -1,0 +1,30 @@
+import { requireUser } from "@/lib/auth";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { BillingCard } from "./billing-card";
+
+export default async function BillingPage(): Promise<React.ReactElement> {
+  const user = await requireUser();
+  const supabase = createAdminClient();
+
+  const { data: subscription } = await supabase
+    .from("subscriptions")
+    .select("id, status, current_period_end, cancel_at_period_end")
+    .eq("user_id", user.id)
+    .in("status", ["active", "trialing"])
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  return (
+    <section className="flex flex-col gap-6">
+      <div>
+        <h1 className="text-foreground text-2xl font-semibold tracking-tight">Billing</h1>
+        <p className="text-muted-foreground mt-1 text-sm">
+          Manage your subscription and payment methods.
+        </p>
+      </div>
+
+      <BillingCard subscription={subscription} />
+    </section>
+  );
+}

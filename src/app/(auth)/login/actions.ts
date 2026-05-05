@@ -9,6 +9,7 @@ import { ROUTES } from "@/lib/constants";
 import { emailSchema } from "@/lib/validations";
 import { logger } from "@/lib/logger";
 import { limit } from "@/lib/rate-limit";
+import { writeAuditLog } from "@/lib/audit";
 
 /**
  * Canonical Server Action pattern for the template:
@@ -59,6 +60,15 @@ export async function signInWithPassword(
     logger.warn("login failed", { reason: error.message });
     return { error: "Invalid email or password." };
   }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  await writeAuditLog({
+    userId: user?.id ?? null,
+    action: "auth.login",
+    metadata: { ip },
+  });
 
   redirect(ROUTES.dashboard);
 }

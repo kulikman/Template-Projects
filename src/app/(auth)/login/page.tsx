@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 
 import { SubmitButton } from "@/components/forms/submit-button";
+import { ROUTES } from "@/lib/constants";
 import { signInWithPassword, type LoginState } from "./actions";
 
 const INITIAL_STATE: LoginState = {};
@@ -35,7 +37,15 @@ export default function LoginPage(): React.ReactElement {
           />
         </label>
         <label className="flex flex-col gap-1.5">
-          <span className="text-foreground text-sm font-medium">Password</span>
+          <div className="flex items-center justify-between">
+            <span className="text-foreground text-sm font-medium">Password</span>
+            <Link
+              href={ROUTES.forgotPassword}
+              className="text-muted-foreground hover:text-foreground text-xs underline underline-offset-4"
+            >
+              Forgot password?
+            </Link>
+          </div>
           <input
             type="password"
             name="password"
@@ -61,9 +71,10 @@ export default function LoginPage(): React.ReactElement {
       </form>
 
       <p className="text-muted-foreground text-center text-sm">
-        New here? Add a <code className="bg-muted rounded px-1.5 py-0.5 text-xs">/signup</code>{" "}
-        route, then register it in{" "}
-        <code className="bg-muted rounded px-1.5 py-0.5 text-xs">ROUTES</code>.
+        Don&apos;t have an account?{" "}
+        <Link href={ROUTES.signup} className="text-foreground underline underline-offset-4">
+          Sign up
+        </Link>
       </p>
     </div>
   );

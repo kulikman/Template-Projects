@@ -7,3 +7,4 @@ packages:
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+  - "@sentry/cli"

@@ -23,6 +23,9 @@ const SEGMENT_LABELS: Record<string, string> = {
   projects: "Projects",
   analytics: "Analytics",
   companies: "Companies",
+  orgs: "Organizations",
+  admin: "Admin",
+  users: "Users",
 };
 
 export interface BreadcrumbItem {

@@ -23,7 +23,15 @@ export const APP_NAME: string = siteConfig.name;
 export const ROUTES = {
   home: "/",
   login: "/login",
+  signup: "/signup",
+  forgotPassword: "/forgot-password",
+  resetPassword: "/reset-password",
   dashboard: "/dashboard",
+  settings: "/settings",
+  settingsBilling: "/settings/billing",
+  orgs: "/orgs",
+  admin: "/admin",
+  adminUsers: "/admin/users",
 } as const;
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES];

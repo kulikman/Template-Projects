@@ -24,6 +24,11 @@ export default function GlobalError({
 }): React.ReactElement {
   useEffect(() => {
     logger.error("unhandled error in client tree", error, { digest: error.digest });
+
+    // Report to Sentry when configured.
+    import("@sentry/nextjs")
+      .then(({ captureException }) => captureException(error))
+      .catch(() => void 0);
   }, [error]);
 
   return (

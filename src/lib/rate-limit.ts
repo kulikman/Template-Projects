@@ -1,29 +1,17 @@
 import "server-only";
 
+import { getServerEnv } from "@/lib/env";
+
 /**
- * Tiny rate-limiter abstraction.
+ * Distributed rate limiter.
  *
- * Default implementation is in-memory and per-instance — fine for local
- * dev and single-region deploys, useless for serverless / multi-region.
- * For production swap with Upstash:
+ * Uses Upstash Redis (sliding window) when UPSTASH_REDIS_REST_URL +
+ * UPSTASH_REDIS_REST_TOKEN are set — required for serverless / multi-region.
+ * Falls back to an in-memory bucket for local dev (single instance only).
  *
- *   import { Ratelimit } from "@upstash/ratelimit"
- *   import { Redis } from "@upstash/redis"
- *   const limiter = new Ratelimit({
- *     redis: Redis.fromEnv(),
- *     limiter: Ratelimit.slidingWindow(10, "1 m"),
- *   })
- *
- * The `limit()` API below intentionally mirrors `@upstash/ratelimit`
- * so the swap is one import + remove this file's body.
+ * The public `limit()` API is intentionally identical in both modes so
+ * callers never need to know which backend is active.
  */
-
-interface Bucket {
-  count: number;
-  resetAt: number;
-}
-
-const buckets = new Map<string, Bucket>();
 
 export interface RateLimitResult {
   success: boolean;
@@ -38,17 +26,45 @@ export interface RateLimitOptions {
   windowMs: number;
 }
 
-/**
- * Increment-and-check. Returns whether the request is allowed.
- *
- * @example
- *   const { success } = await limit(`login:${ip}`, { limit: 5, windowMs: 60_000 })
- *   if (!success) throw new Error("Too many attempts")
- */
-export async function limit(
+// ---------------------------------------------------------------------------
+// Upstash backend
+// ---------------------------------------------------------------------------
+
+async function limitWithUpstash(
   key: string,
   { limit, windowMs }: RateLimitOptions
 ): Promise<RateLimitResult> {
+  const { Ratelimit } = await import("@upstash/ratelimit");
+  const { Redis } = await import("@upstash/redis");
+  const env = getServerEnv();
+
+  const redis = new Redis({
+    url: env.UPSTASH_REDIS_REST_URL!,
+    token: env.UPSTASH_REDIS_REST_TOKEN!,
+  });
+
+  const ratelimit = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(limit, `${windowMs} ms`),
+    prefix: "rl",
+  });
+
+  const { success, remaining, reset } = await ratelimit.limit(key);
+  return { success, remaining, reset };
+}
+
+// ---------------------------------------------------------------------------
+// In-memory fallback (dev / single-instance only)
+// ---------------------------------------------------------------------------
+
+interface Bucket {
+  count: number;
+  resetAt: number;
+}
+
+const buckets = new Map<string, Bucket>();
+
+function limitInMemory(key: string, { limit, windowMs }: RateLimitOptions): RateLimitResult {
   const now = Date.now();
   const bucket = buckets.get(key);
 
@@ -63,4 +79,26 @@ export async function limit(
 
   bucket.count += 1;
   return { success: true, remaining: limit - bucket.count, reset: bucket.resetAt };
+}
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+
+/**
+ * Increment-and-check. Returns whether the request is allowed.
+ *
+ * @example
+ *   const { success } = await limit(`login:${ip}`, { limit: 5, windowMs: 60_000 })
+ *   if (!success) throw new Error("Too many attempts")
+ */
+export async function limit(key: string, options: RateLimitOptions): Promise<RateLimitResult> {
+  const env = getServerEnv();
+  const hasUpstash = env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (hasUpstash) {
+    return limitWithUpstash(key, options);
+  }
+
+  return limitInMemory(key, options);
 }

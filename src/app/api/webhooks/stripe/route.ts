@@ -1,32 +1,28 @@
 import { NextResponse, type NextRequest } from "next/server";
+import type Stripe from "stripe";
 
+import { getStripe } from "@/lib/stripe";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getServerEnv } from "@/lib/env";
 import { logger } from "@/lib/logger";
 
 /**
- * Stripe webhook receiver — skeleton.
+ * Stripe webhook receiver.
  *
- * Hooked at: `/api/webhooks/stripe`
+ * Excluded from proxy matcher (no session refresh needed — Stripe uses
+ * its own signature, not cookies).
  *
- * Excluded from the proxy in `src/proxy.ts` matcher (no session refresh
- * — Stripe doesn't carry cookies and the extra Supabase roundtrip races
- * the cookie store).
- *
- * To wire this up:
- *   1. `pnpm add stripe`
- *   2. Set STRIPE_WEBHOOK_SECRET in `.env.local` and Vercel.
- *   3. Replace the body below with `stripe.webhooks.constructEvent(...)`.
- *   4. Use `createAdminClient()` (RLS bypass) for any DB writes that the
- *      authenticated user wouldn't have permission for.
- *
- * @see https://stripe.com/docs/webhooks/signatures
+ * Handled events:
+ *   - checkout.session.completed      → provision subscription
+ *   - customer.subscription.updated   → sync status changes
+ *   - customer.subscription.deleted   → mark canceled
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const env = getServerEnv();
   const signature = request.headers.get("stripe-signature");
 
   if (!signature) {
-    logger.warn("stripe webhook missing signature");
+    logger.warn("stripe webhook: missing signature");
     return NextResponse.json({ error: "Missing signature" }, { status: 400 });
   }
 
@@ -35,13 +31,100 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Webhook not configured" }, { status: 500 });
   }
 
-  // const body = await request.text()
-  // const event = stripe.webhooks.constructEvent(body, signature, env.STRIPE_WEBHOOK_SECRET)
-  // switch (event.type) {
-  //   case "checkout.session.completed": …
-  //   case "customer.subscription.deleted": …
-  // }
+  let event: Stripe.Event;
+  try {
+    const body = await request.text();
+    const stripe = getStripe();
+    event = stripe.webhooks.constructEvent(body, signature, env.STRIPE_WEBHOOK_SECRET);
+  } catch (error) {
+    logger.warn("stripe webhook: signature verification failed", { error });
+    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+  }
 
-  logger.info("stripe webhook received (skeleton — no handler wired)");
+  try {
+    await handleEvent(event);
+  } catch (error) {
+    logger.error("stripe webhook: handler failed", error, { type: event.type });
+    return NextResponse.json({ error: "Handler failed" }, { status: 500 });
+  }
+
   return NextResponse.json({ received: true });
+}
+
+async function handleEvent(event: Stripe.Event): Promise<void> {
+  const supabase = createAdminClient();
+
+  switch (event.type) {
+    case "checkout.session.completed": {
+      const session = event.data.object as Stripe.Checkout.Session;
+      if (session.mode !== "subscription" || !session.subscription) break;
+
+      const stripe = getStripe();
+      const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
+      await upsertSubscription(subscription, supabase);
+      logger.info("stripe: subscription created", { id: subscription.id });
+      break;
+    }
+
+    case "customer.subscription.updated": {
+      const subscription = event.data.object as Stripe.Subscription;
+      await upsertSubscription(subscription, supabase);
+      logger.info("stripe: subscription updated", {
+        id: subscription.id,
+        status: subscription.status,
+      });
+      break;
+    }
+
+    case "customer.subscription.deleted": {
+      const subscription = event.data.object as Stripe.Subscription;
+      await upsertSubscription(subscription, supabase);
+      logger.info("stripe: subscription deleted", { id: subscription.id });
+      break;
+    }
+
+    default:
+      logger.info("stripe: unhandled event", { type: event.type });
+  }
+}
+
+async function upsertSubscription(
+  subscription: Stripe.Subscription,
+  supabase: ReturnType<typeof createAdminClient>
+): Promise<void> {
+  const userId = subscription.metadata["supabase_user_id"];
+  if (!userId) {
+    logger.warn("stripe: subscription missing supabase_user_id metadata", { id: subscription.id });
+    return;
+  }
+
+  const item = subscription.items.data[0];
+  // In Stripe v22 (dahlia), period fields live on SubscriptionItem, not Subscription.
+  const periodStart = item?.current_period_start;
+  const periodEnd = item?.current_period_end;
+
+  const row = {
+    id: subscription.id,
+    user_id: userId,
+    status: subscription.status,
+    price_id: item?.price.id ?? null,
+    product_id: typeof item?.price.product === "string" ? item.price.product : null,
+    quantity: item?.quantity ?? 1,
+    cancel_at_period_end: subscription.cancel_at_period_end,
+    current_period_start: periodStart ? new Date(periodStart * 1000).toISOString() : null,
+    current_period_end: periodEnd ? new Date(periodEnd * 1000).toISOString() : null,
+    trial_start: subscription.trial_start
+      ? new Date(subscription.trial_start * 1000).toISOString()
+      : null,
+    trial_end: subscription.trial_end
+      ? new Date(subscription.trial_end * 1000).toISOString()
+      : null,
+    canceled_at: subscription.canceled_at
+      ? new Date(subscription.canceled_at * 1000).toISOString()
+      : null,
+  };
+
+  const { error } = await supabase.from("subscriptions").upsert(row);
+
+  if (error) throw error;
 }
