@@ -24,6 +24,7 @@ export const APP_NAME: string = siteConfig.name;
  */
 export const ROUTES = {
   home: "/",
+  pricing: "/pricing",
   login: "/login",
   signup: "/signup",
   forgotPassword: "/forgot-password",

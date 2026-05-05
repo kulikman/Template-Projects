@@ -37,6 +37,7 @@ export const siteConfig = {
   },
   nav: [
     { title: "Home", href: "/" },
+    { title: "Pricing", href: "/pricing" },
     { title: "Dashboard", href: "/dashboard" },
   ],
 } as const satisfies SiteConfig;
