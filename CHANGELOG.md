@@ -1,3 +1,19 @@
+## [0.2.0](https://github.com/kulikman/Template-Projects/compare/v0.1.0...v0.2.0) (2026-05-05)
+
+### ✨ Features
+
+* add analytics, onboarding, plan limits, notifications, API keys, CI/CD, and docs ([dc015f2](https://github.com/kulikman/Template-Projects/commit/dc015f2010dcef025070dcf21dc57e69dd575246))
+
+### 🐛 Bug Fixes
+
+* **build:** avoid prerendering auth-gated settings ([c49b09b](https://github.com/kulikman/Template-Projects/commit/c49b09b395b32dacef0c63551e25414d0c91cca1))
+* **ci:** anchor release-please to current sha to avoid graphql timeout ([86d0f4f](https://github.com/kulikman/Template-Projects/commit/86d0f4f8da4c9a6d9ac4f0592492d48ae7678d44))
+* **ci:** commit missing devdeps and [@public](https://github.com/public) tags; fix release workflow pnpm version ([b136f88](https://github.com/kulikman/Template-Projects/commit/b136f8864fab77d7cfc11c7f3a135436724aea4d))
+* **ci:** upgrade release-please-action to v5 with manifest mode ([7461509](https://github.com/kulikman/Template-Projects/commit/74615099769cf3efb73322a1c7ed23505526c870))
+* **ci:** use pnpm exec instead of pnpm dlx for semantic-release ([1ff5e6b](https://github.com/kulikman/Template-Projects/commit/1ff5e6b551211215204da8373d22dceb866811c5))
+* resolve lint and ts errors from dc015f2 (imports, process.env, entities) ([91330e8](https://github.com/kulikman/Template-Projects/commit/91330e8195233f60284067cb83dab2acae80acee))
+* resolve remaining ts, knip, and lint errors after dc015f2 ([76a430d](https://github.com/kulikman/Template-Projects/commit/76a430db836d6d5a5d25b69131e1ab31f677d782))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
