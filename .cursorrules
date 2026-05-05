@@ -1,6 +1,6 @@
-# Cursor — Template-SAAS-Projects
+# Cursor — Template-Projects
 
-Репозиторий: **Template-SAAS-Projects** (`package.json`: `template-saas-projects`). Next.js App Router, `src/app/`. Не смешивай с проектами вне этого дерева без явного запроса.
+Репозиторий: **Template-Projects** (`package.json`: `template-projects`). Next.js App Router, `src/app/`. Не смешивай с проектами вне этого дерева без явного запроса.
 
 ## Приоритет инструкций
 

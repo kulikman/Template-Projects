@@ -6,7 +6,7 @@
 
 ---
 
-## Audit & Cursor (Template-SAAS-Projects)
+## Audit & Cursor (Template-Projects)
 
 - **`audit/`** — `rules.json`, `AUDIT_PROMPT.md`, `audit-history.json`, `conflicts.log`; инструкция в `audit/README.md`.
 - **`.cursorrules`** — приоритет: `CLAUDE.md` → эта память → `audit/rules.json`.
@@ -19,7 +19,7 @@
 ## Current Session
 
 **Last Updated:** 2026-04-24
-**Project:** Template-SAAS-Projects (`package.json`: `template-saas-projects`)
+**Project:** Template-Projects (`package.json`: `template-projects`)
 **Current Feature:** Breadcrumbs, URL hierarchy, test setup, llms.txt, audit rules
 **Status:** `done`
 

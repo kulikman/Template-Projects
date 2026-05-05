@@ -1,4 +1,4 @@
-# Универсальный промпт аудита — Template-SAAS-Projects
+# Универсальный промпт аудита — Template-Projects
 
 Скопируй блок ниже в Composer или запусти команду **Run audit** из `.cursor/commands/`.
 
@@ -6,7 +6,7 @@
 
 ## Контекст
 
-Ты проводишь **полный аудит репозитория Template-SAAS-Projects** по правилам из `audit/rules.json` и согласованно с `CLAUDE.md`.
+Ты проводишь **полный аудит репозитория Template-Projects** по правилам из `audit/rules.json` и согласованно с `CLAUDE.md`.
 
 ## Обязательные шаги
 

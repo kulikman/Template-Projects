@@ -1,10 +1,10 @@
 ---
 name: SaaS Template Audit — реализованные улучшения
-description: Что было реализовано в рамках аудита Template-SAAS-Projects
+description: Что было реализовано в рамках аудита Template-Projects
 type: project
 ---
 
-Аудит и реализация улучшений Template-SAAS-Projects завершены.
+Аудит и реализация улучшений Template-Projects завершены.
 
 **Why:** Шаблон имел ряд критических пробелов для продакшна.
 **How to apply:** При работе с шаблоном учитывать что всё перечисленное уже реализовано.

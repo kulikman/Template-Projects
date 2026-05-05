@@ -1,4 +1,4 @@
-# Система аудита — Template-SAAS-Projects
+# Система аудита — Template-Projects
 
 Пять файлов и как их использовать в этом шаблоне.
 
@@ -17,7 +17,7 @@
 После `git clone` / переименования пакета пути `audit/*` и `.cursorrules` остаются валидными. Если переносишь папку аудита в другой проект вручную:
 
 ```bash
-# Из клона Template-SAAS-Projects в новый репозиторий
+# Из клона Template-Projects в новый репозиторий
 cp .cursorrules /path/to/your-app/
 cp -r audit /path/to/your-app/
 ```

@@ -1,4 +1,4 @@
-# Template-SAAS-Projects
+# Template-Projects
 
 Универсальный стартовый репозиторий: Next.js 16 + React 19 + Supabase + Tailwind v4 + TypeScript + pnpm.
 
@@ -13,7 +13,7 @@
 ### Через git clone
 
 ```bash
-git clone https://github.com/kulikman/Template-SAAS-Projects.git my-app
+git clone https://github.com/kulikman/Template-Projects.git my-app
 cd my-app
 pnpm post-clone "My Product" "my-product" "https://myproduct.com"
 pnpm install
@@ -23,10 +23,10 @@ pnpm dev
 
 ### Локальная копия каталога шаблона
 
-Канонический путь шаблона на машине владельца: `/Users/DEV/TEMLATES/Template-SAAS-Projects`. Скопируйте в новый каталог проекта и выполните те же шаги:
+Канонический путь шаблона на машине владельца: `/Users/DEV/TEMLATES/Template-Projects`. Скопируйте в новый каталог проекта и выполните те же шаги:
 
 ```bash
-cp -R /Users/DEV/TEMLATES/Template-SAAS-Projects ~/Projects/my-app
+cp -R /Users/DEV/TEMLATES/Template-Projects ~/Projects/my-app
 cd ~/Projects/my-app
 pnpm post-clone "My Product" "my-product" "https://myproduct.com"
 pnpm install
