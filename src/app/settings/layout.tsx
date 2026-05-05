@@ -1,6 +1,9 @@
 import { requireUser } from "@/lib/auth";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 
+// Auth-gated route group — must never be prerendered at build time.
+export const dynamic = "force-dynamic";
+
 export default async function SettingsLayout({
   children,
 }: {

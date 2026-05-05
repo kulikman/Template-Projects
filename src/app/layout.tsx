@@ -5,7 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 import { siteConfig } from "@/config/site";
-import { getClientEnv } from "@/lib/env";
+import { getPublicMetadataEnv } from "@/lib/env";
 import { flags } from "@/lib/flags";
 import { Header } from "@/components/layout/header";
 import { Providers } from "@/components/providers";
@@ -23,7 +23,9 @@ const geistMono = Geist_Mono({
 // metadataBase must be the canonical production origin — otherwise OG image
 // URLs and absolute links resolve to localhost on Vercel. Read from validated
 // env (NEXT_PUBLIC_APP_URL); siteConfig.url is just a build-time fallback.
-const baseUrl = getClientEnv().NEXT_PUBLIC_APP_URL;
+//
+// Use `getPublicMetadataEnv()` so `next build` doesn't require Supabase keys.
+const baseUrl = getPublicMetadataEnv().NEXT_PUBLIC_APP_URL;
 
 export const metadata: Metadata = {
   title: {
