@@ -18,7 +18,9 @@ const config: KnipConfig = {
   ],
   project: ["src/**/*.{ts,tsx}"],
   ignore: [
-    "src/lib/supabase/client.ts", // template-public API for client components
+    // template-public APIs: not imported by in-repo code but exported for consumers
+    "src/components/plan-gate.tsx",
+    "src/lib/analytics.ts",
   ],
   ignoreDependencies: [
     "tailwindcss", // loaded via PostCSS plugin, not imported in TS

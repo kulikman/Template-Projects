@@ -1,5 +1,7 @@
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { requireUser } from "@/lib/auth";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { NotificationsBell } from "@/features/notifications";
 
 /**
  * Dashboard shell — guards every nested route behind a valid Supabase session.
@@ -24,11 +26,22 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }): Promise<React.ReactElement> {
-  await requireUser();
+  const user = await requireUser();
+
+  const supabase = createAdminClient();
+  const { data: notifications } = await supabase
+    .from("notifications")
+    .select("id, user_id, title, body, href, read, kind, created_at")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(20);
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-6 sm:px-6 lg:px-8">
-      <Breadcrumbs className="mb-6" />
+      <div className="mb-6 flex items-center justify-between">
+        <Breadcrumbs />
+        <NotificationsBell initialNotifications={notifications ?? []} userId={user.id} />
+      </div>
       {children}
     </div>
   );
