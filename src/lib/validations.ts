@@ -28,6 +28,16 @@ export const passwordSchema = z
   .regex(/[a-zA-Z]/, "Password must contain at least one letter")
   .regex(/[0-9]/, "Password must contain at least one number");
 
+/**
+ * Login form. Uses a relaxed `min(8)` rule (NOT `passwordSchema`) on purpose:
+ * we don't want to lock out users whose existing password predates a stricter
+ * policy. New passwords (signup, reset) are validated against `passwordSchema`.
+ */
+export const loginSchema = z.object({
+  email: emailSchema,
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
 /** Signup form. */
 export const signupSchema = z
   .object({

@@ -29,4 +29,5 @@ export const flags = {
   analytics: isOn(process.env.NEXT_PUBLIC_FF_ANALYTICS),
 } as const;
 
+/** @public */
 export type FeatureFlag = keyof typeof flags;

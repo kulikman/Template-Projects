@@ -76,6 +76,8 @@ export async function requireOrgMember(slug: string): Promise<OrgMembership> {
 
 /**
  * Assert owner or admin role.
+ *
+ * @public
  */
 export async function requireOrgAdmin(slug: string): Promise<OrgMembership> {
   const membership = await requireOrgMember(slug);
@@ -85,6 +87,8 @@ export async function requireOrgAdmin(slug: string): Promise<OrgMembership> {
 
 /**
  * Assert owner role.
+ *
+ * @public
  */
 export async function requireOrgOwner(slug: string): Promise<OrgMembership> {
   const membership = await requireOrgMember(slug);

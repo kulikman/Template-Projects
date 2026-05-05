@@ -66,11 +66,16 @@ async function handleEvent(event: Stripe.Event): Promise<void> {
       break;
     }
 
+    case "customer.subscription.created":
     case "customer.subscription.updated": {
+      // Both events deliver a fully-formed Stripe.Subscription. Treat them
+      // identically — upsert is idempotent and lets us survive event reordering
+      // (Stripe doesn't guarantee delivery order across event types).
       const subscription = event.data.object as Stripe.Subscription;
       await upsertSubscription(subscription, supabase);
-      logger.info("stripe: subscription updated", {
+      logger.info("stripe: subscription synced", {
         id: subscription.id,
+        type: event.type,
         status: subscription.status,
       });
       break;
