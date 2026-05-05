@@ -17,7 +17,7 @@ const serverSchema = z.object({
 
   // App
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
-  NEXT_PUBLIC_APP_NAME: z.string().default("Template-SAAS-Projects"),
+  NEXT_PUBLIC_APP_NAME: z.string().default("Template-Projects"),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 
   // Analytics (optional)
@@ -61,7 +61,7 @@ const clientSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
-  NEXT_PUBLIC_APP_NAME: z.string().default("Template-SAAS-Projects"),
+  NEXT_PUBLIC_APP_NAME: z.string().default("Template-Projects"),
   NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().optional(),
   NEXT_PUBLIC_GTM_ID: z.string().optional(),
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
@@ -71,7 +71,7 @@ const clientSchema = z.object({
 /** Public site URL/name only — for `robots.ts`, `sitemap.ts`, and other metadata that must build without Supabase keys. */
 const publicMetadataSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
-  NEXT_PUBLIC_APP_NAME: z.string().default("Template-SAAS-Projects"),
+  NEXT_PUBLIC_APP_NAME: z.string().default("Template-Projects"),
 });
 
 export type ServerEnv = z.infer<typeof serverSchema>;

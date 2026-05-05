@@ -62,7 +62,7 @@ describe("getPublicMetadataEnv()", () => {
   it("returns defaults when URL/name are unset (no Supabase vars required)", () => {
     const env = getPublicMetadataEnv();
     expect(env.NEXT_PUBLIC_APP_URL).toBe("http://localhost:3000");
-    expect(env.NEXT_PUBLIC_APP_NAME).toBe("Template-SAAS-Projects");
+    expect(env.NEXT_PUBLIC_APP_NAME).toBe("Template-Projects");
   });
 
   it("reads overrides when set", () => {
