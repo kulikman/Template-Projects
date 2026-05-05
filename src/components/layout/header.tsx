@@ -112,6 +112,14 @@ function MobileNav({
 export function Header(): React.ReactElement {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // React-recommended "reset state when a prop changes" pattern — keeps the
+  // drawer auto-closing after navigation without a useEffect cascade.
+  // https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes
+  const [trackedPath, setTrackedPath] = useState(pathname);
+  if (pathname !== trackedPath) {
+    setTrackedPath(pathname);
+    setIsMobileMenuOpen(false);
+  }
 
   return (
     <header className="border-border bg-background/80 sticky top-0 z-50 w-full border-b backdrop-blur-sm">

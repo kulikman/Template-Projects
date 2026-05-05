@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { getClientEnv } from "@/lib/env";
+import { getPublicMetadataEnv } from "@/lib/env";
 
 /**
  * Dynamic sitemap generator.
@@ -12,8 +12,8 @@ import { getClientEnv } from "@/lib/env";
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Validated client env — fails the build if NEXT_PUBLIC_APP_URL is malformed.
-  const { NEXT_PUBLIC_APP_URL: baseUrl } = getClientEnv();
+  // Public URL only — does not require Supabase keys at build time.
+  const { NEXT_PUBLIC_APP_URL: baseUrl } = getPublicMetadataEnv();
 
   // ── Static routes ────────────────────────────────────────────────────────
   const staticRoutes: MetadataRoute.Sitemap = [

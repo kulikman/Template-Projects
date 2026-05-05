@@ -61,8 +61,15 @@ const clientSchema = z.object({
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
 });
 
+/** Public site URL/name only — for `robots.ts`, `sitemap.ts`, and other metadata that must build without Supabase keys. */
+const publicMetadataSchema = z.object({
+  NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
+  NEXT_PUBLIC_APP_NAME: z.string().default("Template Starter"),
+});
+
 export type ServerEnv = z.infer<typeof serverSchema>;
 export type ClientEnv = z.infer<typeof clientSchema>;
+export type PublicMetadataEnv = z.infer<typeof publicMetadataSchema>;
 
 /**
  * Validate and return typed server env.
@@ -85,6 +92,31 @@ export function getServerEnv(): ServerEnv {
 
     throw new Error(
       `❌ Invalid environment variables:\n${formatted}\n\nCheck .env.local against .env.example.`
+    );
+  }
+
+  return result.data;
+}
+
+/**
+ * Validated public URL and app name for server-side metadata routes.
+ *
+ * Does not require Supabase or service-role keys, so `next build` can prerender
+ * `robots.txt` / `sitemap.xml` in CI before secrets are injected.
+ */
+export function getPublicMetadataEnv(): PublicMetadataEnv {
+  const result = publicMetadataSchema.safeParse({
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
+  });
+
+  if (!result.success) {
+    const formatted = result.error.issues
+      .map((issue) => `  ${issue.path.join(".")}: ${issue.message}`)
+      .join("\n");
+
+    throw new Error(
+      `❌ Invalid public metadata environment:\n${formatted}\n\nCheck NEXT_PUBLIC_APP_URL / NEXT_PUBLIC_APP_NAME against .env.example.`
     );
   }
 

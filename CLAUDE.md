@@ -331,7 +331,10 @@ Three files provide the global error safety net:
     return { title: doc.title, description: doc.excerpt }
   }
   ```
-- `public/robots.txt` — update `Sitemap:` URL after deploying.
+- `src/app/robots.ts` — dynamic `robots.txt` (Next 16 file convention). Reads
+  `NEXT_PUBLIC_APP_URL` via `getPublicMetadataEnv()` and emits the correct
+  `Sitemap:` URL automatically — no manual update after a domain change.
+  Do **not** add a static `public/robots.txt` alongside this route handler.
 - `public/llms.txt` — fill with product info for AI indexing.
 - `src/app/sitemap.ts` — add dynamic routes as your product grows.
 - Always set `width` and `height` on OG images (default: 1200×630).

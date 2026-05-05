@@ -5,7 +5,7 @@
  * Layout (`./layout.tsx`) already provides padding, breadcrumbs, and
  * the auth gate — this file is product content only.
  */
-export default function DashboardPage() {
+export default function DashboardPage(): React.ReactElement {
   return (
     <section>
       <h1 className="text-foreground text-2xl font-semibold tracking-tight">Dashboard</h1>

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-import { getServerEnv, getClientEnv } from "./env";
+import { getServerEnv, getClientEnv, getPublicMetadataEnv } from "./env";
 
 const VALID_ENV = {
   NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co",
@@ -51,5 +51,30 @@ describe("getClientEnv()", () => {
     expect(env.NEXT_PUBLIC_SUPABASE_URL).toBe(VALID_ENV.NEXT_PUBLIC_SUPABASE_URL);
     // Service role should not exist on client env type
     expect(env).not.toHaveProperty("SUPABASE_SERVICE_ROLE_KEY");
+  });
+});
+
+describe("getPublicMetadataEnv()", () => {
+  beforeEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it("returns defaults when URL/name are unset (no Supabase vars required)", () => {
+    const env = getPublicMetadataEnv();
+    expect(env.NEXT_PUBLIC_APP_URL).toBe("http://localhost:3000");
+    expect(env.NEXT_PUBLIC_APP_NAME).toBe("Template Starter");
+  });
+
+  it("reads overrides when set", () => {
+    vi.stubEnv("NEXT_PUBLIC_APP_URL", "https://example.com");
+    vi.stubEnv("NEXT_PUBLIC_APP_NAME", "Example");
+    const env = getPublicMetadataEnv();
+    expect(env.NEXT_PUBLIC_APP_URL).toBe("https://example.com");
+    expect(env.NEXT_PUBLIC_APP_NAME).toBe("Example");
+  });
+
+  it("throws when NEXT_PUBLIC_APP_URL is malformed", () => {
+    vi.stubEnv("NEXT_PUBLIC_APP_URL", "not-a-url");
+    expect(() => getPublicMetadataEnv()).toThrow("Invalid public metadata environment");
   });
 });

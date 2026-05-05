@@ -56,8 +56,11 @@ if [[ -f package.json ]]; then
 fi
 
 # ── .env.example ─────────────────────────────────────────────────────────────
+# `.env.example` is committed and shared across local devs — it must keep
+# `NEXT_PUBLIC_APP_URL=http://localhost:3000` so a fresh `cp .env.example
+# .env.local` boots correctly. Production values live in `vercel env`.
+# Only patch the human-facing display name here.
 if [[ -f .env.example ]]; then
-  sed -i.bak "s|NEXT_PUBLIC_APP_URL=http://localhost:3000|NEXT_PUBLIC_APP_URL=http://localhost:3000|" .env.example
   sed -i.bak "s|NEXT_PUBLIC_APP_NAME=Template Starter|NEXT_PUBLIC_APP_NAME=$DISPLAY_NAME|" .env.example
   rm -f .env.example.bak
   echo "  ✓ .env.example APP_NAME → $DISPLAY_NAME"
@@ -76,12 +79,11 @@ if [[ -f src/config/site.ts ]]; then
   echo "  ✓ site.ts → $DISPLAY_NAME ($PROD_URL)"
 fi
 
-# ── public/robots.txt ────────────────────────────────────────────────────────
-if [[ -f public/robots.txt ]]; then
-  sed -i.bak "s|https://example.com/sitemap.xml|$PROD_URL/sitemap.xml|" public/robots.txt
-  rm -f public/robots.txt.bak
-  echo "  ✓ robots.txt sitemap → $PROD_URL"
-fi
+# ── robots.txt ───────────────────────────────────────────────────────────────
+# We ship `src/app/robots.ts` (Next 16 file convention) — it reads the canonical
+# URL from `getPublicMetadataEnv().NEXT_PUBLIC_APP_URL` at request time, so the
+# Sitemap URL stays correct without any post-clone patching. There is no static
+# `public/robots.txt` to rewrite — do not add one.
 
 # ── public/llms.txt ──────────────────────────────────────────────────────────
 if [[ -f public/llms.txt ]]; then
@@ -111,9 +113,11 @@ echo ""
 echo "✅ Project personalized: $DISPLAY_NAME"
 echo ""
 echo "Next steps:"
-echo "  1. cp .env.example .env.local && fill in Supabase keys"
+echo "  1. cp .env.example .env.local && fill in Supabase keys + NEXT_PUBLIC_APP_URL"
 echo "  2. pnpm install"
 echo "  3. pnpm dev"
 echo "  4. Update public/llms.txt with product description"
-echo "  5. Update public/robots.txt Sitemap URL if different"
+echo ""
+echo "  robots.txt is generated dynamically by src/app/robots.ts — it"
+echo "  picks up NEXT_PUBLIC_APP_URL automatically, no manual edits."
 echo ""

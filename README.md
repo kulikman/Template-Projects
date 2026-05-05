@@ -65,7 +65,7 @@ src/
 │   ├── error.tsx                 # Глобальный error boundary → logger
 │   ├── not-found.tsx             # 404
 │   ├── loading.tsx               # Loading skeleton
-│   ├── sitemap.ts                # Динамический sitemap (через getClientEnv)
+│   ├── sitemap.ts                # Динамический sitemap (через getPublicMetadataEnv)
 │   ├── layout.tsx                # Header + Providers + <main>
 │   └── globals.css               # Tailwind v4 theme tokens
 ├── components/
