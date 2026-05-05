@@ -71,6 +71,22 @@ jobs:
       - name: Dev deps (advisory)
         run: pnpm audit --audit-level=high || true
 
+  dead-code:
+    name: Dead Code (knip)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Advisory — surfaces dead code but doesn't block merges.
+    # Flip `|| true` to `` once the codebase is clean.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm knip || true
+
   config-integrity:
     name: Config Integrity
     runs-on: ubuntu-latest

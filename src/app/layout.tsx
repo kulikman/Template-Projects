@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 import { siteConfig } from "@/config/site";
-import { getPublicMetadataEnv } from "@/lib/env";
+import { getClientEnv } from "@/lib/env";
+import { flags } from "@/lib/flags";
 import { Header } from "@/components/layout/header";
 import { Providers } from "@/components/providers";
 
@@ -17,10 +20,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Read the canonical URL from validated env so prod prerender doesn't bake in
-// `localhost`. Falls back to the same default as `siteConfig.url`
-// (`http://localhost:3000`) when the env var is unset.
-const { NEXT_PUBLIC_APP_URL: appUrl } = getPublicMetadataEnv();
+// metadataBase must be the canonical production origin — otherwise OG image
+// URLs and absolute links resolve to localhost on Vercel. Read from validated
+// env (NEXT_PUBLIC_APP_URL); siteConfig.url is just a build-time fallback.
+const baseUrl = getClientEnv().NEXT_PUBLIC_APP_URL;
 
 export const metadata: Metadata = {
   title: {
@@ -28,11 +31,11 @@ export const metadata: Metadata = {
     template: `%s — ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  metadataBase: new URL(appUrl),
+  metadataBase: new URL(baseUrl),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: appUrl,
+    url: baseUrl,
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
@@ -65,6 +68,10 @@ export default function RootLayout({
           <Header />
           <main className="flex flex-1 flex-col">{children}</main>
         </Providers>
+        {/* Vercel Analytics + Speed Insights — enabled via FF_ANALYTICS env flag.
+            Both are no-ops when the flag is off, safe to ship unconditionally. */}
+        {flags.analytics && <Analytics />}
+        {flags.analytics && <SpeedInsights />}
       </body>
     </html>
   );

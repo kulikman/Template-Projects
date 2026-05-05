@@ -26,6 +26,12 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // For dynamic requests the full CSP + HSTS come from src/lib/security-headers.ts
+          // via proxy.ts. This covers static assets served directly by the Vercel CDN.
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()",
+          },
         ],
       },
     ];
