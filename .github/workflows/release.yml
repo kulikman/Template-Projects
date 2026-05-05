@@ -19,6 +19,12 @@ jobs:
         with:
           # Reads version from package.json and Conventional Commits history.
           release-type: node
+          # Option A (default): enable "Allow GitHub Actions to create and
+          # approve pull requests" in Settings → Actions → General.
+          #
+          # Option B: create a PAT with `repo` scope, store as secret
+          # RELEASE_PLEASE_TOKEN, and uncomment the next line:
+          # token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
 
       # After a release PR is merged and a GitHub Release is created,
       # optionally trigger a production deploy here.
