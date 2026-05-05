@@ -14,14 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     # Only run when CI passes — don't create a release PR from a broken build.
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         id: release
         with:
-          # Reads version from package.json and Conventional Commits history.
-          release-type: node
-          # Anchor commit: limits GraphQL history scan to commits after this SHA.
-          # Update this when cutting a new baseline release.
-          last-release-sha: bbb90cf68a548ccba283a9163f760c12e683c62e
+          # Manifest mode: release-please reads config + version state from
+          # files instead of scanning full git history (avoids GraphQL timeout).
+          config-file: .release-please-config.json
+          manifest-file: .release-please-manifest.json
           # Option A (default): enable "Allow GitHub Actions to create and
           # approve pull requests" in Settings → Actions → General.
           #
