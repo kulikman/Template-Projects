@@ -2,11 +2,10 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 
 import { createClient } from "@/lib/supabase/server";
 import { ROUTES } from "@/lib/constants";
-import { emailSchema } from "@/lib/validations";
+import { loginSchema } from "@/lib/validations";
 import { logger } from "@/lib/logger";
 import { limit } from "@/lib/rate-limit";
 import { writeAuditLog } from "@/lib/audit";
@@ -19,10 +18,6 @@ import { writeAuditLog } from "@/lib/audit";
  *   - Return `{ error }` for the form to render via `useActionState`.
  *   - Redirect on success (does not return — throws `NEXT_REDIRECT`).
  */
-const loginSchema = z.object({
-  email: emailSchema,
-  password: z.string().min(8, "Password must be at least 8 characters"),
-});
 
 export interface LoginState {
   error?: string;

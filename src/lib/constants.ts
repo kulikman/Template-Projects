@@ -4,6 +4,8 @@ import { siteConfig } from "@/config/site";
  * Static display-name fallback for places that can't await `getClientEnv()`
  * (inline copy in default metadata, error pages, etc.). For runtime-tunable
  * values read `getClientEnv().NEXT_PUBLIC_APP_NAME` instead.
+ *
+ * @public
  */
 export const APP_NAME: string = siteConfig.name;
 
@@ -29,9 +31,7 @@ export const ROUTES = {
   dashboard: "/dashboard",
   settings: "/settings",
   settingsBilling: "/settings/billing",
-  orgs: "/orgs",
-  admin: "/admin",
-  adminUsers: "/admin/users",
 } as const;
 
+/** @public */
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES];

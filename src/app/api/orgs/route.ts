@@ -17,9 +17,10 @@ const createOrgSchema = z.object({
 
 /** GET /api/orgs — list the current user's organizations. */
 export async function GET(): Promise<NextResponse> {
-  const user = await requireUser();
+  // requireUser() is the auth gate (redirects on no session); getUserOrgs
+  // resolves the user internally via auth.uid().
+  await requireUser();
   const orgs = await getUserOrgs();
-  void user;
   return NextResponse.json({ orgs });
 }
 

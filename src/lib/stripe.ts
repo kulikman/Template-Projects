@@ -19,10 +19,10 @@ export function getStripe(): Stripe {
     throw new Error("STRIPE_SECRET_KEY is not configured. Add it to .env.local and Vercel.");
   }
 
-  _stripe = new Stripe(STRIPE_SECRET_KEY, {
-    apiVersion: "2026-04-22.dahlia",
-    typescript: true,
-  });
+  // Don't pin apiVersion — the SDK ships with its bundled default that matches
+  // the current TypeScript types. Pinning manually means SDK upgrades silently
+  // lock to that string and require a code change to advance.
+  _stripe = new Stripe(STRIPE_SECRET_KEY, { typescript: true });
 
   return _stripe;
 }
