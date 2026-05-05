@@ -49,6 +49,15 @@ const serverSchema = z.object({
   SENTRY_AUTH_TOKEN: z.string().optional(),
   SENTRY_ORG: z.string().optional(),
   SENTRY_PROJECT: z.string().optional(),
+
+  // Product analytics — PostHog (optional)
+  NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
+  NEXT_PUBLIC_POSTHOG_HOST: z.string().url().optional(),
+
+  // Feature flags (optional)
+  NEXT_PUBLIC_FF_ONBOARDING: z.string().optional(),
+  NEXT_PUBLIC_FF_NOTIFICATIONS: z.string().optional(),
+  NEXT_PUBLIC_FF_API_KEYS: z.string().optional(),
 });
 
 /**
@@ -66,6 +75,8 @@ const clientSchema = z.object({
   NEXT_PUBLIC_GTM_ID: z.string().optional(),
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
   NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
+  NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
+  NEXT_PUBLIC_POSTHOG_HOST: z.string().url().optional(),
 });
 
 /** Public site URL/name only — for `robots.ts`, `sitemap.ts`, and other metadata that must build without Supabase keys. */

@@ -25,6 +25,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "supabase:types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > src/types/database.ts",
+    "seed": "tsx scripts/seed.ts",
     "git:qp": "git add . && git commit -m \"chore: quick push\" && git push",
     "prepare": "husky || true"
   },
