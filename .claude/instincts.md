@@ -215,18 +215,24 @@ Form state                       → react-hook-form + Zod
 
 This template is product-agnostic. When you choose a domain, common patterns include:
 
-### Telecom / eSIM
-- User balance is financial data → treat with extra validation
-- Country/operator codes → use ISO standards, store as `VARCHAR(3)`
-- eSIM profiles → immutable once activated, use soft-delete pattern
-- API integrations with operators → always Edge Functions, never client-side
-
-### B2B platform features
+### B2B SaaS
 - Multi-tenant data → always include `organization_id` in RLS
-- Role-based access → store roles in `user_roles` table, check in RLS
+- Role-based access → store roles in `org_members` table, check in RLS
 - Partner portal → separate route group `(partner)/` with own layout
+- Usage limits → check `plan_limits` before creating resources
 
-### Fintech
+### Fintech / Billing
 - Financial amounts → store in smallest unit (cents), display formatted
 - Audit trail → add `created_at`, `updated_at`, `created_by` to all tables
 - Transactions → immutable records, never UPDATE, only INSERT
+- Subscription state → always read from `subscriptions` table, not Stripe directly
+
+### Marketplace / E-commerce
+- Orders → immutable after confirmed; use status machine (pending → paid → shipped)
+- Inventory → optimistic lock with `version` column to prevent oversell
+- Search → full-text search via `tsvector` column or external (Algolia, Typesense)
+
+### Developer Tools / API Products
+- API keys → store only SHA-256 hash, show plain key once on creation
+- Rate limits → Upstash Redis sliding window per `(user_id, endpoint)`
+- Usage metering → dedicated `api_calls` log table; aggregate with cron
