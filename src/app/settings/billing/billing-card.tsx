@@ -13,9 +13,11 @@ interface Subscription {
 
 interface BillingCardProps {
   subscription: Subscription | null;
+  /** Stripe price ID for the Pro plan (from STRIPE_PRICE_ID_PRO env var). */
+  priceId?: string;
 }
 
-export function BillingCard({ subscription }: BillingCardProps): React.ReactElement {
+export function BillingCard({ subscription, priceId }: BillingCardProps): React.ReactElement {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -92,10 +94,15 @@ export function BillingCard({ subscription }: BillingCardProps): React.ReactElem
 
       {error && <p className="text-destructive text-sm">{error}</p>}
 
-      {/* Replace PRICE_ID with your Stripe price ID */}
-      <Button onClick={() => openCheckout("PRICE_ID")} disabled={loading}>
-        {loading ? "Loading…" : "Upgrade to Pro"}
-      </Button>
+      {priceId ? (
+        <Button onClick={() => openCheckout(priceId)} disabled={loading}>
+          {loading ? "Loading…" : "Upgrade to Pro"}
+        </Button>
+      ) : (
+        <Button asChild variant="outline">
+          <a href="/pricing">View plans →</a>
+        </Button>
+      )}
     </div>
   );
 }

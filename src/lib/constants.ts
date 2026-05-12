@@ -30,8 +30,12 @@ export const ROUTES = {
   forgotPassword: "/forgot-password",
   resetPassword: "/reset-password",
   dashboard: "/dashboard",
+  onboarding: "/onboarding",
   settings: "/settings",
   settingsBilling: "/settings/billing",
+  settingsUsage: "/settings/usage",
+  settingsApiKeys: "/settings/api-keys",
+  settingsOrg: "/settings/org",
 } as const;
 
 /** @public */
