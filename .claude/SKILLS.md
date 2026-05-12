@@ -1,7 +1,6 @@
 # Skills — Команды вызова
 
 Справочник всех скиллов: что делает, когда использовать, примеры вызовов.
-Вставь в `.claude/SKILLS.md` или держи рядом с CLAUDE.md.
 
 ---
 
@@ -33,11 +32,11 @@
 
 /db добавь soft delete ко всем таблицам через deleted_at + trigger
 
-/db напиши миграцию: добавить поле usd_amount в finance_records, nullable
-
 /db создай систему ролей: owner / admin / member с RLS на уровне organization_id
 
 /db настрой realtime subscription для таблицы notifications
+
+/db создай таблицу audit_logs: трекинг всех действий пользователей с user_id, action, metadata
 ```
 
 ---
@@ -53,17 +52,17 @@
 **Примеры вызовов:**
 
 ```
-/ui hero section для eSIM travel product: глобус, анимация подключения, CTA "Get SIM"
+/ui hero section для SaaS продукта: заголовок, подзаголовок, CTA кнопка, dashboard preview
 
-/ui dashboard карточки KPI для телеком CRM: выручка, активные SIM, новые клиенты
+/ui dashboard карточки KPI: выручка, активные пользователи, конверсия, churn rate
 
-/ui pricing таблица для MVNO платформы: 3 тарифа, toggle monthly/annual, CTA
+/ui pricing таблица: 3 тарифа, toggle monthly/annual, highlighted plan, CTA
 
 /ui sidebar навигация с аккордеоном: иконки, active state, collapsed mode
 
 /ui onboarding wizard: 4 шага с прогресс-баром и анимацией между шагами
 
-/ui data table с сортировкой, фильтрами, пагинацией для списка инвойсов
+/ui data table с сортировкой, фильтрами, пагинацией — generic list view
 
 /ui modal создания новой организации с валидацией Zod + react-hook-form
 ```
@@ -81,17 +80,17 @@
 **Примеры вызовов:**
 
 ```
-/seo neosim.app — глобальный eSIM кошелёк, целевая аудитория: путешественники, ключи: esim global travel sim card
+/seo [ваш домен] — [описание продукта], целевая аудитория: [кто], ключи: [keywords]
 
-/seo 2skymobile.com — B2B MVNO/MVNE платформа, ключи: wholesale connectivity mvno launch platform
+/seo сгенерируй только llms.txt и llms-full.txt для [домен]
 
-/seo os.elaurion.com — Founder OS для предпринимателей, ключи: founder operating system startup management
+/seo добавь FAQSchema на страницу /pricing
 
-/seo сгенерируй только llms.txt и llms-full.txt для crm.2skymobile.com
+/seo проверь и обнови sitemap — добавились новые роуты /blog и /docs
 
-/seo добавь FAQSchema на страницу /pricing для NeoSIM
+/seo добавь OG-изображения для всех публичных страниц
 
-/seo проверь и обнови sitemap — добавились новые роуты /blog и /partners
+/seo настрой canonical URL и hreflang для мультиязычного сайта
 ```
 
 ---
@@ -100,18 +99,18 @@
 
 **Скилл:** `security-hardening`
 **Роль:** Старший security engineer. Закрывает дыры в auth, API, инфраструктуре.
-**Выдаёт:** Nginx rules, middleware код, CSP headers, rate limiting, fail2ban configs.
+**Выдаёт:** Middleware код, CSP headers, rate limiting, конфиги защиты.
 
 **Ключевые слова-триггеры:** безопасность, DDoS, brute force, уязвимость, CORS, CSP, rate limiting, JWT, MFA, webhook, secrets
 
 **Примеры вызовов:**
 
 ```
-/security настрой rate limiting на auth endpoints в Next.js middleware (Supabase auth)
+/security настрой rate limiting на auth endpoints в Next.js proxy.ts (Supabase auth)
 
-/security добавь CSP headers и security headers в next.config.ts
+/security добавь CSP headers и security headers в proxy.ts
 
-/security защита webhook от Stripe: верификация подписи в Edge Function
+/security защита webhook от Stripe: верификация подписи
 
 /security аудит: какие данные могут утечь через client components в нашем стеке?
 
@@ -145,8 +144,6 @@
 
 /ci создай workflow release: bump version, changelog, GitHub Release при тэге v*
 
-/ci настрой dependabot для автоматических security updates npm пакетов
-
 /ci добавь проверку secrets leaks (gitleaks) в pre-commit hook
 ```
 
@@ -154,7 +151,7 @@
 
 ## `/review` — Code Reviewer
 
-**Скилл:** `code-reviewer` (загружен из uploaded `SKILL.md`)
+**Скилл:** `code-reviewer`
 **Роль:** Старший инженер. Ищет реальные проблемы — баги, уязвимости, N+1, missing RLS.
 **Выдаёт:** Структурированный отчёт: Critical / Warning / Suggestion.
 
@@ -167,11 +164,11 @@
 
 /review этот компонент — проверь на N+1, missing await, типы
 
-/review вся папка src/features/finance/ — security audit
+/review вся папка src/features/billing/ — security audit
 
-/review миграция 20240418_add_payments.sql — RLS и индексы
+/review миграция 0008_add_projects.sql — RLS и индексы
 
-/review Edge Function send-invoice-email — CORS, auth, error handling
+/review webhook handler — CORS, auth, error handling, idempotency
 
 # Прямо в тексте:
 "Проверь этот код на безопасность: [вставить код]"
@@ -179,14 +176,13 @@
 ```
 
 **Что проверяет автоматически:**
-- N+1 запросы (AP-01)
-- service_role в клиенте (AP-02)
-- trust client user_id (AP-03)
-- missing await (AP-04)
-- missing RLS (AP-05)
-- getSession() на сервере (AP-06)
-- secrets в client components (AP-07)
-- 2SkyMobile CRM специфика: status='reconciled', usd_amount fallback, category.title
+- N+1 запросы
+- service_role в клиенте
+- trust client user_id (использование user_id из тела запроса вместо auth.uid())
+- missing await
+- missing RLS
+- getSession() на сервере вместо getUser()
+- secrets в client components
 
 ---
 
@@ -201,39 +197,39 @@
 **Примеры вызовов:**
 
 ```
-/content статья "Как запустить MVNO в 2025 году" — для блога 2skymobile.com, ключ: mvno launch guide
+/content статья "[тема]" — для блога [ваш домен], ключ: [keyword]
 
-/content гайд "eSIM vs Physical SIM: что выбрать путешественнику" — neosim.app, en
+/content гайд "Как начать работу с [ваш продукт]" — onboarding документация
 
-/content 5 статей для контент-плана: wholesale telecom, eSIM business, MVNE platform
+/content 5 статей для контент-плана по теме: [ваша ниша]
 
-/content landing page copy для NeoSIM: hero, features, pricing, FAQ, CTA
+/content landing page copy: hero, features, pricing, FAQ, CTA
 ```
 
 ---
 
-## `/copy` — Telecom Copywriter
+## `/copy` — Copywriter
 
 **Скилл:** `telecom-copywriter`
-**Роль:** B2B телеком копирайтер. Говорит языком eSIM, MVNO, wholesale connectivity.
+**Роль:** B2B SaaS копирайтер. Пишет маркетинговые тексты, pitch decks, email-последовательности.
 **Выдаёт:** Маркетинговые тексты, pitch decks, email sequences, продуктовые описания.
 
-**Ключевые слова-триггеры:** маркетинг, копирайт, pitch, email кампания, продуктовый текст, eSIM, MVNO, wholesale
+**Ключевые слова-триггеры:** маркетинг, копирайт, pitch, email кампания, продуктовый текст, landing page
 
 **Примеры вызовов:**
 
 ```
-/copy pitch deck для 2SkyMobile: MVNE-as-a-Service, целевая аудитория — MNO и enterprise
+/copy pitch deck для [продукт]: [описание], целевая аудитория — [кто]
 
-/copy email sequence (5 писем) для onboarding новых партнёров 2SkyMobile
+/copy email sequence (5 писем) для onboarding новых пользователей
 
-/copy one-pager для NeoSIM: B2C eSIM wallet для путешественников
+/copy one-pager для [продукт]: [описание] для [целевой аудитории]
 
-/copy LinkedIn пост анонс запуска NeoSIM
+/copy LinkedIn пост анонс запуска [продукт]
 
-/copy case study: как клиент X запустил MVNO за 30 дней на 2SkyMobile
+/copy case study: как клиент X достиг [результат] с помощью [продукт]
 
-/copy white paper "State of eSIM 2025" — 8 страниц для lead generation
+/copy white paper "[тема]" — [N] страниц для lead generation
 ```
 
 ---
@@ -249,17 +245,17 @@
 **Примеры вызовов:**
 
 ```
-/ga4 настрой GA4 + GTM для neosim.app: конверсии — покупка eSIM, регистрация
+/ga4 настрой GA4 + GTM для [домен]: конверсии — регистрация, апгрейд плана, активация
 
 /ga4 server-side conversion tracking через Vercel Edge (CAPI)
 
 /ga4 remarketing аудитории: посетители /pricing, не купившие за 7 дней
 
-/ga4 ecommerce tracking для eSIM покупки: add_to_cart, purchase, refund
+/ga4 ecommerce tracking для подписки: trial_start, subscription_created, churn
 
-/ga4 настрой attribution модель для paid social → eSIM purchase
+/ga4 настрой attribution модель для paid social → регистрация → конверсия
 
-/ga4 GTM container для 2skymobile.com: lead form submission, demo request
+/ga4 GTM container: lead form submission, demo request, contact
 ```
 
 ---
@@ -289,6 +285,6 @@ SEO статья / блог                   /content [тема + ключ]
 - Общий вопрос по коду → просто спроси
 - Дебаг конкретного бага → объясни симптом
 - Рефакторинг одного файла → `/review` + правки
-- Архитектурное решение → `/db` или `/api` с вопросом
+- Архитектурное решение → `/db` или описание задачи
 
 Скилл нужен когда нужен **артефакт** (код, файл, конфиг), а не объяснение.
