@@ -4,6 +4,9 @@ import type Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getServerEnv } from "@/lib/env";
+import { getPlanLimits } from "@/lib/plan-limits";
+import { sendEmail } from "@/lib/email";
+import { subscriptionConfirmedEmail, paymentFailedEmail } from "@/lib/email/templates";
 import { logger } from "@/lib/logger";
 
 /**
@@ -13,9 +16,11 @@ import { logger } from "@/lib/logger";
  * its own signature, not cookies).
  *
  * Handled events:
- *   - checkout.session.completed      → provision subscription
+ *   - checkout.session.completed      → provision subscription + send confirmation email
+ *   - customer.subscription.created   → sync (idempotent with updated)
  *   - customer.subscription.updated   → sync status changes
  *   - customer.subscription.deleted   → mark canceled
+ *   - invoice.payment_failed          → send dunning email
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const env = getServerEnv();
@@ -63,6 +68,41 @@ async function handleEvent(event: Stripe.Event): Promise<void> {
       const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
       await upsertSubscription(subscription, supabase);
       logger.info("stripe: subscription created", { id: subscription.id });
+
+      // Send subscription confirmation email.
+      const userId = subscription.metadata["supabase_user_id"];
+      if (userId) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name")
+          .eq("id", userId)
+          .maybeSingle();
+        const { data: authUser } = await supabase.auth.admin.getUserById(userId);
+        const email = authUser.user?.email;
+        if (email) {
+          const item = subscription.items.data[0];
+          const periodEnd = item?.current_period_end;
+          const renewalDate = periodEnd
+            ? new Date(periodEnd * 1000).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })
+            : "—";
+          const planLimits = getPlanLimits(
+            typeof item?.price.product === "string" ? item.price.product : null
+          );
+          const env = getServerEnv();
+          const portalUrl = `${env.NEXT_PUBLIC_APP_URL}/settings/billing`;
+          const tpl = subscriptionConfirmedEmail({
+            name: profile?.full_name ?? email,
+            planName: planLimits.name,
+            renewalDate,
+            portalUrl,
+          });
+          await sendEmail({ to: email, ...tpl });
+        }
+      }
       break;
     }
 
@@ -85,6 +125,32 @@ async function handleEvent(event: Stripe.Event): Promise<void> {
       const subscription = event.data.object as Stripe.Subscription;
       await upsertSubscription(subscription, supabase);
       logger.info("stripe: subscription deleted", { id: subscription.id });
+      break;
+    }
+
+    case "invoice.payment_failed": {
+      const invoice = event.data.object as Stripe.Invoice;
+      const customerId =
+        typeof invoice.customer === "string" ? invoice.customer : invoice.customer?.id;
+      if (!customerId) break;
+
+      // Look up user by Stripe customer ID.
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("id, full_name")
+        .eq("stripe_customer_id", customerId)
+        .maybeSingle();
+      if (!profile) break;
+
+      const { data: authUser } = await supabase.auth.admin.getUserById(profile.id);
+      const email = authUser.user?.email;
+      if (email) {
+        const env = getServerEnv();
+        const portalUrl = `${env.NEXT_PUBLIC_APP_URL}/settings/billing`;
+        const tpl = paymentFailedEmail({ name: profile.full_name ?? email, portalUrl });
+        await sendEmail({ to: email, ...tpl });
+        logger.info("stripe: payment failed email sent", { customerId });
+      }
       break;
     }
 

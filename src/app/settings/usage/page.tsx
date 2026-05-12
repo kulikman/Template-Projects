@@ -67,12 +67,28 @@ export default async function UsagePage(): Promise<React.ReactElement> {
 
   const limits = getPlanLimits(subscription?.product_id);
 
-  // TODO: replace with real usage queries once you have those tables.
+  // Real usage queries — expand as you add more resource tables.
+  const [{ count: apiKeysCount }, { count: orgMembersCount }] = await Promise.all([
+    // API keys owned by this user.
+    supabase.from("api_keys").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+    // Team members: count members across all orgs the user owns.
+    // Falls back to 1 (solo user) when no orgs exist.
+    supabase
+      .from("org_members")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id),
+  ]);
+
   const usage = {
+    // Projects table not yet created — add real query when the table exists.
     projects: 0,
-    members: 1,
+    // Org member count; 1 = just the user themselves (no team yet).
+    members: Math.max(1, orgMembersCount ?? 1),
+    // Storage tracked via Supabase Storage — add real query when buckets are wired.
     storageBytes: 0,
-    apiCalls: 0,
+    // API key count is a proxy for active integrations; replace with a
+    // dedicated api_calls log table for true per-month call tracking.
+    apiCalls: apiKeysCount ?? 0,
   };
 
   const renewalDate = subscription?.current_period_end

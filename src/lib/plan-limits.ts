@@ -1,5 +1,7 @@
 import "server-only";
 
+import { getServerEnv } from "@/lib/env";
+
 /**
  * Plan limits — single source of truth.
  *
@@ -62,21 +64,28 @@ const TEAM: PlanLimits = {
 };
 
 /**
- * Map Stripe product IDs → plan limits.
- * Replace keys with your real product IDs from the Stripe dashboard.
+ * Build the product → plan map from environment variables at call time.
+ * This allows changing plan assignments without a code deploy — just update
+ * STRIPE_PRODUCT_ID_PRO / STRIPE_PRODUCT_ID_TEAM in Vercel env vars.
  */
-const PRODUCT_PLAN_MAP: Record<string, PlanLimits> = {
-  // prod_ProPlanId:  PRO,
-  // prod_TeamPlanId: TEAM,
-};
+function buildProductMap(): Record<string, PlanLimits> {
+  const env = getServerEnv();
+  const map: Record<string, PlanLimits> = {};
+  if (env.STRIPE_PRODUCT_ID_PRO) map[env.STRIPE_PRODUCT_ID_PRO] = PRO;
+  if (env.STRIPE_PRODUCT_ID_TEAM) map[env.STRIPE_PRODUCT_ID_TEAM] = TEAM;
+  return map;
+}
 
 /**
  * Returns limits for the given Stripe productId.
  * Falls back to FREE if productId is undefined or unknown.
+ *
+ * Product IDs are read from STRIPE_PRODUCT_ID_PRO / STRIPE_PRODUCT_ID_TEAM
+ * env vars — no code change needed when you create Stripe products.
  */
 export function getPlanLimits(productId: string | null | undefined): PlanLimits {
   if (!productId) return FREE;
-  return PRODUCT_PLAN_MAP[productId] ?? FREE;
+  return buildProductMap()[productId] ?? FREE;
 }
 
 /** All named plan tiers — for rendering upgrade modals / pricing tables. */

@@ -1,19 +1,23 @@
 import { requireUser } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getServerEnv } from "@/lib/env";
 import { BillingCard } from "./billing-card";
 
 export default async function BillingPage(): Promise<React.ReactElement> {
   const user = await requireUser();
   const supabase = createAdminClient();
 
-  const { data: subscription } = await supabase
-    .from("subscriptions")
-    .select("id, status, current_period_end, cancel_at_period_end")
-    .eq("user_id", user.id)
-    .in("status", ["active", "trialing"])
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  const [{ data: subscription }, env] = await Promise.all([
+    supabase
+      .from("subscriptions")
+      .select("id, status, current_period_end, cancel_at_period_end")
+      .eq("user_id", user.id)
+      .in("status", ["active", "trialing"])
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    Promise.resolve(getServerEnv()),
+  ]);
 
   return (
     <section className="flex flex-col gap-6">
@@ -24,7 +28,7 @@ export default async function BillingPage(): Promise<React.ReactElement> {
         </p>
       </div>
 
-      <BillingCard subscription={subscription} />
+      <BillingCard subscription={subscription} priceId={env.STRIPE_PRICE_ID_PRO} />
     </section>
   );
 }

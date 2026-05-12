@@ -28,6 +28,12 @@ const serverSchema = z.object({
   STRIPE_SECRET_KEY: z.string().optional(),
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
+  // Stripe product IDs — map to plan tiers in plan-limits.ts
+  STRIPE_PRODUCT_ID_PRO: z.string().optional(),
+  STRIPE_PRODUCT_ID_TEAM: z.string().optional(),
+  // Price IDs — used by BillingCard checkout buttons
+  STRIPE_PRICE_ID_PRO: z.string().optional(),
+  STRIPE_PRICE_ID_TEAM: z.string().optional(),
 
   // AI (optional)
   ANTHROPIC_API_KEY: z.string().optional(),
