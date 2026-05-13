@@ -386,6 +386,130 @@ One logical change per commit. Never commit broken code.
 
 ---
 
+# Commit & Push Protocol
+
+When the user says "commit", "запушь", "залей", or similar, perform the
+following sequence WITHOUT asking for clarification. Stop only if a step
+fails with a real error.
+
+## Step 1 — Pre-commit verification
+
+Detect which checks apply to this repo, then run all that exist:
+
+| Tool | Command | Skip if |
+|---|---|---|
+| Python tests | `cd engine && uv run pytest tests/ -q 2>&1 \| tail -5` | No `engine/` or `pyproject.toml` |
+| Python lint | `cd engine && uv run ruff check src/ tests/ 2>&1 \| tail -3` | Same |
+| Python types | `cd engine && uv run pyright src/ 2>&1 \| tail -3` | Same |
+| TS types | `pnpm tsc --noEmit 2>&1 \| tail -5` | No `package.json` |
+| ESLint | `pnpm lint 2>&1 \| tail -3` | Same |
+| Vitest | `pnpm test 2>&1 \| tail -5` | Same |
+
+Run them in this order. If any fail, STOP and fix the failure before
+continuing. Do not commit broken code.
+
+## Step 2 — Stage files
+
+Explicitly add only the files you changed:
+
+```bash
+git add path/to/file1 path/to/file2 ...
+```
+
+Never use `git add .` or `git add -A` — they pull in secrets and junk.
+If many files changed in one logical unit, list them all by name.
+
+## Step 3 — Compose the commit message
+
+Use Conventional Commits with **lowercase subject** (many commitlint
+configs require this). Body MUST have 4 sections:
+
+```
+<type>(<scope>): <lowercase subject under 70 chars>
+
+context — why this change exists / what bug / what data triggered it:
+- 1-3 bullet points explaining motivation
+
+<area> — what changed:
+- file-level summary of each meaningful edit
+- include constants / thresholds / new functions / new endpoints
+
+tests:
+- N new tests covering ...
+- M tests total passing
+
+results (if applicable):
+- numbers before vs after
+- benchmark output, regression test pass, real-data backtest, etc.
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+```
+
+Types: `feat`, `fix`, `refactor`, `chore`, `ci`, `docs`, `test`, `perf`.
+Scopes are repo-specific — read recent `git log --oneline -20` to see
+what scopes have been used before, mimic those.
+
+## Step 4 — Commit via heredoc
+
+ALWAYS use heredoc, not `-m`. The `&` and apostrophes in commit bodies
+break with `-m "..."` quoting.
+
+```bash
+git commit -F - <<'COMMIT'
+<type>(<scope>): subject
+
+context — ...
+- bullet
+
+<area> — what changed:
+- bullet
+
+tests:
+- bullet
+
+results:
+- bullet
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+COMMIT
+```
+
+The `'COMMIT'` quotes are critical — they prevent shell variable
+expansion of `$`, backticks, etc. inside the body.
+
+## Step 5 — Handle commitlint warnings
+
+If commit succeeds but warns about `scope-enum`, ignore — the commit
+still landed. If it FAILS with `subject-case` (uppercase subject),
+re-compose with all-lowercase subject and re-commit.
+
+If a pre-commit / lint-staged hook auto-formats files and the message
+shows "modified by linter", the commit still landed correctly — the
+warning is informational.
+
+## Step 6 — Push
+
+```bash
+git push origin main 2>&1 | tail -3
+```
+
+(Or whatever the current branch is — check `git branch --show-current`
+first if unsure.)
+
+Report the commit SHA back to the user as a GitHub link if possible.
+
+## What NOT to do
+
+- Don't ask for permission between steps — run them all
+- Don't use `--no-verify` to skip hooks
+- Don't use `git push --force` to main
+- Don't commit `.env*` files
+- Don't use `git add .` / `git add -A`
+- Don't write the subject line in uppercase
+- Don't skip the verification step "to save time"
+
+---
+
 ## Testing
 
 - Write tests for: utility functions, API routes, complex business logic, Zod schemas.
