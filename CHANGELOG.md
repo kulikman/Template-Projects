@@ -1,3 +1,17 @@
+## [0.3.0](https://github.com/kulikman/Template-Projects/compare/v0.2.0...v0.3.0) (2026-05-16)
+
+### ✨ Features
+
+* wire all stub features — auth onboarding, stripe plans, email, usage, cron, org ui ([14e1ddf](https://github.com/kulikman/Template-Projects/commit/14e1ddffb0bc88da2b7a23ed40de26b52bb91441))
+
+### 🐛 Bug Fixes
+
+* **ci:** use github-hosted runners and fix settings link types ([c0403db](https://github.com/kulikman/Template-Projects/commit/c0403dbe434edb24a28ac7cdf1b3f40248fdb984))
+
+### 📝 Docs
+
+* **docs:** add commit & push protocol to claude.md ([1eb7c0f](https://github.com/kulikman/Template-Projects/commit/1eb7c0fb2104e808013e87390f55308952cf787a))
+
 ## [0.2.0](https://github.com/kulikman/Template-Projects/compare/v0.1.0...v0.2.0) (2026-05-05)
 
 ### ✨ Features
