@@ -13,7 +13,7 @@ concurrency:
 jobs:
   quality:
     name: Lint · Typecheck · Format
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
@@ -30,7 +30,7 @@ jobs:
 
   test:
     name: Unit Tests
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
@@ -44,7 +44,8 @@ jobs:
 
   secrets-scan:
     name: Secrets (gitleaks)
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
         with:
@@ -55,7 +56,8 @@ jobs:
 
   dependency-audit:
     name: Dependency Audit
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -73,7 +75,7 @@ jobs:
 
   dead-code:
     name: Dead Code (knip)
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
@@ -87,7 +89,8 @@ jobs:
 
   config-integrity:
     name: Config Integrity
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6
       - name: Validate audit/rules.json is valid JSON
@@ -98,8 +101,9 @@ jobs:
 
   build:
     name: Build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [quality, test]
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
