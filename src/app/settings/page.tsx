@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-import { ROUTES } from "@/lib/constants";
+import { ROUTES, type AppRoute } from "@/lib/constants";
 
 interface NavItem {
-  href: string;
+  href: AppRoute;
   label: string;
   description: string;
 }
