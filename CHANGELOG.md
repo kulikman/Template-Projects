@@ -1,3 +1,9 @@
+## [0.3.1](https://github.com/kulikman/Template-Projects/compare/v0.3.0...v0.3.1) (2026-05-16)
+
+### 🐛 Bug Fixes
+
+* **deps:** bump next to 16.2.6 and override fast-uri for audit gate ([0e439e3](https://github.com/kulikman/Template-Projects/commit/0e439e301a7dd331eba50961005a8e15ef2c7fac))
+
 ## [0.3.0](https://github.com/kulikman/Template-Projects/compare/v0.2.0...v0.3.0) (2026-05-16)
 
 ### ✨ Features
