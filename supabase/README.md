@@ -29,6 +29,21 @@ supabase start
 supabase db reset    # wipes + re-applies all migrations from scratch
 ```
 
+### Template QA
+
+This repository is a starter template. Do not link it to, or push migrations
+into, a shared remote Supabase project just to validate template changes.
+
+Validate migrations against a local Supabase stack:
+
+```bash
+supabase start
+supabase db reset
+```
+
+Only apply migrations to a remote project after a real project has been created
+from the template and the target project ref is known.
+
 ### Creating a new migration
 
 ```bash
