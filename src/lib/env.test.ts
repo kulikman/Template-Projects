@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-import { getServerEnv, getClientEnv, getPublicMetadataEnv } from "./env";
+import { getServerEnv, getClientEnv, getPublicMetadataEnv, getPublicAnalyticsEnv } from "./env";
 
 const VALID_ENV = {
   NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co",
@@ -86,5 +86,32 @@ describe("getPublicMetadataEnv()", () => {
   it("throws when NEXT_PUBLIC_APP_URL is malformed", () => {
     vi.stubEnv("NEXT_PUBLIC_APP_URL", "not-a-url");
     expect(() => getPublicMetadataEnv()).toThrow("Invalid public metadata environment");
+  });
+});
+
+describe("getPublicAnalyticsEnv()", () => {
+  beforeEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it("does not require Supabase vars", () => {
+    const env = getPublicAnalyticsEnv();
+    expect(env.NEXT_PUBLIC_POSTHOG_KEY).toBeUndefined();
+    expect(env.NEXT_PUBLIC_POSTHOG_HOST).toBeUndefined();
+  });
+
+  it("reads optional PostHog vars", () => {
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "ph_test");
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "https://us.i.posthog.com");
+
+    const env = getPublicAnalyticsEnv();
+
+    expect(env.NEXT_PUBLIC_POSTHOG_KEY).toBe("ph_test");
+    expect(env.NEXT_PUBLIC_POSTHOG_HOST).toBe("https://us.i.posthog.com");
+  });
+
+  it("throws when NEXT_PUBLIC_POSTHOG_HOST is malformed", () => {
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "not-a-url");
+    expect(() => getPublicAnalyticsEnv()).toThrow("Invalid public analytics environment");
   });
 });

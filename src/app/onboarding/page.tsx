@@ -10,6 +10,8 @@ import { createClient } from "@/lib/supabase/server";
  *   - Unauthenticated → redirect to /login
  *   - Already completed → redirect to /dashboard
  */
+export const dynamic = "force-dynamic";
+
 export default async function OnboardingPage(): Promise<React.ReactElement> {
   const supabase = await createClient();
 

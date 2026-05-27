@@ -91,9 +91,15 @@ const publicMetadataSchema = z.object({
   NEXT_PUBLIC_APP_NAME: z.string().default("Template-Projects"),
 });
 
+const publicAnalyticsSchema = z.object({
+  NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
+  NEXT_PUBLIC_POSTHOG_HOST: z.string().url().optional(),
+});
+
 export type ServerEnv = z.infer<typeof serverSchema>;
 export type ClientEnv = z.infer<typeof clientSchema>;
 export type PublicMetadataEnv = z.infer<typeof publicMetadataSchema>;
+export type PublicAnalyticsEnv = z.infer<typeof publicAnalyticsSchema>;
 
 /**
  * Validate and return typed server env.
@@ -141,6 +147,31 @@ export function getPublicMetadataEnv(): PublicMetadataEnv {
 
     throw new Error(
       `❌ Invalid public metadata environment:\n${formatted}\n\nCheck NEXT_PUBLIC_APP_URL / NEXT_PUBLIC_APP_NAME against .env.example.`
+    );
+  }
+
+  return result.data;
+}
+
+/**
+ * Optional public analytics env for global client providers.
+ *
+ * Does not require Supabase keys, so static pages can prerender in template QA
+ * before a real project's backend env is connected.
+ */
+export function getPublicAnalyticsEnv(): PublicAnalyticsEnv {
+  const result = publicAnalyticsSchema.safeParse({
+    NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+    NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+  });
+
+  if (!result.success) {
+    const formatted = result.error.issues
+      .map((issue) => `  ${issue.path.join(".")}: ${issue.message}`)
+      .join("\n");
+
+    throw new Error(
+      `❌ Invalid public analytics environment:\n${formatted}\n\nCheck NEXT_PUBLIC_POSTHOG_HOST against .env.example.`
     );
   }
 
