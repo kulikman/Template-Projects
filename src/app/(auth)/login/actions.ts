@@ -1,6 +1,5 @@
 "use server";
 
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
@@ -9,6 +8,7 @@ import { loginSchema } from "@/lib/validations";
 import { logger } from "@/lib/logger";
 import { limit } from "@/lib/rate-limit";
 import { writeAuditLog } from "@/lib/audit";
+import { getRequestIp } from "@/lib/request-ip";
 
 /**
  * Canonical Server Action pattern for the template:
@@ -37,11 +37,7 @@ export async function signInWithPassword(
   }
 
   // Rate-limit by client IP (or by email if you want to slow targeted attacks).
-  const headersList = await headers();
-  const ip =
-    headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    headersList.get("x-real-ip") ??
-    "unknown";
+  const ip = await getRequestIp();
   const { success } = await limit(`login:${ip}`, { limit: 5, windowMs: 60_000 });
   if (!success) {
     logger.warn("login rate-limited", { ip });

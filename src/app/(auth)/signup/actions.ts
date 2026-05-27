@@ -1,6 +1,5 @@
 "use server";
 
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
@@ -12,6 +11,7 @@ import { sendEmail } from "@/lib/email";
 import { welcomeEmail } from "@/lib/email/templates";
 import { getServerEnv } from "@/lib/env";
 import { writeAuditLog } from "@/lib/audit";
+import { getRequestIp } from "@/lib/request-ip";
 
 export interface SignupState {
   error?: string;
@@ -29,11 +29,7 @@ export async function signUp(_prev: SignupState, formData: FormData): Promise<Si
     return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
   }
 
-  const headersList = await headers();
-  const ip =
-    headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    headersList.get("x-real-ip") ??
-    "unknown";
+  const ip = await getRequestIp();
 
   const { success } = await limit(`signup:${ip}`, { limit: 3, windowMs: 60_000 });
   if (!success) {
