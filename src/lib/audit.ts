@@ -2,6 +2,7 @@ import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { logger } from "@/lib/logger";
+import type { Json } from "@/types/database";
 
 export type AuditAction =
   | "auth.login"
@@ -22,7 +23,7 @@ interface AuditParams {
   /** e.g. "subscription:sub_xxx", "profile:uuid" */
   resource?: string;
   /** Extra structured data: IP, user-agent, diff, etc. */
-  metadata?: Record<string, unknown>;
+  metadata?: Json;
 }
 
 /**

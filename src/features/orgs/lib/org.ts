@@ -117,9 +117,14 @@ export async function createOrg(params: {
 
   // Manually insert owner membership (trigger runs as service role,
   // auth.uid() is null there — insert explicitly).
-  await supabase
+  const { error: membershipError } = await supabase
     .from("org_members")
     .insert({ org_id: data.id, user_id: params.userId, role: "owner" });
+
+  if (membershipError) {
+    await supabase.from("organizations").delete().eq("id", data.id);
+    throw membershipError;
+  }
 
   return data;
 }

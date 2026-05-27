@@ -4,13 +4,9 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { createOrgAction } from "./actions";
+import { createOrgAction } from "../api/actions";
 
-interface OrgCreateFormProps {
-  userId: string;
-}
-
-export function OrgCreateForm({ userId }: OrgCreateFormProps): React.ReactElement {
+export function OrgCreateForm(): React.ReactElement {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +30,7 @@ export function OrgCreateForm({ userId }: OrgCreateFormProps): React.ReactElemen
     setError(null);
 
     startTransition(async () => {
-      const result = await createOrgAction({ name, slug, userId });
+      const result = await createOrgAction({ name, slug });
       if (!result.ok) {
         setError(result.error);
         return;

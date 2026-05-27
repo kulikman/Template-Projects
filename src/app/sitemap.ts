@@ -29,13 +29,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // ── Dynamic routes (example) ─────────────────────────────────────────────
-  // Uncomment and adapt when you have dynamic content:
+  // Keep this file build-safe. If dynamic sitemap entries need database data,
+  // fetch them through a server-only feature helper instead of importing
+  // Supabase clients directly here.
   //
-  // const supabase = createAdminClient()
-  // const { data: posts } = await supabase
-  //   .from("posts")
-  //   .select("slug, updated_at")
-  //   .eq("status", "published")
+  // const posts = await getPublishedPostsForSitemap()
   //
   // const postRoutes: MetadataRoute.Sitemap = (posts ?? []).map((post) => ({
   //   url: `${baseUrl}/blog/${post.slug}`,

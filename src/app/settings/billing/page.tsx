@@ -1,7 +1,7 @@
 import { requireUser } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getServerEnv } from "@/lib/env";
-import { BillingCard } from "./billing-card";
+import { BillingCard } from "@/features/billing";
 
 export default async function BillingPage(): Promise<React.ReactElement> {
   const user = await requireUser();
