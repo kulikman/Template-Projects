@@ -10,10 +10,10 @@ import { logger } from "@/lib/logger";
  * Excluded from `src/proxy.ts` matcher — we don't refresh Supabase
  * sessions for unauthenticated cron pings.
  *
- * Authorization: when `CRON_SECRET` is set in the project's env, Vercel
- * sends it as `Authorization: Bearer ${CRON_SECRET}` on every cron-triggered
- * request to a path declared in `vercel.ts` / `vercel.json`. Without that
- * env var, the route is left open — set it before going to production.
+ * Authorization: Vercel sends `Authorization: Bearer ${CRON_SECRET}` on
+ * every cron-triggered request to a path declared in `vercel.ts` /
+ * `vercel.json`. Set CRON_SECRET before enabling this route; without it,
+ * the route returns 401.
  *
  * @see https://vercel.com/docs/cron-jobs/manage-cron-jobs
  *
