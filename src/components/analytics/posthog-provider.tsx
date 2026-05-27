@@ -5,7 +5,7 @@ import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
-import { getClientEnv } from "@/lib/env";
+import { getPublicAnalyticsEnv } from "@/lib/env";
 
 /**
  * Tracks SPA page views on every route change.
@@ -45,7 +45,7 @@ function PageviewTracker(): null {
  *   ph.reset()
  */
 export function PostHogProvider({ children }: { children: React.ReactNode }): React.ReactElement {
-  const env = getClientEnv();
+  const env = getPublicAnalyticsEnv();
   const key = env.NEXT_PUBLIC_POSTHOG_KEY;
   const host = env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://app.posthog.com";
 
