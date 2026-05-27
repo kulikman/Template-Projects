@@ -1,44 +1,24 @@
 # E2E tests
 
-This folder is reserved for Playwright end-to-end tests. The runner is
-**not** installed by default — Playwright pulls ~300 MB of browser
-binaries, which is overkill for a starter.
-
-## Bootstrap when you need them
+Playwright is already wired into this template. The default e2e run starts the
+app with placeholder Supabase env values so UI smoke tests can run without a
+real backend.
 
 ```bash
-pnpm add -D @playwright/test
-pnpm exec playwright install --with-deps
+pnpm exec playwright install
+pnpm test:e2e
 ```
 
-Add to `package.json`:
+Backend-dependent scenarios are skipped unless a real test backend is provided.
+Use one of these when validating a concrete project created from the template:
 
-```json
-{
-  "scripts": {
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
-  }
-}
+```bash
+TEST_BASE_URL=http://localhost:3000 pnpm test:e2e
+E2E_USE_REAL_SUPABASE=1 pnpm test:e2e
 ```
 
-Add to `.github/workflows/ci.yml` (after the `test` job):
-
-```yaml
-  e2e:
-    name: E2E (Playwright)
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with: { version: 10 }
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: pnpm }
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm test:e2e
-```
+Keep the real Supabase test project isolated from production. Do not point e2e
+tests at a shared template database.
 
 ## What to cover first
 

@@ -27,13 +27,23 @@ export default defineConfig({
 
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "mobile", use: { ...devices["iPhone 14"] } },
+    { name: "mobile", use: { ...devices["iPhone 14"], browserName: "chromium" } },
   ],
 
   webServer: process.env.TEST_BASE_URL
     ? undefined
     : {
         command: "pnpm dev",
+        env: {
+          ...process.env,
+          TEMPLATE_DEV: process.env.TEMPLATE_DEV ?? "1",
+          NEXT_PUBLIC_SUPABASE_URL:
+            process.env.NEXT_PUBLIC_SUPABASE_URL ?? "http://127.0.0.1:54321",
+          NEXT_PUBLIC_SUPABASE_ANON_KEY:
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "e2e-anon-key",
+          SUPABASE_SERVICE_ROLE_KEY:
+            process.env.SUPABASE_SERVICE_ROLE_KEY ?? "e2e-service-role-key",
+        },
         url: "http://localhost:3000",
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,

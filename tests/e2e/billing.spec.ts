@@ -1,5 +1,7 @@
 import { test, expect } from "@playwright/test";
 
+import { skipWithoutE2EBackend } from "./env";
+
 /**
  * Billing E2E tests.
  *
@@ -10,6 +12,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Billing page (unauthenticated)", () => {
   test("redirects to login", async ({ page }) => {
+    skipWithoutE2EBackend();
     await page.goto("/settings/billing");
     await expect(page).toHaveURL(/\/login/);
   });
@@ -17,6 +20,7 @@ test.describe("Billing page (unauthenticated)", () => {
 
 test.describe("Settings page (unauthenticated)", () => {
   test("redirects to login", async ({ page }) => {
+    skipWithoutE2EBackend();
     await page.goto("/settings");
     await expect(page).toHaveURL(/\/login/);
   });

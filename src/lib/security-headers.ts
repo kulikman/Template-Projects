@@ -47,6 +47,8 @@ function buildCsp(options: SecurityHeaderOptions): string {
       `wss://${supabaseHost}`,
       "https://*.vercel-analytics.com",
       "https://*.vercel-insights.com",
+      "https://*.posthog.com",
+      "https://*.i.posthog.com",
       ...(options.isDev ? ["ws://localhost:*", "http://localhost:*"] : []),
     ],
     "frame-ancestors": ["'none'"],

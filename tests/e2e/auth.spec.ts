@@ -1,5 +1,7 @@
 import { test, expect } from "@playwright/test";
 
+import { skipWithoutE2EBackend } from "./env";
+
 /**
  * Auth flow E2E tests.
  *
@@ -26,6 +28,7 @@ test.describe("Login page", () => {
   });
 
   test("shows error on invalid credentials", async ({ page }) => {
+    skipWithoutE2EBackend();
     await page.goto("/login");
     await page.getByRole("textbox", { name: /email/i }).fill("nobody@example.com");
     await page.getByLabel(/password/i).fill("WrongPassword1");
@@ -56,10 +59,10 @@ test.describe("Signup page", () => {
   test("shows error when passwords do not match", async ({ page }) => {
     await page.goto("/signup");
     await page.getByRole("textbox", { name: /email/i }).fill("new@example.com");
-    await page.getByLabel("Password").fill("ValidPass1");
+    await page.getByRole("textbox", { name: /^password/i }).fill("ValidPass1");
     await page.getByLabel(/confirm password/i).fill("DifferentPass1");
     await page.getByRole("button", { name: /create account/i }).click();
-    await expect(page.getByRole("alert")).toContainText(/do not match/i);
+    await expect(page.getByText(/passwords do not match/i)).toBeVisible();
   });
 });
 
@@ -71,6 +74,7 @@ test.describe("Forgot password page", () => {
   });
 
   test("shows success after submitting any email", async ({ page }) => {
+    skipWithoutE2EBackend();
     await page.goto("/forgot-password");
     await page.getByRole("textbox", { name: /email/i }).fill("anyone@example.com");
     await page.getByRole("button", { name: /send reset link/i }).click();
@@ -81,17 +85,17 @@ test.describe("Forgot password page", () => {
 test.describe("Navigation between auth pages", () => {
   test("login → signup → login", async ({ page }) => {
     await page.goto("/login");
-    await page.getByRole("link", { name: /sign up/i }).click();
+    await page.locator('main a[href="/signup"]').click();
     await expect(page).toHaveURL("/signup");
-    await page.getByRole("link", { name: /sign in/i }).click();
+    await page.locator('main a[href="/login"]').click();
     await expect(page).toHaveURL("/login");
   });
 
   test("login → forgot password → back to login", async ({ page }) => {
     await page.goto("/login");
-    await page.getByRole("link", { name: /forgot password/i }).click();
+    await page.locator('main a[href="/forgot-password"]').click();
     await expect(page).toHaveURL("/forgot-password");
-    await page.getByRole("link", { name: /back to sign in/i }).click();
+    await page.locator('main a[href="/login"]').click();
     await expect(page).toHaveURL("/login");
   });
 });

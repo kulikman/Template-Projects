@@ -52,6 +52,16 @@ describe("getClientEnv()", () => {
     // Service role should not exist on client env type
     expect(env).not.toHaveProperty("SUPABASE_SERVICE_ROLE_KEY");
   });
+
+  it("exposes optional public analytics env vars to client code", () => {
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "ph_test");
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "https://us.i.posthog.com");
+
+    const env = getClientEnv();
+
+    expect(env.NEXT_PUBLIC_POSTHOG_KEY).toBe("ph_test");
+    expect(env.NEXT_PUBLIC_POSTHOG_HOST).toBe("https://us.i.posthog.com");
+  });
 });
 
 describe("getPublicMetadataEnv()", () => {

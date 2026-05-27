@@ -55,6 +55,41 @@ pnpm dev
 
 ---
 
+## Проверка шаблона
+
+Этот репозиторий — шаблон для новых проектов. Миграции Supabase лежат в
+репозитории как baseline будущего проекта; не применяйте их к shared remote
+Supabase-проекту только ради проверки шаблона.
+
+Минимальная проверка перед использованием/публикацией шаблона:
+
+```bash
+pnpm test
+pnpm lint
+pnpm typecheck
+pnpm format:check
+pnpm knip
+pnpm test:e2e
+```
+
+Локальная проверка Supabase migrations:
+
+```bash
+supabase start
+supabase db reset
+```
+
+После изменения схемы в реальном проекте, созданном из шаблона, обновите типы:
+
+```bash
+SUPABASE_PROJECT_ID=<your-project-id> pnpm supabase:types
+```
+
+Часть e2e-сценариев зависит от backend/Supabase окружения и может быть
+пропущена в режиме чистого шаблона. Подробности: [`tests/e2e/README.md`](tests/e2e/README.md).
+
+---
+
 ## Структура проекта
 
 ```text
