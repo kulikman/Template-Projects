@@ -1,3 +1,19 @@
+## [0.3.2](https://github.com/kulikman/Template-Projects/compare/v0.3.1...v0.3.2) (2026-05-27)
+
+### 🐛 Bug Fixes
+
+* allow template build without backend env ([a2312b0](https://github.com/kulikman/Template-Projects/commit/a2312b0b83fadac57d8c90754662ea4c13573670))
+
+### ♻️ Refactoring
+
+* harden api key verification ([22aafb4](https://github.com/kulikman/Template-Projects/commit/22aafb442dab77892f1342e0ddc88d2e278043c1))
+* move non-stripe logic into feature layers ([2ee4a55](https://github.com/kulikman/Template-Projects/commit/2ee4a55524014ecec59621b904bd34676c30a012))
+
+### 📝 Docs
+
+* correct cron example auth comment ([ece9bc1](https://github.com/kulikman/Template-Projects/commit/ece9bc1272d2c780242f3941ad337e9943b1ec3a))
+* include build in template qa checklist ([afe6ae8](https://github.com/kulikman/Template-Projects/commit/afe6ae809b2e4792dacd088a80d57ece04024573))
+
 ## [0.3.1](https://github.com/kulikman/Template-Projects/compare/v0.3.0...v0.3.1) (2026-05-16)
 
 ### 🐛 Bug Fixes
