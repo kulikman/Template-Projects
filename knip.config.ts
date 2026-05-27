@@ -28,6 +28,10 @@ const config: KnipConfig = {
     "postcss", // peer dep of @tailwindcss/postcss, used in postcss.config.mjs
   ],
   ignoreExportsUsedInFile: true,
+  ignoreIssues: {
+    // generated Supabase helper types are public API for app/template consumers
+    "src/types/database.ts": ["exports", "types"],
+  },
   // Exports tagged with `@public` in JSDoc are template-public APIs —
   // exported on purpose for consumers, even if nothing in-repo imports them.
   tags: ["-public"],

@@ -18,6 +18,23 @@ create trigger organizations_set_updated_at
 
 alter table public.organizations enable row level security;
 
+-- ── Org Members ───────────────────────────────────────────────────────────────
+create type public.org_role as enum ('owner', 'admin', 'member');
+
+create table if not exists public.org_members (
+  id          uuid primary key default gen_random_uuid(),
+  org_id      uuid not null references public.organizations(id) on delete cascade,
+  user_id     uuid not null references auth.users(id) on delete cascade,
+  role        public.org_role not null default 'member',
+  created_at  timestamptz not null default now(),
+  unique (org_id, user_id)
+);
+
+create index if not exists org_members_org_id_idx  on public.org_members(org_id);
+create index if not exists org_members_user_id_idx on public.org_members(user_id);
+
+alter table public.org_members enable row level security;
+
 -- Members can read their org.
 create policy "Org members can read organization"
   on public.organizations for select
@@ -61,23 +78,6 @@ create policy "Org owners can delete organization"
         and org_members.role = 'owner'
     )
   );
-
--- ── Org Members ───────────────────────────────────────────────────────────────
-create type public.org_role as enum ('owner', 'admin', 'member');
-
-create table if not exists public.org_members (
-  id          uuid primary key default gen_random_uuid(),
-  org_id      uuid not null references public.organizations(id) on delete cascade,
-  user_id     uuid not null references auth.users(id) on delete cascade,
-  role        public.org_role not null default 'member',
-  created_at  timestamptz not null default now(),
-  unique (org_id, user_id)
-);
-
-create index if not exists org_members_org_id_idx  on public.org_members(org_id);
-create index if not exists org_members_user_id_idx on public.org_members(user_id);
-
-alter table public.org_members enable row level security;
 
 -- Members can see all members of their orgs.
 create policy "Org members can view memberships"

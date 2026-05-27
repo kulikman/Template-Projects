@@ -1,227 +1,159 @@
-// Auto-generated types from Supabase
-// Regenerate with:
-//   pnpm supabase gen types typescript --project-id <project-id> > src/types/database.ts
-//
-// This file is manually maintained until a live Supabase project is wired.
-// Keep in sync with supabase/migrations/*.sql.
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never;
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json;
+          operationName?: string;
+          query?: string;
+          variables?: Json;
+        };
+        Returns: Json;
+      };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
   public: {
     Tables: {
-      profiles: {
+      api_keys: {
         Row: {
-          id: string;
-          username: string;
-          full_name: string | null;
-          avatar_url: string | null;
-          stripe_customer_id: string | null;
-          onboarding_completed: boolean;
-          onboarding_step: number;
           created_at: string;
-          updated_at: string;
+          expires_at: string | null;
+          id: string;
+          key_hash: string;
+          key_prefix: string;
+          last_used_at: string | null;
+          name: string;
+          user_id: string;
         };
         Insert: {
-          id: string;
-          username: string;
-          full_name?: string | null;
-          avatar_url?: string | null;
-          stripe_customer_id?: string | null;
-          onboarding_completed?: boolean;
-          onboarding_step?: number;
           created_at?: string;
-          updated_at?: string;
+          expires_at?: string | null;
+          id?: string;
+          key_hash: string;
+          key_prefix: string;
+          last_used_at?: string | null;
+          name: string;
+          user_id: string;
         };
         Update: {
-          id?: string;
-          username?: string;
-          full_name?: string | null;
-          avatar_url?: string | null;
-          stripe_customer_id?: string | null;
-          onboarding_completed?: boolean;
-          onboarding_step?: number;
           created_at?: string;
-          updated_at?: string;
+          expires_at?: string | null;
+          id?: string;
+          key_hash?: string;
+          key_prefix?: string;
+          last_used_at?: string | null;
+          name?: string;
+          user_id?: string;
         };
         Relationships: [];
-      };
-      subscriptions: {
-        Row: {
-          id: string;
-          user_id: string;
-          status: string;
-          price_id: string | null;
-          product_id: string | null;
-          quantity: number;
-          cancel_at_period_end: boolean;
-          current_period_start: string | null;
-          current_period_end: string | null;
-          trial_start: string | null;
-          trial_end: string | null;
-          canceled_at: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id: string;
-          user_id: string;
-          status: string;
-          price_id?: string | null;
-          product_id?: string | null;
-          quantity?: number;
-          cancel_at_period_end?: boolean;
-          current_period_start?: string | null;
-          current_period_end?: string | null;
-          trial_start?: string | null;
-          trial_end?: string | null;
-          canceled_at?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          status?: string;
-          price_id?: string | null;
-          product_id?: string | null;
-          quantity?: number;
-          cancel_at_period_end?: boolean;
-          current_period_start?: string | null;
-          current_period_end?: string | null;
-          trial_start?: string | null;
-          trial_end?: string | null;
-          canceled_at?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "subscriptions_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
-        ];
       };
       audit_logs: {
         Row: {
+          action: string;
+          created_at: string;
           id: number;
-          user_id: string | null;
-          action: string;
+          metadata: Json;
           resource: string | null;
-          metadata: Record<string, unknown>;
-          created_at: string;
+          user_id: string | null;
         };
         Insert: {
-          id?: never;
-          user_id?: string | null;
           action: string;
-          resource?: string | null;
-          metadata?: Record<string, unknown>;
           created_at?: string;
-        };
-        Update: {
           id?: never;
-          user_id?: string | null;
-          action?: string;
+          metadata?: Json;
           resource?: string | null;
-          metadata?: Record<string, unknown>;
+          user_id?: string | null;
+        };
+        Update: {
+          action?: string;
           created_at?: string;
+          id?: never;
+          metadata?: Json;
+          resource?: string | null;
+          user_id?: string | null;
         };
         Relationships: [];
       };
-      organizations: {
+      notifications: {
         Row: {
-          id: string;
-          name: string;
-          slug: string;
-          logo_url: string | null;
+          body: string | null;
           created_at: string;
-          updated_at: string;
+          href: string | null;
+          id: string;
+          kind: string;
+          read: boolean;
+          title: string;
+          user_id: string;
         };
         Insert: {
-          id?: string;
-          name: string;
-          slug: string;
-          logo_url?: string | null;
+          body?: string | null;
           created_at?: string;
-          updated_at?: string;
+          href?: string | null;
+          id?: string;
+          kind?: string;
+          read?: boolean;
+          title: string;
+          user_id: string;
         };
         Update: {
-          id?: string;
-          name?: string;
-          slug?: string;
-          logo_url?: string | null;
+          body?: string | null;
           created_at?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
-      org_members: {
-        Row: {
-          id: string;
-          org_id: string;
-          user_id: string;
-          role: "owner" | "admin" | "member";
-          created_at: string;
-        };
-        Insert: {
+          href?: string | null;
           id?: string;
-          org_id: string;
-          user_id: string;
-          role?: "owner" | "admin" | "member";
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          org_id?: string;
+          kind?: string;
+          read?: boolean;
+          title?: string;
           user_id?: string;
-          role?: "owner" | "admin" | "member";
-          created_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "org_members_org_id_fkey";
-            columns: ["org_id"];
-            isOneToOne: false;
-            referencedRelation: "organizations";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       org_invites: {
         Row: {
-          id: string;
-          org_id: string;
-          invited_by: string;
-          email: string;
-          role: "owner" | "admin" | "member";
-          token: string;
-          expires_at: string;
           accepted_at: string | null;
           created_at: string;
+          email: string;
+          expires_at: string;
+          id: string;
+          invited_by: string;
+          org_id: string;
+          role: Database["public"]["Enums"]["org_role"];
+          token: string;
         };
         Insert: {
-          id?: string;
-          org_id: string;
-          invited_by: string;
-          email: string;
-          role?: "owner" | "admin" | "member";
-          token?: string;
-          expires_at?: string;
           accepted_at?: string | null;
           created_at?: string;
+          email: string;
+          expires_at?: string;
+          id?: string;
+          invited_by: string;
+          org_id: string;
+          role?: Database["public"]["Enums"]["org_role"];
+          token?: string;
         };
         Update: {
-          id?: string;
-          org_id?: string;
-          invited_by?: string;
-          email?: string;
-          role?: "owner" | "admin" | "member";
-          token?: string;
-          expires_at?: string;
           accepted_at?: string | null;
           created_at?: string;
+          email?: string;
+          expires_at?: string;
+          id?: string;
+          invited_by?: string;
+          org_id?: string;
+          role?: Database["public"]["Enums"]["org_role"];
+          token?: string;
         };
         Relationships: [
           {
@@ -233,94 +165,290 @@ export type Database = {
           },
         ];
       };
-      notifications: {
+      org_members: {
         Row: {
-          id: string;
-          user_id: string;
-          title: string;
-          body: string | null;
-          href: string | null;
-          read: boolean;
-          kind: "info" | "success" | "warning" | "error";
           created_at: string;
+          id: string;
+          org_id: string;
+          role: Database["public"]["Enums"]["org_role"];
+          user_id: string;
         };
         Insert: {
-          id?: string;
-          user_id: string;
-          title: string;
-          body?: string | null;
-          href?: string | null;
-          read?: boolean;
-          kind?: "info" | "success" | "warning" | "error";
           created_at?: string;
+          id?: string;
+          org_id: string;
+          role?: Database["public"]["Enums"]["org_role"];
+          user_id: string;
         };
         Update: {
-          id?: string;
-          user_id?: string;
-          title?: string;
-          body?: string | null;
-          href?: string | null;
-          read?: boolean;
-          kind?: "info" | "success" | "warning" | "error";
           created_at?: string;
+          id?: string;
+          org_id?: string;
+          role?: Database["public"]["Enums"]["org_role"];
+          user_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: "notifications_user_id_fkey";
-            columns: ["user_id"];
+            foreignKeyName: "org_members_org_id_fkey";
+            columns: ["org_id"];
             isOneToOne: false;
-            referencedRelation: "users";
+            referencedRelation: "organizations";
             referencedColumns: ["id"];
           },
         ];
       };
-      api_keys: {
+      organizations: {
         Row: {
-          id: string;
-          user_id: string;
-          name: string;
-          key_hash: string;
-          key_prefix: string;
-          last_used_at: string | null;
-          expires_at: string | null;
           created_at: string;
+          id: string;
+          logo_url: string | null;
+          name: string;
+          slug: string;
+          updated_at: string;
         };
         Insert: {
-          id?: string;
-          user_id: string;
-          name: string;
-          key_hash: string;
-          key_prefix: string;
-          last_used_at?: string | null;
-          expires_at?: string | null;
           created_at?: string;
+          id?: string;
+          logo_url?: string | null;
+          name: string;
+          slug: string;
+          updated_at?: string;
         };
         Update: {
-          id?: string;
-          user_id?: string;
-          name?: string;
-          key_hash?: string;
-          key_prefix?: string;
-          last_used_at?: string | null;
-          expires_at?: string | null;
           created_at?: string;
+          id?: string;
+          logo_url?: string | null;
+          name?: string;
+          slug?: string;
+          updated_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "api_keys_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
+      };
+      profiles: {
+        Row: {
+          avatar_url: string | null;
+          created_at: string;
+          full_name: string | null;
+          id: string;
+          onboarding_completed: boolean;
+          onboarding_step: number;
+          stripe_customer_id: string | null;
+          updated_at: string;
+          username: string;
+        };
+        Insert: {
+          avatar_url?: string | null;
+          created_at?: string;
+          full_name?: string | null;
+          id: string;
+          onboarding_completed?: boolean;
+          onboarding_step?: number;
+          stripe_customer_id?: string | null;
+          updated_at?: string;
+          username: string;
+        };
+        Update: {
+          avatar_url?: string | null;
+          created_at?: string;
+          full_name?: string | null;
+          id?: string;
+          onboarding_completed?: boolean;
+          onboarding_step?: number;
+          stripe_customer_id?: string | null;
+          updated_at?: string;
+          username?: string;
+        };
+        Relationships: [];
+      };
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean;
+          canceled_at: string | null;
+          created_at: string;
+          current_period_end: string | null;
+          current_period_start: string | null;
+          id: string;
+          price_id: string | null;
+          product_id: string | null;
+          quantity: number;
+          status: string;
+          trial_end: string | null;
+          trial_start: string | null;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          cancel_at_period_end?: boolean;
+          canceled_at?: string | null;
+          created_at?: string;
+          current_period_end?: string | null;
+          current_period_start?: string | null;
+          id: string;
+          price_id?: string | null;
+          product_id?: string | null;
+          quantity?: number;
+          status: string;
+          trial_end?: string | null;
+          trial_start?: string | null;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          cancel_at_period_end?: boolean;
+          canceled_at?: string | null;
+          created_at?: string;
+          current_period_end?: string | null;
+          current_period_start?: string | null;
+          id?: string;
+          price_id?: string | null;
+          product_id?: string | null;
+          quantity?: number;
+          status?: string;
+          trial_end?: string | null;
+          trial_start?: string | null;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
       };
     };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      [_ in never]: never;
+    };
     Enums: {
       org_role: "owner" | "admin" | "member";
     };
-    CompositeTypes: Record<string, never>;
+    CompositeTypes: {
+      [_ in never]: never;
+    };
   };
 };
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">];
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R;
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R;
+      }
+      ? R
+      : never
+    : never;
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I;
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I;
+      }
+      ? I
+      : never
+    : never;
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U;
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U;
+      }
+      ? U
+      : never
+    : never;
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never;
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never;
+
+export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
+  public: {
+    Enums: {
+      org_role: ["owner", "admin", "member"],
+    },
+  },
+} as const;
