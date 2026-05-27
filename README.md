@@ -69,6 +69,7 @@ pnpm lint
 pnpm typecheck
 pnpm format:check
 pnpm knip
+pnpm build
 pnpm test:e2e
 ```
 
