@@ -1,12 +1,11 @@
 "use server";
 
-import { headers } from "next/headers";
-
 import { createClient } from "@/lib/supabase/server";
 import { forgotPasswordSchema } from "@/lib/validations";
 import { logger } from "@/lib/logger";
 import { limit } from "@/lib/rate-limit";
 import { getServerEnv } from "@/lib/env";
+import { getRequestIp } from "@/lib/request-ip";
 
 export interface ForgotPasswordState {
   error?: string;
@@ -25,11 +24,7 @@ export async function sendPasswordReset(
     return { error: parsed.error.issues[0]?.message ?? "Invalid email" };
   }
 
-  const headersList = await headers();
-  const ip =
-    headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    headersList.get("x-real-ip") ??
-    "unknown";
+  const ip = await getRequestIp();
 
   const { success } = await limit(`reset:${ip}`, { limit: 3, windowMs: 300_000 });
   if (!success) {
