@@ -83,36 +83,3 @@ export async function renameApiKey(keyId: string, newName: string): Promise<void
 
   revalidatePath("/settings/api-keys");
 }
-
-/**
- * Authenticate an incoming API request by looking up the hashed key.
- * Call this from Route Handlers that support API key auth.
- *
- * @example
- * @public
- *
- *   const userId = await verifyApiKey(request.headers.get("x-api-key"))
- *   if (!userId) return Response.json({ error: "Unauthorized" }, { status: 401 })
- */
-export async function verifyApiKey(rawKey: string | null): Promise<string | null> {
-  if (!rawKey) return null;
-
-  const hash = await hashApiKey(rawKey);
-  const supabase = await createClient();
-
-  const { data } = await supabase
-    .from("api_keys")
-    .select("user_id")
-    .eq("key_hash", hash)
-    .maybeSingle();
-
-  if (!data) return null;
-
-  // Fire-and-forget: update last_used_at without blocking the response.
-  void supabase
-    .from("api_keys")
-    .update({ last_used_at: new Date().toISOString() })
-    .eq("key_hash", hash);
-
-  return data.user_id;
-}
