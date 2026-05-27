@@ -1,9 +1,8 @@
 import { Users, Shield, Crown } from "lucide-react";
 
 import { requireUser } from "@/lib/auth";
-import { getUserOrgs } from "@/lib/org";
+import { getUserOrgs, OrgCreateForm } from "@/features/orgs";
 import { createClient } from "@/lib/supabase/server";
-import { OrgCreateForm } from "./org-create-form";
 
 export const metadata = { title: "Organizations" };
 
@@ -20,7 +19,7 @@ const ROLE_ICON: Record<string, React.ReactNode> = {
 };
 
 export default async function OrgPage(): Promise<React.ReactElement> {
-  const user = await requireUser();
+  await requireUser();
   const orgs = await getUserOrgs();
 
   // Load member counts for each org.
@@ -80,7 +79,7 @@ export default async function OrgPage(): Promise<React.ReactElement> {
 
       <div className="border-border rounded-xl border p-6">
         <h2 className="text-foreground mb-4 text-base font-semibold">Create organization</h2>
-        <OrgCreateForm userId={user.id} />
+        <OrgCreateForm />
       </div>
     </section>
   );

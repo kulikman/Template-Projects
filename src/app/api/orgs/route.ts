@@ -2,9 +2,8 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 
 import { requireUser } from "@/lib/auth";
-import { createOrg, getUserOrgs } from "@/lib/org";
+import { createOrgForUser, getCreateOrgErrorResponse, getUserOrgs } from "@/features/orgs";
 import { logger } from "@/lib/logger";
-import { writeAuditLog } from "@/lib/audit";
 
 const createOrgSchema = z.object({
   name: z.string().min(1).max(100),
@@ -38,21 +37,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    const org = await createOrg({ ...parsed.data, userId: user.id });
-    await writeAuditLog({
-      userId: user.id,
-      action: "profile.updated",
-      resource: `organization:${org.id}`,
-      metadata: { event: "org_created", slug: org.slug },
-    });
-    logger.info("org created", { orgId: org.id, userId: user.id });
+    const org = await createOrgForUser({ ...parsed.data, userId: user.id });
     return NextResponse.json({ org }, { status: 201 });
   } catch (error) {
     logger.error("org create failed", error);
-    const msg = error instanceof Error ? error.message : "Failed to create organization";
-    if (msg.includes("unique")) {
-      return NextResponse.json({ error: "That slug is already taken." }, { status: 409 });
-    }
-    return NextResponse.json({ error: msg }, { status: 500 });
+    const response = getCreateOrgErrorResponse(error);
+    return NextResponse.json({ error: response.error }, { status: response.status });
   }
 }

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
+import { getOnboardingStatus, OnboardingWizard } from "@/features/onboarding";
 import { createClient } from "@/lib/supabase/server";
-import { OnboardingWizard } from "@/features/onboarding";
 
 /**
  * /onboarding — multi-step setup wizard for new users.
@@ -19,19 +19,13 @@ export default async function OnboardingPage(): Promise<React.ReactElement> {
 
   if (!user) redirect("/login");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("onboarding_completed, onboarding_step")
-    .eq("id", user.id)
-    .single();
+  const onboarding = await getOnboardingStatus(user.id);
 
-  if (profile?.onboarding_completed) redirect("/dashboard");
-
-  const currentStep = profile?.onboarding_step ?? 0;
+  if (onboarding.completed) redirect("/dashboard");
 
   return (
     <div className="bg-background flex min-h-screen items-center justify-center p-4">
-      <OnboardingWizard currentStep={currentStep} />
+      <OnboardingWizard currentStep={onboarding.step} />
     </div>
   );
 }

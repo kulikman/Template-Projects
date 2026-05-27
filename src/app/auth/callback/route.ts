@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import { getOnboardingStatus } from "@/features/onboarding";
 import { createClient } from "@/lib/supabase/server";
 import { logger } from "@/lib/logger";
 import { ROUTES } from "@/lib/constants";
@@ -48,13 +49,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     } = await supabase.auth.getUser();
 
     if (user) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("onboarding_completed")
-        .eq("id", user.id)
-        .maybeSingle();
+      const onboarding = await getOnboardingStatus(user.id);
 
-      if (!profile?.onboarding_completed) {
+      if (!onboarding.completed) {
         logger.info("auth callback: new user, redirecting to onboarding", { userId: user.id });
         return NextResponse.redirect(`${origin}${ROUTES.onboarding}`);
       }

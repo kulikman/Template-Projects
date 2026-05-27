@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { completeOnboarding, setOnboardingStep, updateOnboardingProfile } from "../lib/profile";
 import { TOTAL_STEPS } from "../lib/steps";
 
 /**
@@ -21,13 +22,7 @@ export async function advanceOnboardingStep(currentStep: number): Promise<void> 
   const nextStep = currentStep + 1;
   const isLast = nextStep >= TOTAL_STEPS - 1;
 
-  await supabase
-    .from("profiles")
-    .update({
-      onboarding_step: nextStep,
-      ...(isLast ? { onboarding_completed: true } : {}),
-    })
-    .eq("id", user.id);
+  await setOnboardingStep({ userId: user.id, step: nextStep, completed: isLast });
 
   revalidatePath("/onboarding");
 
@@ -47,7 +42,7 @@ export async function skipOnboarding(): Promise<void> {
 
   if (!user) redirect("/login");
 
-  await supabase.from("profiles").update({ onboarding_completed: true }).eq("id", user.id);
+  await completeOnboarding(user.id);
 
   redirect("/dashboard");
 }
@@ -68,5 +63,5 @@ export async function saveOnboardingProfile(formData: FormData): Promise<void> {
 
   if (!fullName || !username) return;
 
-  await supabase.from("profiles").update({ full_name: fullName, username }).eq("id", user.id);
+  await updateOnboardingProfile(user.id, { fullName, username });
 }
