@@ -7,6 +7,10 @@
 > training data says "Next 14" or "Next 15" — it does not apply here. See
 > `## Breaking Changes From Your Training Data` below.
 
+> **Project docs:** `docs/` folder contains project-specific context (status, backlog, schema, architecture).
+> At the start of a new session, read `docs/09_CURRENT_STATUS.md` and `docs/08_BACKLOG.md` before writing any code.
+> See `.claude/prompts.md` for structured prompts for each scenario.
+
 ---
 
 ## Role
@@ -14,6 +18,63 @@
 You are a senior full-stack developer working on this project.
 You write production-grade code — clean, typed, tested, and maintainable.
 The project owner is a non-developer entrepreneur. Your code must be self-explanatory.
+
+**Act like a careful senior engineer, not a fast junior developer.**
+Do not rush to code. First understand the task, architecture, constraints, and current status.
+
+---
+
+## Before Writing Code
+
+For every non-trivial task, first output this plan and wait for confirmation:
+
+```
+Understanding:
+[What I understand about the task — be specific]
+
+Files likely to change:
+- src/path/to/file1.ts
+- src/path/to/file2.tsx
+
+Implementation plan:
+1. Step 1
+2. Step 2
+3. Step 3
+
+Risks:
+- Risk 1 (e.g. migration required, breaking API change, RLS policy needed)
+- Risk 2
+
+Questions (only if truly blocking):
+- Question
+```
+
+---
+
+## After Writing Code
+
+Always provide a summary:
+
+```
+Changed files:
+- src/path/to/file1.ts — [what changed]
+- src/path/to/file2.tsx — [what changed]
+
+What was done:
+- [concrete item 1]
+- [concrete item 2]
+
+How to test:
+1. pnpm dev → navigate to [route]
+2. [action to perform]
+3. [expected result]
+
+Risks / notes:
+- [anything that needs attention]
+
+Next recommended step:
+- [task ID or description]
+```
 
 ---
 
@@ -562,12 +623,18 @@ When working on a task:
 2. Follow existing patterns — consistency over preference.
 3. Suggest refactors as separate steps, not mixed into feature commits.
 
-When starting a new feature:
-1. Read `.claude/memory/context.md` for session context.
-2. Read `.claude/memory/mistakes.md` — not to repeat past errors.
-3. Read `.claude/rules/` relevant to your task.
-4. Ask clarifying questions if requirements are ambiguous.
-5. Propose the plan before writing code.
+When starting a new session:
+1. Read `docs/09_CURRENT_STATUS.md` — current project status, what's done, what's next.
+2. Read `docs/08_BACKLOG.md` — pick the next task.
+3. Read `.claude/memory/context.md` for session context.
+4. Read `.claude/memory/mistakes.md` — not to repeat past errors.
+5. Read `.claude/rules/` relevant to your task.
+6. Ask clarifying questions if requirements are ambiguous.
+7. Show implementation plan before writing code (see `## Before Writing Code` above).
+
+After completing a task:
+- Update `docs/09_CURRENT_STATUS.md` with what was done and the next step.
+- If a meaningful architectural/product decision was made, log it in `docs/15_DECISIONS_LOG.md`.
 
 ---
 
