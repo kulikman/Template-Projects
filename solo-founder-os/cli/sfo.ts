@@ -80,7 +80,7 @@ function validate(target?: string) {
   for (const profile of profiles) {
     const result = validateProfile(profile)
     if (result.length > 0) {
-      errors += result.length
+      errors += result.filter((item) => item.startsWith('error:')).length || result.length
       console.log(`\n${profile.project ?? 'unknown'}: invalid`)
       for (const item of result) console.log(`- ${item}`)
     } else {
@@ -94,7 +94,7 @@ function validate(target?: string) {
 function generate(target?: string) {
   const profiles = filterProfiles(loadProfiles(), target)
   for (const profile of profiles) {
-    const errors = validateProfile(profile)
+    const errors = validateProfile(profile).filter((item) => item.startsWith('error:'))
     if (errors.length > 0) {
       console.log(`${profile.project}: skipped, invalid profile`)
       for (const error of errors) console.log(`- ${error}`)
@@ -112,7 +112,7 @@ function generate(target?: string) {
 function writeLocal(target?: string) {
   const profiles = filterProfiles(loadProfiles(), target)
   for (const profile of profiles) {
-    const errors = validateProfile(profile)
+    const errors = validateProfile(profile).filter((item) => item.startsWith('error:'))
     if (errors.length > 0) {
       console.log(`${profile.project}: skipped, invalid profile`)
       for (const error of errors) console.log(`- ${error}`)
@@ -132,7 +132,7 @@ function writeLocal(target?: string) {
 function mergeLocal(target?: string) {
   const profiles = filterProfiles(loadProfiles(), target)
   for (const profile of profiles) {
-    const errors = validateProfile(profile)
+    const errors = validateProfile(profile).filter((item) => item.startsWith('error:'))
     if (errors.length > 0) {
       console.log(`${profile.project}: skipped, invalid profile`)
       for (const error of errors) console.log(`- ${error}`)
@@ -155,17 +155,19 @@ function mergeLocal(target?: string) {
 function dryRun(target?: string) {
   const profiles = filterProfiles(loadProfiles(), target)
   for (const profile of profiles) {
-    const errors = validateProfile(profile)
+    const validation = validateProfile(profile)
+    const errors = validation.filter((item) => item.startsWith('error:'))
+    const warnings = validation.filter((item) => item.startsWith('warning:'))
     const files = errors.length ? [] : buildGeneratedFiles(profile)
     console.log(`\n${profile.project}`)
     console.log(`repo: ${profile.repo}`)
-    console.log(`status: ${errors.length ? 'invalid' : 'valid'}`)
+    console.log(`status: ${errors.length ? 'invalid' : warnings.length ? 'valid with warnings' : 'valid'}`)
     console.log(`outputs: ${(profile.outputs ?? []).join(', ') || 'none'}`)
     console.log(`generated files: ${files.map((file) => file.path).join(', ') || 'none'}`)
     console.log(`checks: ${(profile.overrides?.checks ?? []).join(', ') || 'none'}`)
-    if (errors.length) {
-      console.log('errors:')
-      for (const error of errors) console.log(`- ${error}`)
+    if (validation.length) {
+      console.log('validation:')
+      for (const item of validation) console.log(`- ${item}`)
     }
   }
 }
@@ -187,30 +189,73 @@ function filterProfiles(profiles: ProjectProfile[], target?: string): ProjectPro
 function validateProfile(profile: ProjectProfile): string[] {
   const errors: string[] = []
 
-  if (!profile.project) errors.push('missing project')
-  if (!profile.repo) errors.push('missing repo')
+  if (!profile.project) errors.push('error: missing project')
+  if (!profile.repo) errors.push('error: missing repo')
 
   for (const core of profile.inherits?.core ?? []) {
-    if (!existsSync(join(ROOT, 'core', `${core}.md`))) errors.push(`missing core rule: ${core}`)
+    if (!existsSync(join(ROOT, 'core', `${core}.md`))) errors.push(`error: missing core rule: ${core}`)
   }
 
   for (const stack of profile.inherits?.stacks ?? []) {
-    if (!existsSync(join(ROOT, 'stacks', `${stack}.md`))) errors.push(`missing stack rule: ${stack}`)
+    if (!existsSync(join(ROOT, 'stacks', `${stack}.md`))) errors.push(`error: missing stack rule: ${stack}`)
   }
 
   for (const domain of profile.inherits?.domains ?? []) {
-    if (!existsSync(join(ROOT, 'domains', `${domain}.md`))) errors.push(`missing domain rule: ${domain}`)
+    if (!existsSync(join(ROOT, 'domains', `${domain}.md`))) errors.push(`error: missing domain rule: ${domain}`)
   }
 
   for (const skill of profile.inherits?.skills ?? []) {
-    if (!existsSync(join(ROOT, 'skills', `${skill}.yml`))) errors.push(`missing skill: ${skill}`)
+    if (!existsSync(join(ROOT, 'skills', `${skill}.yml`))) errors.push(`error: missing skill: ${skill}`)
   }
 
-  if ((profile.inherits?.stacks ?? []).includes('next15') && (profile.inherits?.stacks ?? []).includes('next16')) {
-    errors.push('conflicting stacks: next15 and next16')
-  }
+  errors.push(...detectConflicts(profile))
 
   return errors
+}
+
+function detectConflicts(profile: ProjectProfile): string[] {
+  const messages: string[] = []
+  const stacks = profile.inherits?.stacks ?? []
+  const skills = profile.inherits?.skills ?? []
+  const forbidden = profile.overrides?.forbidden ?? []
+
+  if (hasAll(stacks, ['next15', 'next16'])) {
+    messages.push('error: Project cannot inherit both next15 and next16.')
+  }
+
+  if (stacks.includes('next15') && !forbidden.includes('src/proxy.ts')) {
+    messages.push('error: Next15 projects must explicitly forbid src/proxy.ts unless upgraded.')
+  }
+
+  if (stacks.includes('next16') && !forbidden.includes('middleware.ts')) {
+    messages.push('warning: Next16 projects should forbid old middleware.ts patterns.')
+  }
+
+  if (stacks.includes('flutter') && hasAny(stacks, ['next15', 'next16'])) {
+    messages.push('error: Flutter project cannot inherit Next.js stack rules.')
+  }
+
+  if (stacks.includes('static-site') && hasAny(stacks, ['next15', 'next16', 'hono-mcp'])) {
+    messages.push('warning: Static sites should not inherit app-framework/backend stack rules.')
+  }
+
+  if (stacks.includes('hono-mcp') && hasAny(stacks, ['next15', 'next16'])) {
+    messages.push('error: Hono/MCP backend should not inherit Next.js frontend rules.')
+  }
+
+  if (stacks.includes('static-site') && skills.includes('database-migration')) {
+    messages.push('warning: Static sites usually should not use database-migration skill.')
+  }
+
+  return messages
+}
+
+function hasAll(source: string[], values: string[]): boolean {
+  return values.every((value) => source.includes(value))
+}
+
+function hasAny(source: string[], values: string[]): boolean {
+  return values.some((value) => source.includes(value))
 }
 
 function buildGeneratedFiles(profile: ProjectProfile): GeneratedFile[] {
