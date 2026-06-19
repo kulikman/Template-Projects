@@ -1,3 +1,9 @@
+## [0.6.0](https://github.com/kulikman/Template-Projects/compare/v0.5.0...v0.6.0) (2026-06-19)
+
+### ✨ Features
+
+* add solo founder agent skillset ([fb3c161](https://github.com/kulikman/Template-Projects/commit/fb3c1616cb73ae3689f7335d15728e6132037dc5))
+
 ## [0.5.0](https://github.com/kulikman/Template-Projects/compare/v0.4.0...v0.5.0) (2026-06-19)
 
 ### ✨ Features
