@@ -185,7 +185,7 @@ Form state                       → react-hook-form + Zod
 ### Non-negotiable
 - Root layout uses `title.template` from `siteConfig` so child pages only set `title`.
 - Dynamic pages (`[slug]`) implement `generateMetadata()`.
-- `public/robots.txt` and `src/app/sitemap.ts` are kept in sync with routes.
+- `src/app/robots.ts` and `src/app/sitemap.ts` are kept in sync with routes.
 - `public/llms.txt` is filled with product info, not template placeholders.
 
 ### When to add metadata

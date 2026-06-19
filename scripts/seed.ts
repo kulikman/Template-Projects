@@ -13,7 +13,8 @@
  *   - NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY set in .env.local
  *
  * Safe to run multiple times — uses upsert where possible.
- * Delete seed data with: `pnpm seed:reset`
+ * Delete seed data manually from Supabase Studio or add a dedicated reset
+ * script before documenting an automated reset command.
  */
 
 import { createClient } from "@supabase/supabase-js";

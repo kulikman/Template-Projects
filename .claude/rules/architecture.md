@@ -30,6 +30,13 @@ src/
 └── proxy.ts              # Session refresh + security headers
 ```
 
+## Source Of Truth
+
+- Сначала читай реальные файлы и существующие контракты, потом предлагай изменения.
+- Не выдумывай сервисы, модули, API contracts, database columns или feature boundaries.
+- Если нужного контракта нет, сначала зафиксируй этот факт, а не маскируй его предположением.
+- Не меняй роль файла без явной причины: `proxy.ts`, `env.ts`, `database.ts`, migrations и webhook paths считаются специальными.
+
 ## URL Hierarchy
 
 - URL отражают иерархию: `/docs/getting-started` → `/docs` тоже валидная страница.

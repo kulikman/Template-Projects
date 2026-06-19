@@ -47,4 +47,4 @@ This template ships with the following security measures:
 - **Zod validation** — all external inputs validated at the boundary (`src/lib/env.ts`, feature schemas)
 - **Supabase RLS** — Row-Level Security enabled on all tables; `service_role` key is server-only
 - **Dependency scanning** — Gitleaks + `pnpm audit` run on every CI push
-- **Dependabot** — weekly automated dependency updates via `.github/dependabot.yml`
+- **CodeQL** — JavaScript/TypeScript security analysis runs on pushes, PRs and weekly schedule

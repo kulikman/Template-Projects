@@ -23,7 +23,7 @@ Supabase (Postgres + Auth)   External Services
 src/
 ├── app/                        # Next.js App Router
 │   ├── (auth)/                 # Auth routes: /login, /signup, /reset-password
-│   │   └── auth/callback/      # OAuth + magic link callback
+│   │   └── auth/callback/      # Email confirmation, password reset, future OAuth callback
 │   ├── (dashboard)/            # Protected routes (require auth)
 │   │   ├── dashboard/          # Main dashboard
 │   │   ├── settings/           # Profile, billing, usage, API keys, org

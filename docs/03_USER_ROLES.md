@@ -25,7 +25,7 @@ Any visitor who has not authenticated.
 Authenticated user on any plan (free, pro, team).
 
 ### Permissions
-- Can manage own profile (`/settings/profile`)
+- Can manage own profile via onboarding and account settings (`/settings`)
 - Can view and use core product features
 - Can upgrade/downgrade subscription (`/settings/billing`)
 - Can manage own API keys (`/settings/api-keys`)

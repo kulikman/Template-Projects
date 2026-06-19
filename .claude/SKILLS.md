@@ -2,6 +2,26 @@
 
 Справочник всех скиллов: что делает, когда использовать, примеры вызовов.
 
+Локально реализованы в этом репозитории:
+
+- `/db` → `.claude/skills/supabase-architect/SKILL.md`
+- `/ui` → `.claude/skills/premium-animated-ui/SKILL.md`
+- `/security` → `.claude/skills/security-hardening/SKILL.md`
+- `/ci` → `.claude/skills/github-workflow/SKILL.md`
+- `/scope` → `.claude/skills/product-scope/SKILL.md`
+- `/launch` → `.claude/skills/launch/SKILL.md`
+- `/growth` → `.claude/skills/growth/SKILL.md`
+- `/analytics` → `.claude/skills/analytics/SKILL.md`
+- `/payments` → `.claude/skills/payments/SKILL.md`
+- `/ops` → `.claude/skills/ops/SKILL.md`
+- `/review` → `.claude/skills/review/SKILL.md`
+- `/architect` → `.claude/skills/architect/SKILL.md`
+- `/memory` → `.claude/skills/memory/SKILL.md`
+- `/verify` → `.claude/skills/verification/SKILL.md`
+- `/debug` → `.claude/skills/systematic-debugging/SKILL.md`
+- `/plan` → `.claude/skills/implementation-plan/SKILL.md`
+- `/tdd` → `.claude/skills/test-driven-development/SKILL.md`
+
 ---
 
 ## Принцип работы скиллов
@@ -66,34 +86,6 @@
 
 /ui modal создания новой организации с валидацией Zod + react-hook-form
 ```
-
----
-
-## `/seo` — SEO Machine
-
-**Скилл:** `seo-machine`
-**Роль:** Full-stack SEO инженер. Генерирует все SEO артефакты за один проход.
-**Выдаёт:** `seo-config.ts`, `sitemap.xml`, `robots.txt`, `llms.txt`, FAQ + схема, OG теги, structured data.
-
-**Ключевые слова-триггеры:** SEO, meta теги, sitemap, robots.txt, llms.txt, schema markup, OG теги, поисковая оптимизация
-
-**Примеры вызовов:**
-
-```
-/seo [ваш домен] — [описание продукта], целевая аудитория: [кто], ключи: [keywords]
-
-/seo сгенерируй только llms.txt и llms-full.txt для [домен]
-
-/seo добавь FAQSchema на страницу /pricing
-
-/seo проверь и обнови sitemap — добавились новые роуты /blog и /docs
-
-/seo добавь OG-изображения для всех публичных страниц
-
-/seo настрой canonical URL и hreflang для мультиязычного сайта
-```
-
----
 
 ## `/security` — Security Hardening
 
@@ -186,76 +178,82 @@
 
 ---
 
-## `/content` — Content Engine
+## `/verify` — Verification
 
-**Скилл:** `content-engine`
-**Роль:** SEO-копирайтер. Пишет статьи, гайды, лонгриды с keyword targeting.
-**Выдаёт:** Готовые к публикации статьи с meta тегами, structured data, внутренними ссылками.
+**Скилл:** `verification`
+**Роль:** Строгий verification engineer. Не разрешает заявлять "готово" без свежих доказательств.
+**Выдаёт:** Список проверенных claim'ов, команды, результаты и остаточные риски.
 
-**Ключевые слова-триггеры:** статья, блог пост, гайд, контент, SEO текст, напиши про
+**Ключевые слова-триггеры:** готово, проверь, passing, fixed, commit, push, ship, release, verify
 
 **Примеры вызовов:**
 
 ```
-/content статья "[тема]" — для блога [ваш домен], ключ: [keyword]
+/verify перед коммитом: проверь diff, команды и антигаллюцинации
 
-/content гайд "Как начать работу с [ваш продукт]" — onboarding документация
+/verify работа готова? докажи через package.json и pnpm verify
 
-/content 5 статей для контент-плана по теме: [ваша ниша]
-
-/content landing page copy: hero, features, pricing, FAQ, CTA
+/verify проверь, что не придуманы env vars, routes и команды
 ```
 
 ---
 
-## `/copy` — Copywriter
+## `/debug` — Systematic Debugging
 
-**Скилл:** `telecom-copywriter`
-**Роль:** B2B SaaS копирайтер. Пишет маркетинговые тексты, pitch decks, email-последовательности.
-**Выдаёт:** Маркетинговые тексты, pitch decks, email sequences, продуктовые описания.
+**Скилл:** `systematic-debugging`
+**Роль:** Repro-first debugging engineer. Сначала воспроизводит и ищет root cause, потом чинит.
+**Выдаёт:** Expected vs actual, reproduction, root cause, минимальный фикс, regression test, checks.
 
-**Ключевые слова-триггеры:** маркетинг, копирайт, pitch, email кампания, продуктовый текст, landing page
+**Ключевые слова-триггеры:** баг, ошибка, падает, failing test, runtime error, regression, broken, debug
 
 **Примеры вызовов:**
 
 ```
-/copy pitch deck для [продукт]: [описание], целевая аудитория — [кто]
+/debug pnpm verify падает на TypeScript ошибке
 
-/copy email sequence (5 писем) для onboarding новых пользователей
+/debug кнопка отправляет форму, но API возвращает 500
 
-/copy one-pager для [продукт]: [описание] для [целевой аудитории]
-
-/copy LinkedIn пост анонс запуска [продукт]
-
-/copy case study: как клиент X достиг [результат] с помощью [продукт]
-
-/copy white paper "[тема]" — [N] страниц для lead generation
+/debug тест flaky: найди root cause, не патчь симптом
 ```
 
 ---
 
-## `/ga4` — GA4 + GTM Setup
+## `/plan` — Implementation Plan
 
-**Скилл:** `ga4-gtm-setup`
-**Роль:** Analytics инженер. Настраивает измерение конверсий, аудитории, attribution.
-**Выдаёт:** GTM container JSON, GA4 event схемы, dataLayer код, conversion setup.
+**Скилл:** `implementation-plan`
+**Роль:** Senior engineer для MVP-first планирования. Разбивает сложную работу на проверяемые шаги.
+**Выдаёт:** Goal, source of truth, tasks, files likely to change, verification, risks.
 
-**Ключевые слова-триггеры:** аналитика, GA4, GTM, Google Analytics, конверсии, remarketing, tracking
+**Ключевые слова-триггеры:** план, эпик, roadmap, scope, refactor, много файлов, архитектурный шаг
 
 **Примеры вызовов:**
 
 ```
-/ga4 настрой GA4 + GTM для [домен]: конверсии — регистрация, апгрейд плана, активация
+/plan добавить billing MVP без изменения auth
 
-/ga4 server-side conversion tracking через Vercel Edge (CAPI)
+/plan разбей rollback engine на маленькие проверяемые задачи
 
-/ga4 remarketing аудитории: посетители /pricing, не купившие за 7 дней
+/plan рефакторинг CLI: файлы, тесты, риски
+```
 
-/ga4 ecommerce tracking для подписки: trial_start, subscription_created, churn
+---
 
-/ga4 настрой attribution модель для paid social → регистрация → конверсия
+## `/tdd` — Test-Driven Development
 
-/ga4 GTM container: lead form submission, demo request, contact
+**Скилл:** `test-driven-development`
+**Роль:** Behavior-first engineer. Сначала failing test, потом минимальный код, потом refactor.
+**Выдаёт:** Red/green/refactor отчёт и команды проверки.
+
+**Ключевые слова-триггеры:** тест, regression, bugfix, behavior change, refactor, TDD, failing test
+
+**Примеры вызовов:**
+
+```
+/tdd добавить проверку: next16 запрещает middleware.ts
+
+/tdd воспроизвести баг парсера YAML через failing test
+
+/tdd покрыть CLI команду snapshot regression test
 ```
 
 ---
@@ -267,13 +265,13 @@
 ─────────────────────────────────────────────────────
 Новая таблица / схема / RLS         /db [описание]
 UI компонент / страница             /ui [описание]
-SEO файлы / мета / llms.txt         /seo [сайт + ключи]
 Безопасность / auth / headers       /security [угроза]
 CI/CD / GitHub Actions              /ci [что автоматизировать]
 Проверка кода                       /review [файл или код]
-SEO статья / блог                   /content [тема + ключ]
-Маркетинг / pitch / email           /copy [контекст]
-Аналитика / конверсии               /ga4 [цель]
+Доказать готовность                 /verify [claim]
+Дебаг с root cause                  /debug [симптом]
+План сложной задачи                 /plan [цель]
+TDD для behavior change             /tdd [поведение]
 Сохранить контекст сессии           /memory update
 Восстановить контекст               /memory show
 ```
@@ -283,8 +281,8 @@ SEO статья / блог                   /content [тема + ключ]
 ## Когда скилл НЕ нужен
 
 - Общий вопрос по коду → просто спроси
-- Дебаг конкретного бага → объясни симптом
+- Дебаг конкретного бага → `/debug` + симптом
 - Рефакторинг одного файла → `/review` + правки
-- Архитектурное решение → `/db` или описание задачи
+- Архитектурное решение → `/architect`, `/plan` или описание задачи
 
 Скилл нужен когда нужен **артефакт** (код, файл, конфиг), а не объяснение.
