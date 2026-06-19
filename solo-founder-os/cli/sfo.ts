@@ -3,7 +3,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 
-type Command = 'validate' | 'generate' | 'write-local' | 'dry-run' | 'list' | 'help'
+type Command = 'validate' | 'generate' | 'write-local' | 'merge-local' | 'dry-run' | 'list' | 'help'
 
 type ProjectProfile = {
   project?: string
@@ -30,6 +30,7 @@ type GeneratedFile = {
 
 const ROOT = resolve(process.cwd(), 'solo-founder-os')
 const GENERATED_ROOT = resolve(process.cwd(), '.sfo-generated')
+const MERGED_ROOT = resolve(process.cwd(), '.sfo-merged')
 
 function main() {
   const command = (process.argv[2] ?? 'help') as Command
@@ -51,6 +52,9 @@ function main() {
       return
     case 'write-local':
       writeLocal(target)
+      return
+    case 'merge-local':
+      mergeLocal(target)
       return
     case 'dry-run':
       dryRun(target)
@@ -121,6 +125,29 @@ function writeLocal(target?: string) {
       mkdirSync(dirname(path), { recursive: true })
       writeFileSync(path, file.content, 'utf8')
       console.log(`wrote ${path}`)
+    }
+  }
+}
+
+function mergeLocal(target?: string) {
+  const profiles = filterProfiles(loadProfiles(), target)
+  for (const profile of profiles) {
+    const errors = validateProfile(profile)
+    if (errors.length > 0) {
+      console.log(`${profile.project}: skipped, invalid profile`)
+      for (const error of errors) console.log(`- ${error}`)
+      continue
+    }
+
+    const projectDir = join(MERGED_ROOT, profile.project ?? 'unknown-project')
+    for (const file of buildGeneratedFiles(profile)) {
+      const existingPath = join(GENERATED_ROOT, profile.project ?? 'unknown-project', file.path)
+      const existing = existsSync(existingPath) ? readFileSync(existingPath, 'utf8') : ''
+      const merged = mergeControlledBlocks(existing, file.content)
+      const outputPath = join(projectDir, file.path)
+      mkdirSync(dirname(outputPath), { recursive: true })
+      writeFileSync(outputPath, merged, 'utf8')
+      console.log(`merged ${outputPath}`)
     }
   }
 }
@@ -261,6 +288,44 @@ function readSection(folder: string, name: string, ext: string): string {
   return `<!-- SFO:BEGIN ${folder}/${name} -->\n${content.trim()}\n<!-- SFO:END ${folder}/${name} -->`
 }
 
+function mergeControlledBlocks(existing: string, generated: string): string {
+  if (!existing.trim()) return generated
+
+  let result = existing
+  const blocks = extractControlledBlocks(generated)
+
+  for (const block of blocks) {
+    const pattern = new RegExp(
+      `<!-- SFO:BEGIN ${escapeRegExp(block.id)} -->[\\s\\S]*?<!-- SFO:END ${escapeRegExp(block.id)} -->`,
+      'g',
+    )
+
+    if (pattern.test(result)) {
+      result = result.replace(pattern, block.content)
+    } else {
+      result = `${result.trim()}\n\n${block.content}\n`
+    }
+  }
+
+  return result
+}
+
+function extractControlledBlocks(content: string): Array<{ id: string; content: string }> {
+  const blocks: Array<{ id: string; content: string }> = []
+  const pattern = /<!-- SFO:BEGIN ([^>]+) -->[\s\S]*?<!-- SFO:END \1 -->/g
+  let match: RegExpExecArray | null
+
+  while ((match = pattern.exec(content))) {
+    blocks.push({ id: match[1], content: match[0] })
+  }
+
+  return blocks
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 function parseProfile(input: string): ProjectProfile {
   const profile: ProjectProfile = { inherits: {}, outputs: [], overrides: {} }
   let section: string | null = null
@@ -314,7 +379,7 @@ function parseProfile(input: string): ProjectProfile {
 }
 
 function printHelp() {
-  console.log(`Solo Founder Agent OS CLI\n\nCommands:\n  sfo list\n  sfo validate [project]\n  sfo generate [project]\n  sfo write-local [project]\n  sfo dry-run [project]\n`)
+  console.log(`Solo Founder Agent OS CLI\n\nCommands:\n  sfo list\n  sfo validate [project]\n  sfo generate [project]\n  sfo write-local [project]\n  sfo merge-local [project]\n  sfo dry-run [project]\n`)
 }
 
 function fail(message: string): never {
