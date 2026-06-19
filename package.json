@@ -28,6 +28,7 @@
     "seed": "tsx scripts/seed.ts",
     "sfo": "tsx solo-founder-os/cli/sfo.ts",
     "sfo:list": "tsx solo-founder-os/cli/sfo.ts list",
+    "sfo:status": "tsx solo-founder-os/cli/sfo.ts status",
     "sfo:validate": "tsx solo-founder-os/cli/sfo.ts validate",
     "sfo:generate": "tsx solo-founder-os/cli/sfo.ts generate",
     "sfo:write-local": "tsx solo-founder-os/cli/sfo.ts write-local",
