@@ -47,4 +47,3 @@ overrides:
     - pnpm check
     - pnpm test
     - pnpm build
-    - pnpm eval:ai

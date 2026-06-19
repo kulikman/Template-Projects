@@ -49,6 +49,49 @@ Questions (only if truly blocking):
 - Question
 ```
 
+## Anti-Hallucination Rules
+
+Never invent:
+
+- APIs
+- routes
+- database columns
+- environment variables
+- services
+- external integrations
+- completed work
+
+Never claim something was verified unless the relevant checks were actually run.
+If a file, contract, env var, or integration is missing, state that explicitly
+and continue from the real repository state.
+
+## Protected Files And Sensitive Areas
+
+Do not edit these areas casually. Ask first unless the task explicitly targets them:
+
+- `supabase/migrations/**`
+- `src/lib/supabase/admin.ts`
+- `src/proxy.ts`
+- `src/types/database.ts`
+- `src/app/api/webhooks/stripe/**`
+- `src/app/auth/callback/**`
+
+Do not weaken auth, RLS, billing, webhook, or session-refresh logic for
+convenience.
+
+## Verification Policy
+
+Before commit, run all applicable checks.
+
+For this repository, prefer:
+
+- `pnpm check`
+- `pnpm verify`
+- `pnpm build` for release-sensitive work
+- `pnpm knip` when refactoring or dead-code cleanup is requested
+
+If a check fails, stop and fix it before committing.
+
 ---
 
 ## After Writing Code
@@ -84,7 +127,7 @@ Next recommended step:
 |------------------|------------------------------------------|-------|
 | Framework        | **Next.js 16** (App Router, Turbopack)   | Node.js runtime is default. Edge only when explicit. |
 | UI runtime       | **React 19.2**                           | Server Components by default. |
-| Language         | **TypeScript 5** (strict mode)           | No `any`, no `@ts-ignore`. |
+| Language         | **TypeScript 6** (strict mode)           | No `any`, no `@ts-ignore`. |
 | Styling          | **Tailwind CSS v4** (PostCSS plugin)     | No `tailwind.config.ts`. Theme lives in `globals.css` via `@theme`. |
 | UI primitives    | **shadcn/ui** + `radix-ui` (unified pkg) | Components in `src/components/ui/`. |
 | Icons            | **lucide-react**                         | |
@@ -479,6 +522,8 @@ git add path/to/file1 path/to/file2 ...
 
 Never use `git add .` or `git add -A` — they pull in secrets and junk.
 If many files changed in one logical unit, list them all by name.
+
+Also never use `--no-verify` or `git push --force`.
 
 ## Step 3 — Compose the commit message
 

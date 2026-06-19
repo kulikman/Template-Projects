@@ -25,6 +25,66 @@ For module boundaries and feature public APIs → read `ARCHITECTURE.md`.
 For architectural decisions → read `.claude/instincts.md`.
 For session state → read `.claude/memory/project-state.md`.
 
+## Git Safety Rules
+
+Before commit:
+
+1. Run `git status`
+2. Inspect the diff
+3. Run all applicable checks
+4. Fix failures before commit
+5. Stage only intentional files
+
+Never:
+
+- `git add .`
+- `git add -A`
+- `git push --force`
+- `--no-verify`
+
+Push only if the user explicitly requested push.
+
+## Verification
+
+Run all applicable checks before commit.
+
+Preferred commands in this repo:
+
+- `pnpm check`
+- `pnpm verify`
+- `pnpm build` for release-sensitive work
+
+Do not claim a fix works unless the relevant checks were actually run.
+
+## Anti-Hallucination Rules
+
+Never invent:
+
+- APIs
+- routes
+- database columns
+- environment variables
+- services
+- external integrations
+- completed work
+
+If a contract, file, command, or integration is missing, say so explicitly and
+work from the real codebase instead of assumptions.
+
+## Protected Files And Sensitive Areas
+
+Ask before editing these paths or flows unless the task explicitly targets them:
+
+- `supabase/migrations/**`
+- `src/lib/supabase/admin.ts`
+- `src/proxy.ts`
+- `src/types/database.ts`
+- `src/app/api/webhooks/stripe/**`
+- `src/app/auth/callback/**`
+
+Do not weaken auth, RLS, billing, webhook, or session-refresh logic for
+convenience.
+
 ### When in doubt
 
 Run `cat node_modules/next/package.json | grep version` to confirm the installed

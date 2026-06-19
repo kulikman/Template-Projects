@@ -40,9 +40,9 @@ Subscription state in `public.subscriptions` table — written by webhook handle
 
 | Trigger | Template location |
 |---|---|
-| Welcome | `src/lib/email/templates/welcome.tsx` |
+| Welcome | `src/lib/email/templates.ts` |
 | Password reset | Handled by Supabase Auth (built-in) |
-| Subscription events | `src/lib/email/templates/` (add as needed) |
+| Subscription events | `src/lib/email/templates.ts` |
 
 Key: `RESEND_API_KEY`. From address: `RESEND_FROM_EMAIL` (must be verified domain).
 

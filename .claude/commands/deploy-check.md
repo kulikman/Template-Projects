@@ -26,7 +26,7 @@
 ### Environment
 - [ ] Все required env vars настроены в Vercel Dashboard
 - [ ] `NEXT_PUBLIC_APP_URL` указывает на production домен
-- [ ] `public/robots.txt` — Sitemap URL обновлён
+- [ ] `NEXT_PUBLIC_APP_URL` — `src/app/robots.ts` отдаёт правильный Sitemap URL
 - [ ] `public/llms.txt` — заполнен актуальными данными продукта
 
 ### UX

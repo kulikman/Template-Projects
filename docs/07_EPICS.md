@@ -27,8 +27,8 @@
 
 **Included in this template:**
 - [x] Email/password auth via Supabase
-- [x] OAuth support (Google, GitHub — configure in Supabase dashboard)
-- [x] Magic link support
+- [ ] OAuth provider buttons/actions (callback route is ready for future OAuth flows)
+- [x] Password reset email flow via Supabase Auth
 - [x] Auth callback with onboarding redirect
 - [x] Session refresh in `proxy.ts`
 - [x] Protected routes via `proxy.ts` matcher

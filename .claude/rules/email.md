@@ -2,7 +2,12 @@
 
 > Applied by: coder agent. Read before any email sending, template creation, or transactional flow.
 
-Stack: **Resend** + **React Email** (already scaffolded in `src/lib/email/`).
+Stack: **Resend HTTP API via `fetch`** + plain HTML templates in
+`src/lib/email/templates.ts`.
+
+Do not assume the `resend`, `react-email`, or `@react-email/components`
+packages are installed. Add those dependencies only after an explicit product
+decision.
 
 ---
 
@@ -25,71 +30,61 @@ Never send marketing emails to users who haven't explicitly opted in.
 ## 2. Sending from Server Actions / Route Handlers
 
 ```ts
-// src/lib/email/send.ts
+// src/lib/email/index.ts
 import "server-only"
-import { Resend } from "resend"
 import { getServerEnv } from "@/lib/env"
-
-let _resend: Resend | null = null
-
-function getResend(): Resend {
-  if (_resend) return _resend
-  const { RESEND_API_KEY } = getServerEnv()
-  if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured")
-  _resend = new Resend(RESEND_API_KEY)
-  return _resend
-}
 
 export async function sendEmail(params: {
   to: string
   subject: string
-  react: React.ReactElement
-}): Promise<void> {
-  const resend = getResend()
-  const from = process.env.RESEND_FROM_EMAIL ?? "noreply@example.com"
+  html: string
+  text?: string
+}): Promise<{ ok: true; dryRun?: boolean } | { ok: false; error: string }> {
+  const env = getServerEnv()
 
-  const { error } = await resend.emails.send({
-    from,
-    to: params.to,
-    subject: params.subject,
-    react: params.react,
+  if (!env.RESEND_API_KEY || !env.RESEND_FROM_EMAIL) {
+    return { ok: true, dryRun: true }
+  }
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: env.RESEND_FROM_EMAIL,
+      to: params.to,
+      subject: params.subject,
+      html: params.html,
+      text: params.text,
+    }),
   })
 
-  if (error) throw new Error(`Email send failed: ${error.message}`)
+  if (!response.ok) {
+    return { ok: false, error: `Resend ${response.status}` }
+  }
+
+  return { ok: true }
 }
 ```
 
 ---
 
-## 3. React Email template pattern
+## 3. Plain HTML template pattern
 
-```tsx
-// src/lib/email/templates/welcome.tsx
-import {
-  Body, Button, Container, Head, Heading,
-  Html, Preview, Section, Text
-} from "@react-email/components"
-
-interface Props { name: string; ctaUrl: string }
-
-export function WelcomeEmail({ name, ctaUrl }: Props): React.ReactElement {
-  return (
-    <Html>
-      <Head />
-      <Preview>Welcome to {process.env.NEXT_PUBLIC_APP_NAME}!</Preview>
-      <Body style={{ fontFamily: "sans-serif", background: "#fff" }}>
-        <Container style={{ maxWidth: 560, margin: "0 auto", padding: 24 }}>
-          <Heading>Welcome, {name}!</Heading>
-          <Text>Your account is ready. Click below to get started.</Text>
-          <Section>
-            <Button href={ctaUrl} style={{ background: "#000", color: "#fff", padding: "12px 24px", borderRadius: 6 }}>
-              Go to dashboard →
-            </Button>
-          </Section>
-        </Container>
-      </Body>
-    </Html>
-  )
+```ts
+// src/lib/email/templates.ts
+export function welcomeEmail(input: { name: string; appUrl: string }): {
+  subject: string
+  html: string
+  text: string
+} {
+  return {
+    subject: "Welcome",
+    html: `<p>Welcome, ${input.name}. Open ${input.appUrl} to get started.</p>`,
+    text: `Welcome, ${input.name}. Open ${input.appUrl} to get started.`,
+  }
 }
 ```
 
@@ -116,7 +111,7 @@ export async function GET(request: Request) {
   after(async () => {
     const batch = await getUsersForDigest()
     for (const user of batch) {
-      await sendEmail({ to: user.email, subject: "Your weekly digest", react: <DigestEmail user={user} /> })
+      await sendEmail({ to: user.email, subject: "Your weekly digest", html: renderDigestHtml(user) })
       await new Promise(r => setTimeout(r, 100)) // 100ms between sends
     }
   })
@@ -133,5 +128,5 @@ export async function GET(request: Request) {
 - Always validate recipient email before sending (Zod `.email()`)
 - Unsubscribe links are required for marketing emails — use Resend's list management
 - Never log email bodies — they may contain PII
-- Preview emails locally: `pnpm email:preview` (add script to package.json)
+- Preview emails locally only after adding a real preview script to `package.json`
 - Test with real addresses on staging — Resend's sandbox mode catches issues early

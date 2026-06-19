@@ -18,7 +18,6 @@ Preferred checks:
 ```bash
 pnpm check
 pnpm format:check
-pnpm build:js
 ```
 
 Use only commands that exist in the project.

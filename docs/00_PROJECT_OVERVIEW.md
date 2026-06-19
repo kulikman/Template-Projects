@@ -39,12 +39,12 @@
 | Layer | Choice |
 |---|---|
 | Framework | Next.js 16 (App Router) |
-| Language | TypeScript 5 (strict) |
+| Language | TypeScript 6 (strict) |
 | Styling | Tailwind CSS v4 |
 | UI Primitives | shadcn/ui + radix-ui |
 | Backend | Supabase (Postgres, Auth, Storage) |
 | Payments | Stripe |
-| Email | Resend + React Email |
+| Email | Resend HTTP API + plain HTML templates |
 | Analytics | PostHog |
 | Deployment | Vercel |
 | Package Manager | pnpm 10 |
