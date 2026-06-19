@@ -3,7 +3,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 
-type Command = 'validate' | 'generate' | 'write-local' | 'merge-local' | 'dry-run' | 'list' | 'help'
+type Command = 'validate' | 'generate' | 'write-local' | 'merge-local' | 'dry-run' | 'status' | 'list' | 'help'
 
 type ProjectProfile = {
   project?: string
@@ -28,6 +28,11 @@ type GeneratedFile = {
   content: string
 }
 
+type RuleMeta = {
+  id: string
+  version: string
+}
+
 const ROOT = resolve(process.cwd(), 'solo-founder-os')
 const GENERATED_ROOT = resolve(process.cwd(), '.sfo-generated')
 const MERGED_ROOT = resolve(process.cwd(), '.sfo-merged')
@@ -43,6 +48,9 @@ function main() {
   switch (command) {
     case 'list':
       listProfiles()
+      return
+    case 'status':
+      status(target)
       return
     case 'validate':
       validate(target)
@@ -70,6 +78,34 @@ function listProfiles() {
   const profiles = loadProfiles()
   for (const profile of profiles) {
     console.log(`${profile.project ?? 'unknown'} -> ${profile.repo ?? 'no repo'}`)
+  }
+}
+
+function status(target?: string) {
+  const profiles = filterProfiles(loadProfiles(), target)
+
+  for (const profile of profiles) {
+    console.log(`\n${profile.project ?? 'unknown-project'}`)
+    console.log(`repo: ${profile.repo ?? 'unknown-repo'}`)
+    console.log(`profile status: ${profile.status ?? 'unknown'}`)
+
+    printMetaGroup('core', profile.inherits?.core ?? [], 'core', 'md')
+    printMetaGroup('stacks', profile.inherits?.stacks ?? [], 'stacks', 'md')
+    printMetaGroup('domains', profile.inherits?.domains ?? [], 'domains', 'md')
+    printMetaGroup('skills', profile.inherits?.skills ?? [], 'skills', 'yml')
+  }
+}
+
+function printMetaGroup(label: string, names: string[], folder: string, ext: string) {
+  console.log(`${label}:`)
+  if (!names.length) {
+    console.log('  - none')
+    return
+  }
+
+  for (const name of names) {
+    const meta = readRuleMeta(folder, name, ext)
+    console.log(`  - ${meta.id}@${meta.version}`)
   }
 }
 
@@ -330,7 +366,24 @@ function renderTemplate(template: string, replacements: Record<string, string>):
 function readSection(folder: string, name: string, ext: string): string {
   const path = join(ROOT, folder, `${name}.${ext}`)
   const content = readFileSync(path, 'utf8')
-  return `<!-- SFO:BEGIN ${folder}/${name} -->\n${content.trim()}\n<!-- SFO:END ${folder}/${name} -->`
+  const meta = readRuleMeta(folder, name, ext)
+  return `<!-- SFO:BEGIN ${folder}/${name}@${meta.version} -->\n${content.trim()}\n<!-- SFO:END ${folder}/${name}@${meta.version} -->`
+}
+
+function readRuleMeta(folder: string, name: string, ext: string): RuleMeta {
+  const path = join(ROOT, folder, `${name}.${ext}`)
+  if (!existsSync(path)) return { id: `${folder}/${name}`, version: 'missing' }
+
+  const content = readFileSync(path, 'utf8')
+  const id = findMetaValue(content, 'id') ?? `${folder}/${name}`
+  const version = findMetaValue(content, 'version') ?? 'unknown'
+  return { id, version }
+}
+
+function findMetaValue(content: string, key: string): string | undefined {
+  const pattern = new RegExp(`^${key}:\\s*(.+)$`, 'm')
+  const match = content.match(pattern)
+  return match?.[1]?.trim()
 }
 
 function mergeControlledBlocks(existing: string, generated: string): string {
@@ -424,7 +477,7 @@ function parseProfile(input: string): ProjectProfile {
 }
 
 function printHelp() {
-  console.log(`Solo Founder Agent OS CLI\n\nCommands:\n  sfo list\n  sfo validate [project]\n  sfo generate [project]\n  sfo write-local [project]\n  sfo merge-local [project]\n  sfo dry-run [project]\n`)
+  console.log(`Solo Founder Agent OS CLI\n\nCommands:\n  sfo list\n  sfo status [project]\n  sfo validate [project]\n  sfo generate [project]\n  sfo write-local [project]\n  sfo merge-local [project]\n  sfo dry-run [project]\n`)
 }
 
 function fail(message: string): never {
