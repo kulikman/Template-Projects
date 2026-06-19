@@ -1,3 +1,26 @@
+## [0.4.0](https://github.com/kulikman/Template-Projects/compare/v0.3.2...v0.4.0) (2026-06-19)
+
+### ✨ Features
+
+* add basic conflict detector ([5abbf8e](https://github.com/kulikman/Template-Projects/commit/5abbf8e5c22185f971aa30e13547b16f881052f5))
+* add controlled block merge command ([0319732](https://github.com/kulikman/Template-Projects/commit/03197325790e6798f7643bb7b21b81fa3a80c7e3))
+* add local generation output ([2927c34](https://github.com/kulikman/Template-Projects/commit/2927c3410197abd60fd16e13f031ff964d468c20))
+* add sfo status command ([edcd189](https://github.com/kulikman/Template-Projects/commit/edcd189070a72394b4d542b83e729fadeee453c0))
+* generate agent files from templates ([418f6c4](https://github.com/kulikman/Template-Projects/commit/418f6c40d4b81b45f92c8542b8ac737eb595bb58))
+
+### 🐛 Bug Fixes
+
+* unblock cli typecheck and lint ([25dcc2f](https://github.com/kulikman/Template-Projects/commit/25dcc2f88bc7c4c7bec3ca4189a4c2e9167fd8f5))
+
+### 📝 Docs
+
+* add sfo cli usage ([139317d](https://github.com/kulikman/Template-Projects/commit/139317d28cffc948f88782316e15128897b6b096))
+* **docs:** add /docs template folder and prompt library ([4ebd312](https://github.com/kulikman/Template-Projects/commit/4ebd3127d5ee27c810a98e7b8c42f67cd921cbff))
+* document controlled block merge ([a301414](https://github.com/kulikman/Template-Projects/commit/a301414aa1609e498748933b113bb344fbbd63e7))
+* document sfo status command ([8cb1ff2](https://github.com/kulikman/Template-Projects/commit/8cb1ff25b03f327b7bb7524c0012ba1b79df1222))
+* expand cursor project rules ([5c627df](https://github.com/kulikman/Template-Projects/commit/5c627df658eafbd53a6e4f875bc5e5ae72c0993f))
+* update sfo cli local write docs ([ddcff84](https://github.com/kulikman/Template-Projects/commit/ddcff848a05add18fcb7b6eb399a7b4bc0bd435a))
+
 ## [0.3.2](https://github.com/kulikman/Template-Projects/compare/v0.3.1...v0.3.2) (2026-05-27)
 
 ### 🐛 Bug Fixes
