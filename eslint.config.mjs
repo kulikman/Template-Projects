@@ -105,6 +105,12 @@ const eslintConfig = defineConfig([
       "import/no-default-export": "error",
     },
   },
+  {
+    files: ["solo-founder-os/cli/**/*.ts"],
+    rules: {
+      "no-console": "off",
+    },
+  },
   // Ban raw `process.env` access — must go through `getServerEnv()` /
   // `getClientEnv()` from `@/lib/env`. Deliberate exceptions are listed
   // in `ignores` (they document why they need raw access).

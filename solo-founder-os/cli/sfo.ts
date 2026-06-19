@@ -414,7 +414,12 @@ function extractControlledBlocks(content: string): Array<{ id: string; content: 
   let match: RegExpExecArray | null
 
   while ((match = pattern.exec(content))) {
-    blocks.push({ id: match[1], content: match[0] })
+    const id = match[1]
+    const blockContent = match[0]
+
+    if (!id || !blockContent) continue
+
+    blocks.push({ id, content: blockContent })
   }
 
   return blocks
@@ -443,6 +448,7 @@ function parseProfile(input: string): ProjectProfile {
     if (!line.startsWith(' ') && trimmed.includes(':')) {
       const [key, ...rest] = trimmed.split(':')
       const value = rest.join(':').trim()
+      if (!key) continue
       ;(profile as Record<string, unknown>)[key] = value
       continue
     }
