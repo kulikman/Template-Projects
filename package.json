@@ -34,6 +34,8 @@
     "sfo:write-local": "tsx solo-founder-os/cli/sfo.ts write-local",
     "sfo:merge-local": "tsx solo-founder-os/cli/sfo.ts merge-local",
     "sfo:dry-run": "tsx solo-founder-os/cli/sfo.ts dry-run",
+    "sfo:snapshot": "tsx solo-founder-os/cli/sfo.ts snapshot",
+    "sfo:history": "tsx solo-founder-os/cli/sfo.ts history",
     "git:qp": "git add . && git commit -m \"chore: quick push\" && git push",
     "prepare": "husky || true"
   },

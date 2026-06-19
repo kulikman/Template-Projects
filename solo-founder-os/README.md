@@ -28,6 +28,7 @@ Phase 1 focuses on:
 5. Project profiles
 6. Generator specification
 7. Sync specification
+8. Snapshot history metadata
 
 ## Target generated outputs
 
@@ -53,3 +54,9 @@ Generated blocks must be clearly marked and updateable without overwriting manua
 ```
 
 Manual project sections must stay outside generated blocks.
+
+## Snapshot metadata
+
+The rollback MVP starts with metadata only. Running `sfo snapshot [project]`
+creates manifests under `.sfo-history/` without restoring files or touching
+manual sections.
