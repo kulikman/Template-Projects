@@ -22,6 +22,14 @@ import type { UserConfig } from '@commitlint/types'
  */
 const config: UserConfig = {
   extends: ['@commitlint/config-conventional'],
+  ignores: [
+    (message) => {
+      const header = message.split('\n')[0]?.trim() ?? ''
+
+      // Keep conventional commits validated, but allow simple free-form headers.
+      return header.length > 0 && !/^[a-z]+(\([^)]+\))?!?:\s.+$/.test(header)
+    },
+  ],
   rules: {
     // Max subject line length — keeps git log readable.
     'header-max-length': [2, 'always', 100],
