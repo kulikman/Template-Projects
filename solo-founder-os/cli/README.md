@@ -6,6 +6,8 @@ Minimal CLI for Solo Founder Agent OS.
 
 ```bash
 pnpm sfo:list
+pnpm sfo:status
+pnpm sfo:status neosim-web
 pnpm sfo:validate
 pnpm sfo:validate neosim-web
 pnpm sfo:generate neosim-web
@@ -21,6 +23,7 @@ This is the first safe MVP skeleton.
 It can:
 
 - list project profiles
+- show connected rule/skill versions with `sfo status`
 - validate references to core, stack, domain and skill files
 - detect conflicting `next15` + `next16` stack usage
 - generate concrete agent files from templates to stdout
@@ -29,6 +32,24 @@ It can:
 - perform a dry-run summary
 
 It does not write to other repositories yet.
+
+## Version/status view
+
+```bash
+pnpm sfo:status neosim-web
+```
+
+Shows which rule and skill versions a profile uses:
+
+```text
+neosim-web
+repo: kulikman/neosim-web
+profile status: draft
+core:
+  - core/git-protocol@1.0.0
+stacks:
+  - stack/next16@1.0.0
+```
 
 ## Safe local generation
 
@@ -65,9 +86,9 @@ Writes merged files to:
 The merge updates only blocks like:
 
 ```md
-<!-- SFO:BEGIN core/git-protocol -->
+<!-- SFO:BEGIN core/git-protocol@1.0.0 -->
 ...
-<!-- SFO:END core/git-protocol -->
+<!-- SFO:END core/git-protocol@1.0.0 -->
 ```
 
 Manual content outside SFO blocks is preserved.
@@ -75,7 +96,6 @@ Manual content outside SFO blocks is preserved.
 ## Next steps
 
 1. Add real YAML parser or keep strict internal YAML subset.
-2. Add conflict detector rules.
-3. Add GitHub sync via PR mode.
-4. Add rollback metadata.
-5. Add agent behavior tests.
+2. Add GitHub sync via PR mode.
+3. Add rollback metadata.
+4. Add agent behavior tests.
