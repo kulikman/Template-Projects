@@ -1,3 +1,9 @@
+## [0.5.0](https://github.com/kulikman/Template-Projects/compare/v0.4.0...v0.5.0) (2026-06-19)
+
+### ✨ Features
+
+* **solo-founder-os:** add snapshot history mvp ([4c902ef](https://github.com/kulikman/Template-Projects/commit/4c902ef52e7c573978c5fe53c30aac8cde78252c))
+
 ## [0.4.0](https://github.com/kulikman/Template-Projects/compare/v0.3.2...v0.4.0) (2026-06-19)
 
 ### ✨ Features
