@@ -1,11 +1,23 @@
 #!/usr/bin/env tsx
 
+import { randomUUID } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-type Command = 'validate' | 'generate' | 'write-local' | 'merge-local' | 'dry-run' | 'status' | 'list' | 'help'
+export type Command =
+  | 'validate'
+  | 'generate'
+  | 'write-local'
+  | 'merge-local'
+  | 'dry-run'
+  | 'status'
+  | 'list'
+  | 'snapshot'
+  | 'history'
+  | 'help'
 
-type ProjectProfile = {
+export type ProjectProfile = {
   project?: string
   repo?: string
   status?: string
@@ -33,17 +45,32 @@ type RuleMeta = {
   version: string
 }
 
+export type SnapshotFileRecord = {
+  path: string
+  bytes: number
+}
+
+export type SnapshotManifest = {
+  batchId: string
+  project: string
+  repo: string
+  profileStatus: string
+  timestamp: string
+  command: 'snapshot'
+  generatedFiles: SnapshotFileRecord[]
+  ruleVersions: string[]
+}
+
 const ROOT = resolve(process.cwd(), 'solo-founder-os')
 const GENERATED_ROOT = resolve(process.cwd(), '.sfo-generated')
 const MERGED_ROOT = resolve(process.cwd(), '.sfo-merged')
+const HISTORY_ROOT = resolve(process.cwd(), '.sfo-history')
 
-function main() {
-  const command = (process.argv[2] ?? 'help') as Command
-  const target = process.argv[3]
+export function runCli(argv: string[] = process.argv.slice(2)): void {
+  const command = normalizeCommand(argv[0])
+  const target = argv[1]
 
-  if (!existsSync(ROOT)) {
-    fail(`solo-founder-os directory was not found at ${ROOT}`)
-  }
+  ensureRootExists()
 
   switch (command) {
     case 'list':
@@ -67,10 +94,39 @@ function main() {
     case 'dry-run':
       dryRun(target)
       return
+    case 'snapshot':
+      snapshot(target)
+      return
+    case 'history':
+      history(target)
+      return
     case 'help':
     default:
       printHelp()
-      return
+  }
+}
+
+function normalizeCommand(value?: string): Command {
+  switch (value) {
+    case 'list':
+    case 'status':
+    case 'validate':
+    case 'generate':
+    case 'write-local':
+    case 'merge-local':
+    case 'dry-run':
+    case 'snapshot':
+    case 'history':
+    case 'help':
+      return value
+    default:
+      return 'help'
+  }
+}
+
+function ensureRootExists(): void {
+  if (!existsSync(ROOT)) {
+    fail(`solo-founder-os directory was not found at ${ROOT}`)
   }
 }
 
@@ -82,7 +138,7 @@ function listProfiles() {
 }
 
 function status(target?: string) {
-  const profiles = filterProfiles(loadProfiles(), target)
+  const profiles = resolveProfiles(loadProfiles(), target)
 
   for (const profile of profiles) {
     console.log(`\n${profile.project ?? 'unknown-project'}`)
@@ -110,7 +166,7 @@ function printMetaGroup(label: string, names: string[], folder: string, ext: str
 }
 
 function validate(target?: string) {
-  const profiles = filterProfiles(loadProfiles(), target)
+  const profiles = resolveProfiles(loadProfiles(), target)
   let errors = 0
 
   for (const profile of profiles) {
@@ -128,12 +184,11 @@ function validate(target?: string) {
 }
 
 function generate(target?: string) {
-  const profiles = filterProfiles(loadProfiles(), target)
+  const profiles = resolveProfiles(loadProfiles(), target)
   for (const profile of profiles) {
-    const errors = validateProfile(profile).filter((item) => item.startsWith('error:'))
+    const errors = validationErrors(profile)
     if (errors.length > 0) {
-      console.log(`${profile.project}: skipped, invalid profile`)
-      for (const error of errors) console.log(`- ${error}`)
+      reportSkippedProfile(profile, errors)
       continue
     }
 
@@ -146,12 +201,11 @@ function generate(target?: string) {
 }
 
 function writeLocal(target?: string) {
-  const profiles = filterProfiles(loadProfiles(), target)
+  const profiles = resolveProfiles(loadProfiles(), target)
   for (const profile of profiles) {
-    const errors = validateProfile(profile).filter((item) => item.startsWith('error:'))
+    const errors = validationErrors(profile)
     if (errors.length > 0) {
-      console.log(`${profile.project}: skipped, invalid profile`)
-      for (const error of errors) console.log(`- ${error}`)
+      reportSkippedProfile(profile, errors)
       continue
     }
 
@@ -166,12 +220,11 @@ function writeLocal(target?: string) {
 }
 
 function mergeLocal(target?: string) {
-  const profiles = filterProfiles(loadProfiles(), target)
+  const profiles = resolveProfiles(loadProfiles(), target)
   for (const profile of profiles) {
-    const errors = validateProfile(profile).filter((item) => item.startsWith('error:'))
+    const errors = validationErrors(profile)
     if (errors.length > 0) {
-      console.log(`${profile.project}: skipped, invalid profile`)
-      for (const error of errors) console.log(`- ${error}`)
+      reportSkippedProfile(profile, errors)
       continue
     }
 
@@ -189,14 +242,14 @@ function mergeLocal(target?: string) {
 }
 
 function dryRun(target?: string) {
-  const profiles = filterProfiles(loadProfiles(), target)
+  const profiles = resolveProfiles(loadProfiles(), target)
   for (const profile of profiles) {
     const validation = validateProfile(profile)
     const errors = validation.filter((item) => item.startsWith('error:'))
     const warnings = validation.filter((item) => item.startsWith('warning:'))
     const files = errors.length ? [] : buildGeneratedFiles(profile)
-    console.log(`\n${profile.project}`)
-    console.log(`repo: ${profile.repo}`)
+    console.log(`\n${profile.project ?? 'unknown-project'}`)
+    console.log(`repo: ${profile.repo ?? 'unknown-repo'}`)
     console.log(`status: ${errors.length ? 'invalid' : warnings.length ? 'valid with warnings' : 'valid'}`)
     console.log(`outputs: ${(profile.outputs ?? []).join(', ') || 'none'}`)
     console.log(`generated files: ${files.map((file) => file.path).join(', ') || 'none'}`)
@@ -208,21 +261,82 @@ function dryRun(target?: string) {
   }
 }
 
-function loadProfiles(): ProjectProfile[] {
-  const dir = join(ROOT, 'project-profiles')
+function snapshot(target?: string) {
+  const profiles = resolveProfiles(loadProfiles(), target)
+  let created = 0
+  let blocked = 0
+
+  for (const profile of profiles) {
+    const errors = validationErrors(profile)
+    if (errors.length > 0) {
+      blocked += 1
+      reportSkippedProfile(profile, errors)
+      continue
+    }
+
+    const manifest = createSnapshotManifest(profile, buildGeneratedFiles(profile))
+    const manifestPath = writeSnapshotManifest(manifest)
+    created += 1
+    console.log(`snapshotted ${manifest.project} -> ${manifestPath}`)
+  }
+
+  if (created === 0 && blocked > 0) process.exitCode = 1
+}
+
+function history(target?: string) {
+  const historyTarget = target ? resolveProfiles(loadProfiles(), target)[0]?.project ?? target : undefined
+  const entries = readSnapshotHistory({ target: historyTarget })
+
+  if (!entries.length) {
+    console.log(historyTarget ? `No snapshot history found for ${historyTarget}.` : 'No snapshot history found.')
+    return
+  }
+
+  let currentProject: string | null = null
+
+  for (const entry of entries) {
+    if (entry.project !== currentProject) {
+      if (currentProject) console.log('')
+      console.log(entry.project)
+      currentProject = entry.project
+    }
+
+    console.log(
+      `- ${entry.timestamp} | batch=${entry.batchId} | files=${entry.generatedFiles.length} | repo=${entry.repo}`,
+    )
+  }
+}
+
+function reportSkippedProfile(profile: ProjectProfile, errors: string[]) {
+  console.log(`${profile.project ?? 'unknown-project'}: skipped, invalid profile`)
+  for (const error of errors) console.log(`- ${error}`)
+}
+
+export function loadProfiles(root: string = ROOT): ProjectProfile[] {
+  const dir = join(root, 'project-profiles')
   if (!existsSync(dir)) fail(`project-profiles directory was not found at ${dir}`)
 
   return readdirSync(dir)
     .filter((file) => file.endsWith('.yml') || file.endsWith('.yaml'))
+    .sort()
     .map((file) => parseProfile(readFileSync(join(dir, file), 'utf8')))
 }
 
-function filterProfiles(profiles: ProjectProfile[], target?: string): ProjectProfile[] {
+export function resolveProfiles(profiles: ProjectProfile[], target?: string): ProjectProfile[] {
+  if (!target) return profiles
+
+  const matches = filterProfiles(profiles, target)
+  if (matches.length > 0) return matches
+
+  throw new Error(`project profile not found: ${target}`)
+}
+
+export function filterProfiles(profiles: ProjectProfile[], target?: string): ProjectProfile[] {
   if (!target) return profiles
   return profiles.filter((profile) => profile.project === target || profile.repo === target)
 }
 
-function validateProfile(profile: ProjectProfile): string[] {
+export function validateProfile(profile: ProjectProfile): string[] {
   const errors: string[] = []
 
   if (!profile.project) errors.push('error: missing project')
@@ -247,6 +361,10 @@ function validateProfile(profile: ProjectProfile): string[] {
   errors.push(...detectConflicts(profile))
 
   return errors
+}
+
+function validationErrors(profile: ProjectProfile): string[] {
+  return validateProfile(profile).filter((item) => item.startsWith('error:'))
 }
 
 function detectConflicts(profile: ProjectProfile): string[] {
@@ -294,7 +412,7 @@ function hasAny(source: string[], values: string[]): boolean {
   return values.some((value) => source.includes(value))
 }
 
-function buildGeneratedFiles(profile: ProjectProfile): GeneratedFile[] {
+export function buildGeneratedFiles(profile: ProjectProfile): GeneratedFile[] {
   const rulesBundle = buildRuleBundle(profile)
   const replacements = buildReplacements(profile, rulesBundle)
 
@@ -408,7 +526,7 @@ function mergeControlledBlocks(existing: string, generated: string): string {
   return result
 }
 
-function extractControlledBlocks(content: string): Array<{ id: string; content: string }> {
+export function extractControlledBlocks(content: string): Array<{ id: string; content: string }> {
   const blocks: Array<{ id: string; content: string }> = []
   const pattern = /<!-- SFO:BEGIN ([^>]+) -->[\s\S]*?<!-- SFO:END \1 -->/g
   let match: RegExpExecArray | null
@@ -429,7 +547,7 @@ function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-function parseProfile(input: string): ProjectProfile {
+export function parseProfile(input: string): ProjectProfile {
   const profile: ProjectProfile = { inherits: {}, outputs: [], overrides: {} }
   let section: string | null = null
   let subsection: string | null = null
@@ -482,8 +600,115 @@ function parseProfile(input: string): ProjectProfile {
   return profile
 }
 
+export function createSnapshotManifest(
+  profile: ProjectProfile,
+  generatedFiles: GeneratedFile[],
+  options: { timestamp?: string; batchId?: string } = {},
+): SnapshotManifest {
+  const timestamp = options.timestamp ?? new Date().toISOString()
+
+  return {
+    batchId: options.batchId ?? createBatchId(timestamp),
+    project: profile.project ?? 'unknown-project',
+    repo: profile.repo ?? 'unknown-repo',
+    profileStatus: profile.status ?? 'unknown',
+    timestamp,
+    command: 'snapshot',
+    generatedFiles: generatedFiles.map((file) => ({
+      path: file.path,
+      bytes: Buffer.byteLength(file.content, 'utf8'),
+    })),
+    ruleVersions: collectRuleVersions(profile),
+  }
+}
+
+function collectRuleVersions(profile: ProjectProfile): string[] {
+  return [
+    ...collectMetaRefs('core', profile.inherits?.core ?? [], 'md'),
+    ...collectMetaRefs('stacks', profile.inherits?.stacks ?? [], 'md'),
+    ...collectMetaRefs('domains', profile.inherits?.domains ?? [], 'md'),
+    ...collectMetaRefs('skills', profile.inherits?.skills ?? [], 'yml'),
+  ]
+}
+
+function collectMetaRefs(folder: string, names: string[], ext: string): string[] {
+  return names.map((name) => {
+    const meta = readRuleMeta(folder, name, ext)
+    return `${meta.id}@${meta.version}`
+  })
+}
+
+function createBatchId(timestamp: string): string {
+  const safeTimestamp = timestamp.replace(/[:.]/g, '-')
+  return `${safeTimestamp}-${randomUUID().slice(0, 8)}`
+}
+
+export function writeSnapshotManifest(
+  manifest: SnapshotManifest,
+  historyRoot: string = HISTORY_ROOT,
+): string {
+  const projectDir = join(historyRoot, manifest.project)
+  mkdirSync(projectDir, { recursive: true })
+
+  const manifestPath = join(projectDir, `${manifest.batchId}.json`)
+  writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8')
+  return manifestPath
+}
+
+export function readSnapshotHistory(options: {
+  historyRoot?: string
+  target?: string
+} = {}): SnapshotManifest[] {
+  const historyRoot = options.historyRoot ?? HISTORY_ROOT
+  if (!existsSync(historyRoot)) return []
+
+  const projectDirs = resolveHistoryProjects(historyRoot, options.target)
+  const manifests: SnapshotManifest[] = []
+
+  for (const project of projectDirs) {
+    const projectDir = join(historyRoot, project)
+    if (!existsSync(projectDir)) continue
+
+    const files = readdirSync(projectDir)
+      .filter((file) => file.endsWith('.json'))
+      .sort()
+
+    for (const file of files) {
+      const path = join(projectDir, file)
+      try {
+        const manifest = JSON.parse(readFileSync(path, 'utf8')) as SnapshotManifest
+        manifests.push(manifest)
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error)
+        console.warn(`warning: failed to read snapshot manifest ${path}: ${message}`)
+      }
+    }
+  }
+
+  return manifests.sort((left, right) => {
+    if (left.project !== right.project) return left.project.localeCompare(right.project)
+    return right.timestamp.localeCompare(left.timestamp)
+  })
+}
+
+function resolveHistoryProjects(historyRoot: string, target?: string): string[] {
+  if (!target) {
+    return readdirSync(historyRoot)
+      .filter((entry) => existsSync(join(historyRoot, entry)))
+      .sort()
+  }
+
+  const profiles = loadProfiles()
+  const matches = filterProfiles(profiles, target).map((profile) => profile.project).filter(Boolean)
+  if (matches.length > 0) return matches as string[]
+
+  return [target]
+}
+
 function printHelp() {
-  console.log(`Solo Founder Agent OS CLI\n\nCommands:\n  sfo list\n  sfo status [project]\n  sfo validate [project]\n  sfo generate [project]\n  sfo write-local [project]\n  sfo merge-local [project]\n  sfo dry-run [project]\n`)
+  console.log(
+    `Solo Founder Agent OS CLI\n\nCommands:\n  sfo list\n  sfo status [project]\n  sfo validate [project]\n  sfo generate [project]\n  sfo write-local [project]\n  sfo merge-local [project]\n  sfo dry-run [project]\n  sfo snapshot [project]\n  sfo history [project]\n`,
+  )
 }
 
 function fail(message: string): never {
@@ -491,4 +716,18 @@ function fail(message: string): never {
   process.exit(1)
 }
 
-main()
+function main() {
+  try {
+    runCli()
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    fail(message)
+  }
+}
+
+const isDirectExecution =
+  process.argv[1] !== undefined && resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+
+if (isDirectExecution) {
+  main()
+}
