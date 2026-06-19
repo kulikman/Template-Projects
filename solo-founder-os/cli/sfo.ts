@@ -1,9 +1,9 @@
 #!/usr/bin/env tsx
 
-import { existsSync, readFileSync, readdirSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
 
-type Command = 'validate' | 'generate' | 'dry-run' | 'list' | 'help'
+type Command = 'validate' | 'generate' | 'write-local' | 'dry-run' | 'list' | 'help'
 
 type ProjectProfile = {
   project?: string
@@ -29,6 +29,7 @@ type GeneratedFile = {
 }
 
 const ROOT = resolve(process.cwd(), 'solo-founder-os')
+const GENERATED_ROOT = resolve(process.cwd(), '.sfo-generated')
 
 function main() {
   const command = (process.argv[2] ?? 'help') as Command
@@ -47,6 +48,9 @@ function main() {
       return
     case 'generate':
       generate(target)
+      return
+    case 'write-local':
+      writeLocal(target)
       return
     case 'dry-run':
       dryRun(target)
@@ -97,6 +101,26 @@ function generate(target?: string) {
     for (const file of files) {
       console.log(`\n--- ${profile.project}: ${file.path} ---\n`)
       console.log(file.content)
+    }
+  }
+}
+
+function writeLocal(target?: string) {
+  const profiles = filterProfiles(loadProfiles(), target)
+  for (const profile of profiles) {
+    const errors = validateProfile(profile)
+    if (errors.length > 0) {
+      console.log(`${profile.project}: skipped, invalid profile`)
+      for (const error of errors) console.log(`- ${error}`)
+      continue
+    }
+
+    const projectDir = join(GENERATED_ROOT, profile.project ?? 'unknown-project')
+    for (const file of buildGeneratedFiles(profile)) {
+      const path = join(projectDir, file.path)
+      mkdirSync(dirname(path), { recursive: true })
+      writeFileSync(path, file.content, 'utf8')
+      console.log(`wrote ${path}`)
     }
   }
 }
@@ -183,6 +207,7 @@ function templateForOutput(output: string): string {
     '.claude/commands/check.md': 'claude-check.md.tpl',
     '.claude/commands/save-work.md': 'claude-save-work.md.tpl',
     '.claude/commands/release-work.md': 'claude-release-work.md.tpl',
+    '.claude/commands/review-work.md': 'claude-review-work.md.tpl',
   }
 
   const templateName = map[output]
@@ -289,7 +314,7 @@ function parseProfile(input: string): ProjectProfile {
 }
 
 function printHelp() {
-  console.log(`Solo Founder Agent OS CLI\n\nCommands:\n  sfo list\n  sfo validate [project]\n  sfo generate [project]\n  sfo dry-run [project]\n`)
+  console.log(`Solo Founder Agent OS CLI\n\nCommands:\n  sfo list\n  sfo validate [project]\n  sfo generate [project]\n  sfo write-local [project]\n  sfo dry-run [project]\n`)
 }
 
 function fail(message: string): never {
