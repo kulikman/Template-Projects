@@ -1,3 +1,9 @@
+## [0.13.3](https://github.com/kulikman/Template-Projects/compare/v0.13.2...v0.13.3) (2026-06-20)
+
+### 🐛 Bug Fixes
+
+* **sfo:** sync complete canonical policy bundle ([55b754b](https://github.com/kulikman/Template-Projects/commit/55b754b14e1b2048c89784068abae28307b6b4a9))
+
 ## [0.13.2](https://github.com/kulikman/Template-Projects/compare/v0.13.1...v0.13.2) (2026-06-20)
 
 ### 🐛 Bug Fixes
