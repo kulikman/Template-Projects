@@ -17,32 +17,17 @@ jobs:
     name: Sync policy bundle by pull request
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    env:
-      HAS_GH_PAT: ${{ secrets.GH_PAT != '' }}
-      SYNC_TOKEN: ${{ inputs.dry_run && github.token || secrets.GH_PAT }}
     steps:
       - name: Checkout source repository
         uses: actions/checkout@v6
 
-      - name: Require PAT for write sync
-        if: ${{ inputs.dry_run == false && env.HAS_GH_PAT != 'true' }}
-        run: |
-          echo "GH_PAT repository secret is required when dry_run is false." >&2
-          exit 1
+      - name: Print dry-run sync plan
+        if: ${{ inputs.dry_run == true }}
+        run: node scripts/agent-policy-sync-dry-run.mjs
 
-      - name: Sync agent policy files
-        uses: Redocly/repo-file-sync-action@main
-        with:
-          GH_PAT: ${{ env.SYNC_TOKEN }}
-          CONFIG_PATH: .github/agent-policy-sync.yml
-          PR_LABELS: |
-            agent-policy-sync
-            automated-pr
-          ASSIGNEES: kulikman
-          COMMIT_PREFIX: "chore(agent-policy): "
-          COMMIT_BODY: |
-            Source: kulikman/Template-Projects
-            Policy version: see .agent-policy-version
-            Review checklist: docs/23_AGENT_POLICY_ROLLOUT.md
-          BRANCH_PREFIX: agent-policy-sync/SOURCE_REPO_NAME
-          DRY_RUN: ${{ inputs.dry_run }}
+      - name: Require PAT for write sync
+        if: ${{ inputs.dry_run == false }}
+        run: |
+          echo "Write sync is intentionally disabled until the PR engine is implemented." >&2
+          echo "GH_PAT will be required before enabling dry_run=false." >&2
+          exit 1

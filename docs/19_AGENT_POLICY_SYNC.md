@@ -2,7 +2,7 @@
 
 Updated: 2026-06-20
 
-This repo contains a manual, PR-only sync workflow for the canonical Solo
+This repo contains a manual dry-run sync workflow for the canonical Solo
 Founder Agent OS policy bundle.
 
 ## Workflow
@@ -20,8 +20,18 @@ Default mode is dry-run:
 dry_run: true
 ```
 
-Set `dry_run` to `false` only when you want the action to create sync branches
-and pull requests in target repositories.
+`dry_run: false` is intentionally blocked until the custom PR engine is
+implemented.
+
+## Local Dry Run
+
+```text
+pnpm agent:sync-dry-run
+```
+
+The local dry run reads `.github/agent-policy-sync.yml` and
+`docs/18_AGENT_REPO_INVENTORY.md`, then compares canonical policy bundle files
+against local repository checkouts.
 
 ## Sync Config
 
@@ -29,7 +39,7 @@ and pull requests in target repositories.
 .github/agent-policy-sync.yml
 ```
 
-The config syncs only canonical policy bundle files:
+The config plans sync for only canonical policy bundle files:
 
 - `.agent-policy-version`
 - `solo-founder-os/core/`
@@ -43,23 +53,22 @@ It does not sync live repository files such as `AGENTS.md`, `CLAUDE.md`,
 repo-specific manual sections and need a safer generated-block workflow before
 automatic updates.
 
-## Required Secret
+## Required Secret For Future Write Sync
 
-The workflow requires a repository secret:
+Future write sync will require a repository secret:
 
 ```text
 GH_PAT
 ```
 
-`repo-file-sync-action` requires a personal access token for cross-repository
-write access. The default `GITHUB_TOKEN` is not enough for this use case.
+Cross-repository write access requires a personal access token. The default
+`GITHUB_TOKEN` is not enough for creating branches and pull requests in other
+repositories.
 
 ## Safety Rules
 
-- Sync opens pull requests; it should not push directly to target default
-  branches.
+- Current workflow is dry-run only.
 - Keep `dry_run: true` for test runs.
-- Review generated PRs before merge.
 - Do not add `AGENTS.md`, `CLAUDE.md`, `.claude/` or `.cursor/` to this sync
   config until generated-block merging exists.
 - Exclude archived and miscellaneous local-only repositories from the active

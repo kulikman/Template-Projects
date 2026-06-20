@@ -28,6 +28,7 @@
     "seed": "tsx scripts/seed.ts",
     "agent:inventory": "node scripts/agent-policy-inventory.mjs",
     "agent:policy-check": "node scripts/agent-policy-check.mjs",
+    "agent:sync-dry-run": "node scripts/agent-policy-sync-dry-run.mjs",
     "agent:status": "node scripts/agent-policy-status.mjs",
     "sfo": "tsx solo-founder-os/cli/sfo.ts",
     "sfo:list": "tsx solo-founder-os/cli/sfo.ts list",
