@@ -504,7 +504,7 @@ function findMetaValue(content: string, key: string): string | undefined {
   return match?.[1]?.trim()
 }
 
-function mergeControlledBlocks(existing: string, generated: string): string {
+export function mergeControlledBlocks(existing: string, generated: string): string {
   if (!existing.trim()) return generated
 
   let result = existing
