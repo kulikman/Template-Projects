@@ -25,6 +25,7 @@ Fill it in when starting a new project. Keep it updated as the project evolves.
 | `13_SECURITY_CHECKLIST.md` | Security audit checklist | Before production deploy |
 | `14_CHANGELOG.md` | Product-level changelog | After each release |
 | `15_DECISIONS_LOG.md` | Architectural decision records | When a meaningful choice is made |
+| `17_AGENT_POLICY_SOURCE.md` | Canonical Solo Founder Agent OS policy source | When agent rules or policy packs change |
 
 ---
 
