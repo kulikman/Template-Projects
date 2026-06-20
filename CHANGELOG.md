@@ -1,3 +1,9 @@
+## [0.9.0](https://github.com/kulikman/Template-Projects/compare/v0.8.0...v0.9.0) (2026-06-20)
+
+### ✨ Features
+
+* **ci:** add manual agent policy sync workflow ([a6d3654](https://github.com/kulikman/Template-Projects/commit/a6d3654cd42432f51b2f103b1fb0fa19bac29a5e))
+
 ## [0.8.0](https://github.com/kulikman/Template-Projects/compare/v0.7.0...v0.8.0) (2026-06-20)
 
 ### ✨ Features
