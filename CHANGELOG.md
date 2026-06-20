@@ -1,3 +1,9 @@
+## [0.7.0](https://github.com/kulikman/Template-Projects/compare/v0.6.0...v0.7.0) (2026-06-20)
+
+### ✨ Features
+
+* **sfo:** define canonical agent policy source ([440560d](https://github.com/kulikman/Template-Projects/commit/440560d15db3f7f50174f14643f0cb1d9ce79beb))
+
 ## [0.6.0](https://github.com/kulikman/Template-Projects/compare/v0.5.0...v0.6.0) (2026-06-19)
 
 ### ✨ Features
