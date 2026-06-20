@@ -1,3 +1,9 @@
+## [0.10.0](https://github.com/kulikman/Template-Projects/compare/v0.9.0...v0.10.0) (2026-06-20)
+
+### ✨ Features
+
+* **sfo:** add stack and domain policy packs ([5b2a809](https://github.com/kulikman/Template-Projects/commit/5b2a8096d6d2a5d40c3244a2752dbb09f862b223))
+
 ## [0.9.0](https://github.com/kulikman/Template-Projects/compare/v0.8.0...v0.9.0) (2026-06-20)
 
 ### ✨ Features
