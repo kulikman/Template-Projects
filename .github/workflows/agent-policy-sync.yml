@@ -17,14 +17,23 @@ jobs:
     name: Sync policy bundle by pull request
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      HAS_GH_PAT: ${{ secrets.GH_PAT != '' }}
+      SYNC_TOKEN: ${{ inputs.dry_run && github.token || secrets.GH_PAT }}
     steps:
       - name: Checkout source repository
         uses: actions/checkout@v6
 
+      - name: Require PAT for write sync
+        if: ${{ inputs.dry_run == false && env.HAS_GH_PAT != 'true' }}
+        run: |
+          echo "GH_PAT repository secret is required when dry_run is false." >&2
+          exit 1
+
       - name: Sync agent policy files
         uses: Redocly/repo-file-sync-action@main
         with:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          GH_PAT: ${{ env.SYNC_TOKEN }}
           CONFIG_PATH: .github/agent-policy-sync.yml
           PR_LABELS: |
             agent-policy-sync
