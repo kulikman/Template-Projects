@@ -1,3 +1,14 @@
+## [0.13.1](https://github.com/kulikman/Template-Projects/compare/v0.13.0...v0.13.1) (2026-06-20)
+
+### 🐛 Bug Fixes
+
+* **ci:** allow agent policy sync dry run without pat ([dff2db4](https://github.com/kulikman/Template-Projects/commit/dff2db4d0b8502836033097349dc388b7d698838))
+
+### 📝 Docs
+
+* add agent policy rollout protocol ([5e23cf0](https://github.com/kulikman/Template-Projects/commit/5e23cf0d3fba8244b0daff69ccd1d5ab6e8164c7))
+* add future template upgrade strategy ([fd8e9b7](https://github.com/kulikman/Template-Projects/commit/fd8e9b703bf76f6c4ba324c129a68d7a34fc3e80))
+
 ## [0.13.0](https://github.com/kulikman/Template-Projects/compare/v0.12.0...v0.13.0) (2026-06-20)
 
 ### ✨ Features
