@@ -1,3 +1,9 @@
+## [0.13.2](https://github.com/kulikman/Template-Projects/compare/v0.13.1...v0.13.2) (2026-06-20)
+
+### 🐛 Bug Fixes
+
+* **ci:** replace agent policy sync action dry run ([3bc9f81](https://github.com/kulikman/Template-Projects/commit/3bc9f818edc9f7d0eed97c26b33d355e66ed8b7e))
+
 ## [0.13.1](https://github.com/kulikman/Template-Projects/compare/v0.13.0...v0.13.1) (2026-06-20)
 
 ### 🐛 Bug Fixes
