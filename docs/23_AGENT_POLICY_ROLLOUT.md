@@ -13,8 +13,10 @@ other repositories.
 4. Run `pnpm agent:status`.
 5. Review `docs/21_AGENT_POLICY_STATUS.md`.
 6. Run the `Agent Policy Sync` workflow with `dry_run: true`.
-7. Implement the custom PR engine before enabling `dry_run: false`.
-8. Review and merge generated PRs repository by repository after write sync is enabled.
+7. Run the workflow with `dry_run: false`, `repo` or `limit`, and
+   `watch_checks: true` for the first wave.
+8. Review and merge generated PRs repository by repository after checks pass.
+9. Repeat with the next wave only after the previous wave is clean.
 
 ## First Wave
 
@@ -47,6 +49,18 @@ Review these manually before merge:
 - Run target repository checks that actually exist.
 - Inspect protected areas if the target repo has custom protected paths.
 - Merge only after checks pass or the failure is understood and accepted.
+
+## PR Engine
+
+The PR-only propagation engine is:
+
+```bash
+pnpm agent:sync-pr -- --apply --repo kulikman/open-design-kit --watch-checks
+```
+
+It creates or reuses `agent-policy-sync/<policy-version>` branches in target
+repositories, opens pull requests and waits for checks when `--watch-checks` is
+set. It must not push directly to target `main` branches.
 
 ## Rollback
 

@@ -8,6 +8,19 @@ on:
         required: true
         type: boolean
         default: true
+      repo:
+        description: Optional single target repo, for example kulikman/open-design-kit.
+        required: false
+        type: string
+      limit:
+        description: Optional maximum number of target repositories to process.
+        required: false
+        type: string
+      watch_checks:
+        description: Wait for PR checks after creating or updating each PR.
+        required: true
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -25,9 +38,23 @@ jobs:
         if: ${{ inputs.dry_run == true }}
         run: node scripts/agent-policy-sync-dry-run.mjs
 
-      - name: Require PAT for write sync
+      - name: Create or update sync pull requests
         if: ${{ inputs.dry_run == false }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          echo "Write sync is intentionally disabled until the PR engine is implemented." >&2
-          echo "GH_PAT will be required before enabling dry_run=false." >&2
-          exit 1
+          args=(--apply)
+
+          if [[ -n "${{ inputs.repo }}" ]]; then
+            args+=(--repo "${{ inputs.repo }}")
+          fi
+
+          if [[ -n "${{ inputs.limit }}" ]]; then
+            args+=(--limit "${{ inputs.limit }}")
+          fi
+
+          if [[ "${{ inputs.watch_checks }}" == "true" ]]; then
+            args+=(--watch-checks)
+          fi
+
+          node scripts/agent-policy-sync-engine.mjs "${args[@]}"
