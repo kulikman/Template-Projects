@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 import {
   createSnapshotManifest,
+  mergeControlledBlocks,
   parseProfile,
   readSnapshotHistory,
   resolveProfiles,
@@ -128,5 +129,56 @@ describe('resolveProfiles()', () => {
     const [profile] = resolveProfiles([{ project: 'demo', repo: 'kulikman/demo' }], 'kulikman/demo')
 
     expect(profile?.project).toBe('demo')
+  })
+})
+
+describe('mergeControlledBlocks()', () => {
+  it('keeps manual sections while replacing an existing SFO block', () => {
+    const existing = `# Project Rules
+
+Manual intro stays.
+
+<!-- SFO:BEGIN core/git-protocol@1.0.0 -->
+old generated text
+<!-- SFO:END core/git-protocol@1.0.0 -->
+
+Manual outro stays.
+`
+
+    const generated = `<!-- SFO:BEGIN core/git-protocol@1.0.0 -->
+new generated text
+<!-- SFO:END core/git-protocol@1.0.0 -->`
+
+    const merged = mergeControlledBlocks(existing, generated)
+
+    expect(merged).toContain('Manual intro stays.')
+    expect(merged).toContain('Manual outro stays.')
+    expect(merged).toContain('new generated text')
+    expect(merged).not.toContain('old generated text')
+  })
+
+  it('appends new SFO blocks without deleting manual content', () => {
+    const existing = `# Project Rules
+
+Manual only.
+`
+
+    const generated = `<!-- SFO:BEGIN stacks/next16@1.0.0 -->
+Next.js 16 rules
+<!-- SFO:END stacks/next16@1.0.0 -->`
+
+    const merged = mergeControlledBlocks(existing, generated)
+
+    expect(merged).toContain('Manual only.')
+    expect(merged).toContain('<!-- SFO:BEGIN stacks/next16@1.0.0 -->')
+    expect(merged).toContain('Next.js 16 rules')
+  })
+
+  it('returns generated content when no existing file content is present', () => {
+    const generated = `<!-- SFO:BEGIN core/security@1.0.0 -->
+Security rules
+<!-- SFO:END core/security@1.0.0 -->`
+
+    expect(mergeControlledBlocks('', generated)).toBe(generated)
   })
 })
