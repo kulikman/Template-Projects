@@ -51,6 +51,16 @@ canonical_paths:
     - solo-founder-os/specs/history-manifest.md
     - solo-founder-os/specs/sync-engine.md
 
+  policy_packs:
+    - solo-founder-os/policy/packs/backend-docker.yml
+    - solo-founder-os/policy/packs/crm-production.yml
+    - solo-founder-os/policy/packs/finance-risk.yml
+    - solo-founder-os/policy/packs/flutter.yml
+    - solo-founder-os/policy/packs/hono-mcp.yml
+    - solo-founder-os/policy/packs/next15.yml
+    - solo-founder-os/policy/packs/next16.yml
+    - solo-founder-os/policy/packs/static-site.yml
+
 sync_policy:
   default_mode: pull_request
   direct_push_allowed: false
@@ -101,7 +111,7 @@ repo_policy_packs:
       - release
       - security-review
 
-  backend_docker:
+  backend-docker:
     stack_rules:
       - backend-docker
     default_core:
@@ -114,7 +124,7 @@ repo_policy_packs:
       - security-review
       - database-migration
 
-  hono_mcp:
+  hono-mcp:
     stack_rules:
       - hono-mcp
     default_core:
@@ -126,7 +136,7 @@ repo_policy_packs:
       - release
       - security-review
 
-  static_site:
+  static-site:
     stack_rules:
       - static-site
     default_core:
@@ -135,6 +145,35 @@ repo_policy_packs:
     recommended_skills:
       - code-audit
       - release
+
+  finance-risk:
+    stack_rules: []
+    default_core:
+      - git-protocol
+      - anti-hallucination
+      - security
+    recommended_domains:
+      - finance
+      - trading-options
+    recommended_skills:
+      - code-audit
+      - release
+      - security-review
+      - database-migration
+
+  crm-production:
+    stack_rules: []
+    default_core:
+      - git-protocol
+      - anti-hallucination
+      - security
+    recommended_domains:
+      - crm
+    recommended_skills:
+      - code-audit
+      - release
+      - security-review
+      - database-migration
 
 validation_notes:
   - Commands listed in generated files must exist in the target repository before they are presented as preferred checks.

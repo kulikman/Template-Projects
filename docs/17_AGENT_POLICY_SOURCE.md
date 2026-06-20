@@ -25,6 +25,7 @@ solo-founder-os/policy/manifest.yml
 - Domain rules: `solo-founder-os/domains/*.md`
 - Skills: `solo-founder-os/skills/*.yml`
 - Project profiles: `solo-founder-os/project-profiles/*.yml`
+- Policy packs: `solo-founder-os/policy/packs/*.yml`
 - Output templates: `solo-founder-os/templates/*`
 - Generator, history and sync specs: `solo-founder-os/specs/*.md`
 
@@ -59,9 +60,11 @@ The manifest currently declares these initial packs:
 - `next16`
 - `next15`
 - `flutter`
-- `backend_docker`
-- `hono_mcp`
-- `static_site`
+- `backend-docker`
+- `hono-mcp`
+- `static-site`
+- `finance-risk`
+- `crm-production`
 
-The packs are metadata only for now. They do not imply that sync automation is
-already installed.
+The pack files live under `solo-founder-os/policy/packs/`. They are metadata
+only for now. They do not imply that generated repo files are already updated.
