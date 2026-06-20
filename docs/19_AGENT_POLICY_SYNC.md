@@ -2,7 +2,7 @@
 
 Updated: 2026-06-20
 
-This repo contains a manual dry-run sync workflow for the canonical Solo
+This repo contains a manual PR-only sync workflow for the canonical Solo
 Founder Agent OS policy bundle.
 
 ## Workflow
@@ -20,8 +20,15 @@ Default mode is dry-run:
 dry_run: true
 ```
 
-`dry_run: false` is intentionally blocked until the custom PR engine is
-implemented.
+`dry_run: false` runs the PR-only propagation engine. It creates or updates
+sync branches in target repositories, opens pull requests and can wait for PR
+checks.
+
+Useful workflow inputs:
+
+- `repo`: optional single target, for example `kulikman/open-design-kit`
+- `limit`: optional maximum number of targets
+- `watch_checks`: wait for PR checks before finishing the workflow
 
 ## Local Dry Run
 
@@ -32,6 +39,24 @@ pnpm agent:sync-dry-run
 The local dry run reads `.github/agent-policy-sync.yml` and
 `docs/18_AGENT_REPO_INVENTORY.md`, then compares canonical policy bundle files
 against local repository checkouts.
+
+## PR Sync Engine
+
+```bash
+pnpm agent:sync-pr -- --dry-run
+pnpm agent:sync-pr -- --apply --repo kulikman/open-design-kit --watch-checks
+pnpm agent:sync-pr -- --apply --limit 3 --watch-checks
+```
+
+The engine uses `gh` and `git` to:
+
+1. Clone each target repository into a temporary directory.
+2. Create or reuse a branch named `agent-policy-sync/<policy-version>`.
+3. Copy only the canonical bundle paths listed in `.github/agent-policy-sync.yml`.
+4. Refuse unexpected changed files outside the allowed sync mappings.
+5. Commit and push the sync branch.
+6. Create or reuse a pull request.
+7. Optionally wait for PR checks with `gh pr checks --watch --fail-fast`.
 
 ## Sync Config
 
@@ -58,7 +83,7 @@ automatic updates.
 
 ## Required Secret For Future Write Sync
 
-Future write sync will require a repository secret:
+Write sync requires a repository secret:
 
 ```text
 GH_PAT
@@ -70,8 +95,9 @@ repositories.
 
 ## Safety Rules
 
-- Current workflow is dry-run only.
-- Keep `dry_run: true` for test runs.
+- Keep `dry_run: true` for plan-only runs.
+- Use `dry_run: false` only when you are ready to create or update target PRs.
+- Prefer `repo` or `limit` for the first wave before syncing all active targets.
 - Do not add `AGENTS.md`, `CLAUDE.md`, `.claude/` or `.cursor/` to this sync
   config until generated-block merging exists.
 - Exclude archived and miscellaneous local-only repositories from the active
