@@ -47,6 +47,9 @@ The config plans sync for only canonical policy bundle files:
 - `solo-founder-os/domains/`
 - `solo-founder-os/skills/`
 - `solo-founder-os/policy/`
+- `solo-founder-os/project-profiles/`
+- `solo-founder-os/templates/`
+- `solo-founder-os/specs/`
 
 It does not sync live repository files such as `AGENTS.md`, `CLAUDE.md`,
 `.claude/`, `.cursor/` or `.github/workflows/`. Those files can contain

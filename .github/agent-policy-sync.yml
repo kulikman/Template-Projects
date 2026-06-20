@@ -32,3 +32,9 @@ group:
         dest: solo-founder-os/skills/
       - source: solo-founder-os/policy/
         dest: solo-founder-os/policy/
+      - source: solo-founder-os/project-profiles/
+        dest: solo-founder-os/project-profiles/
+      - source: solo-founder-os/templates/
+        dest: solo-founder-os/templates/
+      - source: solo-founder-os/specs/
+        dest: solo-founder-os/specs/
