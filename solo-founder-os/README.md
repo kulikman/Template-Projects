@@ -30,6 +30,25 @@ Phase 1 focuses on:
 7. Sync specification
 8. Snapshot history metadata
 
+## Canonical policy source
+
+This repository is the source of truth for shared agent policy. The current
+policy version is stored in:
+
+```text
+.agent-policy-version
+```
+
+The canonical source map is stored in:
+
+```text
+solo-founder-os/policy/manifest.yml
+```
+
+The manifest lists the rule files, skills, project profiles, templates and
+policy packs that are safe to use as input for future sync automation. It does
+not mean cross-repo sync is already enabled.
+
 ## Target generated outputs
 
 ```text
