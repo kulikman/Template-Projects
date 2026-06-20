@@ -1,3 +1,9 @@
+## [0.11.0](https://github.com/kulikman/Template-Projects/compare/v0.10.0...v0.11.0) (2026-06-20)
+
+### ✨ Features
+
+* **sfo:** add agent policy validation checks ([2735bf5](https://github.com/kulikman/Template-Projects/commit/2735bf5655ac7c9dd0a4094be80e5833b0911c92))
+
 ## [0.10.0](https://github.com/kulikman/Template-Projects/compare/v0.9.0...v0.10.0) (2026-06-20)
 
 ### ✨ Features
