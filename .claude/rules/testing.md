@@ -48,4 +48,8 @@ describe("functionName()", () => {
 
 - `pnpm test` запускается в CI до build
 - Build не запускается если тесты не прошли
+- Production dependency audit is a blocking CI gate: `pnpm audit:prod`
+- Local verification must include every blocking CI gate, not only unit tests
+  and type checks.
+- After pushing, watch GitHub Actions until required checks are successful.
 - Coverage не обязателен, но важна полнота покрытия критичных путей

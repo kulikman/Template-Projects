@@ -44,6 +44,14 @@ Never:
 
 Push only if the user explicitly requested push.
 
+After push:
+
+1. Check the GitHub Actions run for the pushed commit.
+2. Watch until every required GitHub check finishes.
+3. If any check fails, inspect logs, fix the cause, commit and push again.
+4. Do not report the task as complete while GitHub checks are failing or still
+   pending.
+
 ## Verification
 
 Run all applicable checks before commit.
@@ -52,6 +60,7 @@ Preferred commands in this repo:
 
 - `pnpm check`
 - `pnpm verify`
+- `pnpm audit:prod`
 - `pnpm build` for release-sensitive work
 
 Do not claim a fix works unless the relevant checks were actually run.
