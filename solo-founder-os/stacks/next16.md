@@ -3,8 +3,9 @@
 id: stack/next16
 version: 1.0.0
 compatible_with:
-  - react19
-  - tailwind4
+
+- react19
+- tailwind4
 
 ## Rules
 
