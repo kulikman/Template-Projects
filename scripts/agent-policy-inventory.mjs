@@ -103,6 +103,50 @@ function readPackageJson(repo) {
   }
 }
 
+function findPackageJsonFiles(repo, maxDepth = 4) {
+  const files = [];
+
+  function walk(path, depth) {
+    if (depth > maxDepth) return;
+
+    for (const entry of readdirSync(path, { withFileTypes: true })) {
+      if (ignoredDirs.has(entry.name)) continue;
+
+      const child = join(path, entry.name);
+      if (entry.isFile() && entry.name === "package.json") {
+        files.push(child);
+        continue;
+      }
+
+      if (entry.isDirectory()) walk(child, depth + 1);
+    }
+  }
+
+  try {
+    walk(repo, 0);
+  } catch {
+    return [];
+  }
+
+  return files.sort((a, b) => a.localeCompare(b));
+}
+
+function readPackageJsonFile(path) {
+  const raw = readOptional(path);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function readWorkspacePackageJson(repo) {
+  return findPackageJsonFiles(repo)
+    .map((path) => readPackageJsonFile(path))
+    .filter(Boolean);
+}
+
 function getPackageNames(packageJson) {
   if (!packageJson) return new Set();
   return new Set([
@@ -111,15 +155,20 @@ function getPackageNames(packageJson) {
   ]);
 }
 
-function inferStack(repo, packageJson) {
-  const deps = getPackageNames(packageJson);
+function inferStack(repo, packageJson, workspacePackages = []) {
+  const packages = [packageJson, ...workspacePackages].filter(Boolean);
+  const deps = new Set();
+  for (const currentPackage of packages) {
+    for (const name of getPackageNames(currentPackage)) deps.add(name);
+  }
   const scripts = packageJson?.scripts || {};
   const signals = [];
 
   if (deps.has("next")) {
-    const version = String(
-      packageJson.dependencies?.next || packageJson.devDependencies?.next || ""
+    const nextPackage = packages.find(
+      (currentPackage) => currentPackage.dependencies?.next || currentPackage.devDependencies?.next
     );
+    const version = String(nextPackage?.dependencies?.next || nextPackage?.devDependencies?.next || "");
     signals.push(`Next.js${version ? ` ${version}` : ""}`);
   }
   if (deps.has("react")) signals.push("React");
@@ -162,6 +211,9 @@ function policyStatus(repo) {
 
 function inspectRepo(repo) {
   const packageJson = readPackageJson(repo);
+  const workspacePackages = readWorkspacePackageJson(repo).filter(
+    (currentPackage) => currentPackage !== packageJson
+  );
   const branch = git(repo, ["branch", "--show-current"]) || "detached";
   const remote = git(repo, ["remote", "get-url", "origin"]) || "none";
   const dirtyLines = git(repo, ["status", "--short"])
@@ -180,7 +232,7 @@ function inspectRepo(repo) {
     policy: policyStatus(repo),
     remote,
     scripts: Object.keys(packageJson?.scripts || {}).sort(),
-    stack: inferStack(repo, packageJson),
+    stack: inferStack(repo, packageJson, workspacePackages),
   };
 }
 

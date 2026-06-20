@@ -32,7 +32,6 @@ outputs:
 overrides:
   protected_files:
     - src/proxy.ts
-    - supabase/migrations/**
     - src/types/database.ts
 
   forbidden:

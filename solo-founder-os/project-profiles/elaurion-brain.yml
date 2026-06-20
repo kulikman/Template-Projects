@@ -35,7 +35,6 @@ overrides:
     - apps/api/src/db/schema.ts
     - packages/brain-sdk/**
     - apps/api/src/mcp/**
-    - .brain/**
 
   forbidden:
     - nextjs-assumptions

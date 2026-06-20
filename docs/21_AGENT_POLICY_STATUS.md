@@ -1,6 +1,6 @@
 # Agent Policy Status
 
-Generated: 2026-06-20T10:21:49.385Z
+Generated: 2026-06-20T10:49:03.323Z
 
 Source inventory: `docs/18_AGENT_REPO_INVENTORY.md`
 
@@ -10,7 +10,7 @@ Source inventory: `docs/18_AGENT_REPO_INVENTORY.md`
 - Active sync targets: 19
 - Excluded local repositories: 4
 - Missing policy version marker: 19
-- Repositories with dirty working tree: 4
+- Repositories with dirty working tree: 5
 - Missing AGENTS.md: 3
 - Missing CLAUDE.md: 7
 - Missing Cursor rules: 3
@@ -23,7 +23,7 @@ Source inventory: `docs/18_AGENT_REPO_INVENTORY.md`
 | 2SkyMobile-Partner | kulikman/2SkyMobile-Partner | Next.js ^16.2.6, React, Supabase, Supabase local | missing | 0 |
 | 2Skymobile-web | kulikman/2Skymobile-web | Next.js 16.2.6, React, Supabase, Supabase local | missing | 0 |
 | 2SkyVC | kulikman/sky-ventures | React, Vite, Supabase, Supabase local | missing | 0 |
-| Elaurion-Brain | kulikman/elaurion_brain | verify script | missing | 0 |
+| Elaurion-Brain | kulikman/elaurion_brain | Hono, MCP, verify script | missing | 0 |
 | Elaurion-Options | kulikman/Elaurion-Options | Next.js 16.2.6, React, Vite, Docker, Supabase local, verify script | missing | 0 |
 | Elliott-wave | kulikman/Elliott-wave | unknown | missing | 10 |
 | Elurion-finance | kulikman/elaurion-finance | Next.js 16.2.6, React, Supabase, Stripe, Docker, Supabase local, verify script | missing | 0 |
@@ -46,6 +46,7 @@ Source inventory: `docs/18_AGENT_REPO_INVENTORY.md`
 | Elliott-wave | Elliott-wave | missing | 10 | yes | yes | 1 |
 | Founder-OS | Founder-OS | missing | 7 | yes | yes | 3 |
 | Secret-project | Secret-project | missing | 9 | yes | yes | 2 |
+| Template-Projects | TEMLATES/Template-Projects | current (1.0.0) | 4 | yes | yes | 2 |
 | Chip | Разное/KAHURA/Chip | missing | 1 | no | no | 0 |
 | 2Skymobile-CRM | 2Skymobile-CRM | missing | 0 | yes | yes | 3 |
 | 2SkyMobile-Partner | 2SkyMobile-Partner | missing | 0 | yes | yes | 1 |
@@ -72,7 +73,7 @@ Source inventory: `docs/18_AGENT_REPO_INVENTORY.md`
 | --- | --- | --- | --- |
 | Template-Projects | TEMLATES/Template-Projects | https://github.com/kulikman/Template-Projects.git | Next.js 16.2.6, React, Supabase, Stripe, Docker, Supabase local, verify script |
 | 2SkyCRM | Архив/2SkyCRM | https://github.com/kulikman/crm-2skymobile.git | React, Vite, Supabase, Supabase local |
-| polymarket-edge | Архив/Polymarket/polymarket-edge | https://github.com/kulikman/polymarket-edge.git | Docker |
+| polymarket-edge | Архив/Polymarket/polymarket-edge | https://github.com/kulikman/polymarket-edge.git | Next.js 15.3.1, React, Docker |
 | Chip | Разное/KAHURA/Chip | none | unknown |
 
 ## Next Actions
