@@ -34,5 +34,6 @@ jobs:
           COMMIT_BODY: |
             Source: kulikman/Template-Projects
             Policy version: see .agent-policy-version
+            Review checklist: docs/23_AGENT_POLICY_ROLLOUT.md
           BRANCH_PREFIX: agent-policy-sync/SOURCE_REPO_NAME
           DRY_RUN: ${{ inputs.dry_run }}
