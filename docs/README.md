@@ -29,6 +29,7 @@ Fill it in when starting a new project. Keep it updated as the project evolves.
 | `18_AGENT_REPO_INVENTORY.md` | Generated local repository policy inventory | After scanning local repositories |
 | `19_AGENT_POLICY_SYNC.md` | Manual PR-only policy sync workflow | Before syncing policy to other repositories |
 | `20_AGENT_POLICY_VALIDATION.md` | Agent policy anti-hallucination checks | When policy validation changes |
+| `21_AGENT_POLICY_STATUS.md` | Generated policy rollout dashboard | After inventory or sync target changes |
 
 ---
 
