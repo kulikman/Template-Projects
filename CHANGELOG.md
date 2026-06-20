@@ -1,3 +1,9 @@
+## [0.13.0](https://github.com/kulikman/Template-Projects/compare/v0.12.0...v0.13.0) (2026-06-20)
+
+### ✨ Features
+
+* **config:** add safe renovate baseline ([127431c](https://github.com/kulikman/Template-Projects/commit/127431cd9f70cfcfdfc5af733262b66ae59f8903))
+
 ## [0.12.0](https://github.com/kulikman/Template-Projects/compare/v0.11.0...v0.12.0) (2026-06-20)
 
 ### ✨ Features
