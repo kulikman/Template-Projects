@@ -1,3 +1,9 @@
+## [0.15.0](https://github.com/kulikman/Template-Projects/compare/v0.14.1...v0.15.0) (2026-06-20)
+
+### ✨ Features
+
+* **config:** add pr propagation engine ([520753f](https://github.com/kulikman/Template-Projects/commit/520753f62a964c2cf95c75ad2c2ece677187859d))
+
 ## [0.14.1](https://github.com/kulikman/Template-Projects/compare/v0.14.0...v0.14.1) (2026-06-20)
 
 ### 🐛 Bug Fixes
