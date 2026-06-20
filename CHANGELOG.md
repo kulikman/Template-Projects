@@ -1,3 +1,9 @@
+## [0.8.0](https://github.com/kulikman/Template-Projects/compare/v0.7.0...v0.8.0) (2026-06-20)
+
+### ✨ Features
+
+* **sfo:** add local repo policy inventory ([3c3af68](https://github.com/kulikman/Template-Projects/commit/3c3af687cc53e9b02848ad907ddabb4ac5235836))
+
 ## [0.7.0](https://github.com/kulikman/Template-Projects/compare/v0.6.0...v0.7.0) (2026-06-20)
 
 ### ✨ Features
