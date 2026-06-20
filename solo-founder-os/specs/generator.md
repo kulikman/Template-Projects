@@ -35,7 +35,9 @@ The generator must update only marked blocks.
 
 ```md
 <!-- SFO:BEGIN core/git-protocol@1.0.0 -->
+
 ...
+
 <!-- SFO:END core/git-protocol@1.0.0 -->
 ```
 
