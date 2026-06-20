@@ -26,6 +26,7 @@
     "test:e2e:ui": "playwright test --ui",
     "supabase:types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > src/types/database.ts",
     "seed": "tsx scripts/seed.ts",
+    "agent:inventory": "node scripts/agent-policy-inventory.mjs",
     "sfo": "tsx solo-founder-os/cli/sfo.ts",
     "sfo:list": "tsx solo-founder-os/cli/sfo.ts list",
     "sfo:status": "tsx solo-founder-os/cli/sfo.ts status",

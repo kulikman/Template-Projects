@@ -26,6 +26,7 @@ Fill it in when starting a new project. Keep it updated as the project evolves.
 | `14_CHANGELOG.md` | Product-level changelog | After each release |
 | `15_DECISIONS_LOG.md` | Architectural decision records | When a meaningful choice is made |
 | `17_AGENT_POLICY_SOURCE.md` | Canonical Solo Founder Agent OS policy source | When agent rules or policy packs change |
+| `18_AGENT_REPO_INVENTORY.md` | Generated local repository policy inventory | After scanning local repositories |
 
 ---
 
