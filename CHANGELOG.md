@@ -1,3 +1,13 @@
+## [0.14.0](https://github.com/kulikman/Template-Projects/compare/v0.13.3...v0.14.0) (2026-06-20)
+
+### ✨ Features
+
+* **sfo:** validate target policy profiles ([7316d67](https://github.com/kulikman/Template-Projects/commit/7316d67ad4badffd49b414a4f9800b7e000fce48))
+
+### 📝 Docs
+
+* update agent policy rollout status ([6d1067e](https://github.com/kulikman/Template-Projects/commit/6d1067eafcf9612360432d9f7fd1be95416bd9cf))
+
 ## [0.13.3](https://github.com/kulikman/Template-Projects/compare/v0.13.2...v0.13.3) (2026-06-20)
 
 ### 🐛 Bug Fixes
