@@ -30,6 +30,7 @@ Fill it in when starting a new project. Keep it updated as the project evolves.
 | `19_AGENT_POLICY_SYNC.md` | Manual PR-only policy sync workflow | Before syncing policy to other repositories |
 | `20_AGENT_POLICY_VALIDATION.md` | Agent policy anti-hallucination checks | When policy validation changes |
 | `21_AGENT_POLICY_STATUS.md` | Generated policy rollout dashboard | After inventory or sync target changes |
+| `22_DEPENDENCY_AUTOMATION.md` | Renovate dependency update policy | When dependency automation changes |
 
 ---
 
