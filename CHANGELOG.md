@@ -1,3 +1,13 @@
+## [0.14.1](https://github.com/kulikman/Template-Projects/compare/v0.14.0...v0.14.1) (2026-06-20)
+
+### 🐛 Bug Fixes
+
+* **deps:** clear production audit failures ([ec9e04b](https://github.com/kulikman/Template-Projects/commit/ec9e04bac8834793ecc266351781c464911e2130))
+
+### 📝 Docs
+
+* mark policy rollout worktrees clean ([3117aec](https://github.com/kulikman/Template-Projects/commit/3117aec9a64e2cb1c41f08ad56adb7b499022ae3))
+
 ## [0.14.0](https://github.com/kulikman/Template-Projects/compare/v0.13.3...v0.14.0) (2026-06-20)
 
 ### ✨ Features
