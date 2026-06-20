@@ -1,6 +1,6 @@
 # Agent Policy Status
 
-Generated: 2026-06-20T09:36:49.146Z
+Generated: 2026-06-20T10:21:49.385Z
 
 Source inventory: `docs/18_AGENT_REPO_INVENTORY.md`
 
@@ -9,8 +9,8 @@ Source inventory: `docs/18_AGENT_REPO_INVENTORY.md`
 - Local repositories in inventory: 23
 - Active sync targets: 19
 - Excluded local repositories: 4
-- Missing policy version marker: 22
-- Repositories with dirty working tree: 5
+- Missing policy version marker: 19
+- Repositories with dirty working tree: 4
 - Missing AGENTS.md: 3
 - Missing CLAUDE.md: 7
 - Missing Cursor rules: 3
@@ -25,28 +25,27 @@ Source inventory: `docs/18_AGENT_REPO_INVENTORY.md`
 | 2SkyVC | kulikman/sky-ventures | React, Vite, Supabase, Supabase local | missing | 0 |
 | Elaurion-Brain | kulikman/elaurion_brain | verify script | missing | 0 |
 | Elaurion-Options | kulikman/Elaurion-Options | Next.js 16.2.6, React, Vite, Docker, Supabase local, verify script | missing | 0 |
-| Elliott-wave | kulikman/Elliott-wave | unknown | missing | 11 |
+| Elliott-wave | kulikman/Elliott-wave | unknown | missing | 10 |
 | Elurion-finance | kulikman/elaurion-finance | Next.js 16.2.6, React, Supabase, Stripe, Docker, Supabase local, verify script | missing | 0 |
 | Founder-OS | kulikman/Founder-OS | Next.js 15.5.18, React, MCP, Supabase, Stripe, Supabase local | missing | 7 |
-| Kulikov-world | kulikman/kulikov-world | unknown | missing | 0 |
+| Kulikov-world | kulikman/kulikov-world | unknown | current (1.0.0) | 0 |
 | My-Alfred | kulikman/my-alfred | Next.js 16.2.7, React, Supabase, Docker | missing | 0 |
 | Neo Map | kulikman/neo-map | Next.js 16.2.4, React | missing | 0 |
 | neosim-admin | kulikman/neosim-admin | Next.js 16.2.6, React, Supabase, Supabase local | missing | 0 |
 | neosim-backend | kulikman/neosim-backend | unknown | missing | 0 |
-| neosim-mobile | kulikman/neosim-mobile | Flutter/Dart | missing | 0 |
+| neosim-mobile | kulikman/neosim-mobile | Flutter/Dart | current (1.0.0) | 0 |
 | neosim-web | kulikman/neosim-web | Next.js 16.2.6, React, Supabase, verify script | missing | 0 |
-| Secret-project | kulikman/Secret-project | Next.js 16.2.6, React, Supabase, Docker, Supabase local, verify script | missing | 8 |
-| Open-design-kit | kulikman/open-design-kit | unknown | missing | 0 |
+| Secret-project | kulikman/Secret-project | Next.js 16.2.6, React, Supabase, Docker, Supabase local, verify script | missing | 9 |
+| Open-design-kit | kulikman/open-design-kit | unknown | current (1.0.0) | 0 |
 | Theta Aurion | kulikman/theta-aurion | Next.js 16.2.6, React, Supabase, Stripe, Docker, Supabase local, verify script | missing | 0 |
 
 ## Attention Needed
 
 | Repo | Path | Policy | Dirty | AGENTS | CLAUDE | Cursor rules |
 | --- | --- | --- | --- | --- | --- | --- |
-| Elliott-wave | Elliott-wave | missing | 11 | yes | yes | 1 |
+| Elliott-wave | Elliott-wave | missing | 10 | yes | yes | 1 |
 | Founder-OS | Founder-OS | missing | 7 | yes | yes | 3 |
-| Secret-project | Secret-project | missing | 8 | yes | yes | 2 |
-| Template-Projects | TEMLATES/Template-Projects | current (1.0.0) | 3 | yes | yes | 2 |
+| Secret-project | Secret-project | missing | 9 | yes | yes | 2 |
 | Chip | Разное/KAHURA/Chip | missing | 1 | no | no | 0 |
 | 2Skymobile-CRM | 2Skymobile-CRM | missing | 0 | yes | yes | 3 |
 | 2SkyMobile-Partner | 2SkyMobile-Partner | missing | 0 | yes | yes | 1 |
@@ -55,17 +54,17 @@ Source inventory: `docs/18_AGENT_REPO_INVENTORY.md`
 | Elaurion-Brain | Elaurion-Brain | missing | 0 | yes | yes | 2 |
 | Elaurion-Options | Elaurion-Options | missing | 0 | yes | yes | 2 |
 | Elurion-finance | Elurion-finance | missing | 0 | yes | yes | 2 |
-| Kulikov-world | Kulikov-world | missing | 0 | yes | no | 2 |
 | My-Alfred | My-Alfred | missing | 0 | yes | yes | 1 |
 | Neo Map | Neosim/Neo Map | missing | 0 | yes | yes | 1 |
 | neosim-admin | Neosim/neosim-admin | missing | 0 | yes | yes | 1 |
 | neosim-backend | Neosim/neosim-backend | missing | 0 | yes | no | 1 |
-| neosim-mobile | Neosim/neosim-mobile | missing | 0 | yes | no | 1 |
 | neosim-web | Neosim/neosim-web | missing | 0 | yes | yes | 1 |
-| Open-design-kit | TEMLATES/Open-design-kit | missing | 0 | yes | no | 1 |
 | Theta Aurion | Theta Aurion | missing | 0 | yes | yes | 2 |
 | 2SkyCRM | Архив/2SkyCRM | missing | 0 | no | no | 0 |
 | polymarket-edge | Архив/Polymarket/polymarket-edge | missing | 0 | no | yes | 0 |
+| Kulikov-world | Kulikov-world | current (1.0.0) | 0 | yes | no | 2 |
+| neosim-mobile | Neosim/neosim-mobile | current (1.0.0) | 0 | yes | no | 1 |
+| Open-design-kit | TEMLATES/Open-design-kit | current (1.0.0) | 0 | yes | no | 1 |
 
 ## Excluded Local Repositories
 
