@@ -1,3 +1,9 @@
+## [0.12.0](https://github.com/kulikman/Template-Projects/compare/v0.11.0...v0.12.0) (2026-06-20)
+
+### ✨ Features
+
+* **docs:** add agent policy status dashboard ([9dd3e9f](https://github.com/kulikman/Template-Projects/commit/9dd3e9f52127b83798a21632248733c78c9210fb))
+
 ## [0.11.0](https://github.com/kulikman/Template-Projects/compare/v0.10.0...v0.11.0) (2026-06-20)
 
 ### ✨ Features
