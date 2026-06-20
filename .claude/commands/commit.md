@@ -23,11 +23,21 @@ Workflow:
 5. Check boundary drift, broken imports, missing dependencies, dead code, TODOs, security/env leaks and missing UI/error states.
 6. Run available checks:
    - `pnpm check`
-   - `pnpm verify` when tests are relevant
+   - `pnpm verify` for the full local gate
+   - `pnpm audit:prod` for production dependency security
    - `pnpm build` for release-sensitive work
    - `pnpm knip` when refactoring/dead-code work is requested
 7. Fix issues before committing.
 8. Commit only verified meaningful changes using Conventional Commits.
+
+If the user explicitly asks to push:
+
+1. Push only after the local checks above pass.
+2. Inspect the GitHub Actions run for the pushed commit.
+3. Wait until all required checks complete.
+4. If a check fails, fetch the failing logs, fix the cause, commit and push
+   again.
+5. Report completion only after GitHub checks are successful.
 
 At the end, report:
 - commit hash
