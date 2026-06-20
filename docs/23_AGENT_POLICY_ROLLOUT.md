@@ -13,8 +13,8 @@ other repositories.
 4. Run `pnpm agent:status`.
 5. Review `docs/21_AGENT_POLICY_STATUS.md`.
 6. Run the `Agent Policy Sync` workflow with `dry_run: true`.
-7. If dry-run output is expected, run the workflow with `dry_run: false`.
-8. Review and merge generated PRs repository by repository.
+7. Implement the custom PR engine before enabling `dry_run: false`.
+8. Review and merge generated PRs repository by repository after write sync is enabled.
 
 ## First Wave
 
