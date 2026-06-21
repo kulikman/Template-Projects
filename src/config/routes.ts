@@ -90,5 +90,3 @@ export const routes = {
     },
   },
 } as const satisfies RouteTree;
-
-export type RouteKey = keyof typeof routes;
