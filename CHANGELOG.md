@@ -1,3 +1,9 @@
+## [0.16.1](https://github.com/kulikman/Template-Projects/compare/v0.16.0...v0.16.1) (2026-06-21)
+
+### 🐛 Bug Fixes
+
+* **config:** remove unused route type ([6c9cc23](https://github.com/kulikman/Template-Projects/commit/6c9cc23e94a2704a44cc4f2da1b1862a8f530c90))
+
 ## [0.16.0](https://github.com/kulikman/Template-Projects/compare/v0.15.0...v0.16.0) (2026-06-21)
 
 ### ✨ Features
