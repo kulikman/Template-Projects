@@ -1,3 +1,9 @@
+## [0.16.0](https://github.com/kulikman/Template-Projects/compare/v0.15.0...v0.16.0) (2026-06-21)
+
+### ✨ Features
+
+* **routing:** add route contract breadcrumbs ([3d18add](https://github.com/kulikman/Template-Projects/commit/3d18add27bc85cd13c03319c8827b642241890c6))
+
 ## [0.15.0](https://github.com/kulikman/Template-Projects/compare/v0.14.1...v0.15.0) (2026-06-20)
 
 ### ✨ Features
