@@ -1,5 +1,6 @@
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { requireUser } from "@/lib/auth";
+import { getPublicMetadataEnv } from "@/lib/env";
 import { getRecentNotifications, NotificationsBell } from "@/features/notifications";
 
 /**
@@ -27,11 +28,12 @@ export default async function DashboardLayout({
 }): Promise<React.ReactElement> {
   const user = await requireUser();
   const notifications = await getRecentNotifications(user.id);
+  const { NEXT_PUBLIC_APP_URL: baseUrl } = getPublicMetadataEnv();
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-6 sm:px-6 lg:px-8">
       <div className="mb-6 flex items-center justify-between">
-        <Breadcrumbs />
+        <Breadcrumbs baseUrl={baseUrl} />
         <NotificationsBell initialNotifications={notifications} userId={user.id} />
       </div>
       {children}

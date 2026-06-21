@@ -39,7 +39,7 @@ on staged files automatically.
 - New env vars: add to `src/lib/env.ts` schema **and** `.env.example`
   in the same commit.
 - New routes: add to `ROUTES` (`src/lib/constants.ts`) and to
-  `SEGMENT_LABELS` if nested (`src/components/layout/breadcrumbs.tsx`).
+  `src/config/routes.ts` if nested, public, or linked from navigation.
 
 ## Forbidden in this repo
 

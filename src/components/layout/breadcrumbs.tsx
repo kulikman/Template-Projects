@@ -5,33 +5,7 @@ import { usePathname } from "next/navigation";
 import { Fragment } from "react";
 
 import { cn } from "@/lib/utils";
-
-/**
- * Route segment → human-readable label map.
- *
- * Add entries here when creating new routes. Dynamic segments (e.g. `[slug]`)
- * are resolved at render time via the `resolveLabel` prop.
- */
-const SEGMENT_LABELS: Record<string, string> = {
-  dashboard: "Dashboard",
-  settings: "Settings",
-  docs: "Docs",
-  blog: "Blog",
-  profile: "Profile",
-  billing: "Billing",
-  usage: "Usage",
-  "api-keys": "API Keys",
-  org: "Organizations",
-  team: "Team",
-  projects: "Projects",
-  onboarding: "Onboarding",
-  pricing: "Pricing",
-  analytics: "Analytics",
-  companies: "Companies",
-  orgs: "Organizations",
-  admin: "Admin",
-  users: "Users",
-};
+import { getBreadcrumbItemsFromRoutes } from "@/lib/navigation/routes";
 
 export interface BreadcrumbItem {
   href: string;
@@ -42,12 +16,14 @@ export interface BreadcrumbItem {
 interface BreadcrumbsProps {
   /**
    * Resolve a dynamic segment (e.g. `[slug]`) to a readable label.
-   * Called for every segment not found in SEGMENT_LABELS.
+   * Called only by the fallback path when a route is not yet registered.
    * Return `null` to use the raw segment as-is.
    */
   resolveLabel?: (segment: string, segments: string[]) => string | null;
   /** Additional CSS classes on the outer `<nav>`. */
   className?: string;
+  /** Absolute site origin used for BreadcrumbList structured data. */
+  baseUrl?: string;
 }
 
 /**
@@ -70,6 +46,7 @@ interface BreadcrumbsProps {
 export function Breadcrumbs({
   resolveLabel,
   className,
+  baseUrl,
 }: BreadcrumbsProps): React.ReactElement | null {
   const pathname = usePathname();
 
@@ -77,33 +54,39 @@ export function Breadcrumbs({
   if (items.length === 0) return null;
 
   return (
-    <nav
-      aria-label="Breadcrumb"
-      className={cn("text-muted-foreground flex items-center gap-1.5 text-sm", className)}
-    >
-      <ol className="flex items-center gap-1.5">
-        {items.map(({ href, label, isCurrent }) => (
-          <Fragment key={href}>
-            <li>
-              {isCurrent ? (
-                <span className="text-foreground font-medium" aria-current="page">
-                  {label}
-                </span>
-              ) : (
-                <Link href={{ pathname: href }} className="hover:text-foreground transition-colors">
-                  {label}
-                </Link>
-              )}
-            </li>
-            {!isCurrent && (
-              <li aria-hidden="true" className="text-muted-foreground/40 select-none">
-                ›
+    <>
+      <BreadcrumbJsonLd items={items} baseUrl={baseUrl} />
+      <nav
+        aria-label="Breadcrumb"
+        className={cn("text-muted-foreground flex items-center gap-1.5 text-sm", className)}
+      >
+        <ol className="flex items-center gap-1.5">
+          {items.map(({ href, label, isCurrent }) => (
+            <Fragment key={href}>
+              <li>
+                {isCurrent ? (
+                  <span className="text-foreground font-medium" aria-current="page">
+                    {label}
+                  </span>
+                ) : (
+                  <Link
+                    href={{ pathname: href }}
+                    className="hover:text-foreground transition-colors"
+                  >
+                    {label}
+                  </Link>
+                )}
               </li>
-            )}
-          </Fragment>
-        ))}
-      </ol>
-    </nav>
+              {!isCurrent && (
+                <li aria-hidden="true" className="text-muted-foreground/40 select-none">
+                  ›
+                </li>
+              )}
+            </Fragment>
+          ))}
+        </ol>
+      </nav>
+    </>
   );
 }
 
@@ -112,18 +95,24 @@ interface GetBreadcrumbItemsOptions {
 }
 
 /**
- * Build breadcrumb items from a URL pathname following the project's UX rules:
- * - No breadcrumbs on `/`, `/dashboard`, and `/settings*`
- * - No breadcrumbs for first-level list pages (e.g. `/companies`)
- * - Breadcrumbs always start with `Dashboard` → `/dashboard`
+ * Build breadcrumb items from the canonical route contract.
+ *
+ * Known routes are resolved through `src/config/routes.ts`. Unknown dynamic
+ * routes fall back to segment formatting so early feature work still has
+ * usable crumbs until the route is registered.
  */
 export function getBreadcrumbItems(
   pathname: string,
   { resolveLabel }: GetBreadcrumbItemsOptions = {}
 ): BreadcrumbItem[] {
   if (pathname === "/" || pathname === "/dashboard" || pathname.startsWith("/settings")) {
-    return [];
+    const routeItems = getBreadcrumbItemsFromRoutes(pathname);
+    if (routeItems.length > 0) return routeItems;
+    if (pathname === "/" || pathname === "/dashboard") return [];
   }
+
+  const routeItems = getBreadcrumbItemsFromRoutes(pathname);
+  if (routeItems.length > 0) return routeItems;
 
   const segments = pathname.split("/").filter(Boolean);
   const visibleSegments = segments.filter((s) => !s.startsWith("("));
@@ -141,7 +130,6 @@ export function getBreadcrumbItems(
 
     const label =
       resolveSpecialLabel(segment, visibleSegments) ??
-      SEGMENT_LABELS[segment] ??
       resolveLabel?.(segment, visibleSegments) ??
       formatSegment(segment);
 
@@ -162,7 +150,7 @@ function resolveSpecialLabel(segment: string, segments: string[]): string | null
 
   if (segment === "new") {
     const section = segments[0] ?? "";
-    const sectionLabel = SEGMENT_LABELS[section] ?? formatSegment(section);
+    const sectionLabel = formatSegment(section);
     return `New ${singularize(sectionLabel)}`;
   }
 
@@ -182,4 +170,33 @@ function singularize(label: string): string {
  */
 function formatSegment(segment: string): string {
   return segment.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function BreadcrumbJsonLd({
+  items,
+  baseUrl,
+}: {
+  items: BreadcrumbItem[];
+  baseUrl?: string;
+}): React.ReactElement | null {
+  if (!baseUrl) return null;
+
+  const origin = baseUrl.replace(/\/$/, "");
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.label,
+      item: `${origin}${item.href}`,
+    })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+    />
+  );
 }

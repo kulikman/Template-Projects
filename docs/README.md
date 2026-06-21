@@ -33,6 +33,7 @@ Fill it in when starting a new project. Keep it updated as the project evolves.
 | `22_DEPENDENCY_AUTOMATION.md` | Renovate dependency update policy | When dependency automation changes |
 | `23_AGENT_POLICY_ROLLOUT.md` | Review and rollout protocol for policy sync PRs | Before merging sync PRs |
 | `24_TEMPLATE_UPGRADE_SYSTEM.md` | Future Copier/Cruft template update strategy | Before adopting template-managed updates |
+| `25_ROUTE_CONTRACT.md` | Canonical URL, breadcrumb, redirect, and sitemap rules | Before adding nested or SEO-sensitive routes |
 
 ---
 

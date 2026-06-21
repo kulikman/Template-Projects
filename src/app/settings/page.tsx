@@ -1,31 +1,32 @@
+import type { Route } from "next";
 import Link from "next/link";
 
-import { ROUTES, type AppRoute } from "@/lib/constants";
+import { ROUTES } from "@/lib/constants";
 
 interface NavItem {
-  href: AppRoute;
+  href: Route;
   label: string;
   description: string;
 }
 
 const NAV_ITEMS: NavItem[] = [
   {
-    href: ROUTES.settingsBilling,
+    href: ROUTES.settingsBilling as Route,
     label: "Billing",
     description: "Manage your plan and payment methods.",
   },
   {
-    href: ROUTES.settingsUsage,
+    href: ROUTES.settingsUsage as Route,
     label: "Usage",
     description: "Monitor resource usage against your plan limits.",
   },
   {
-    href: ROUTES.settingsApiKeys,
+    href: ROUTES.settingsApiKeys as Route,
     label: "API Keys",
     description: "Create and manage API keys for programmatic access.",
   },
   {
-    href: ROUTES.settingsOrg,
+    href: ROUTES.settingsOrganization as Route,
     label: "Organizations",
     description: "Create and manage teams and organizations.",
   },

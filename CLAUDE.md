@@ -250,6 +250,7 @@ src/
 │   ├── database.ts       # Supabase generated types (regenerate on schema change)
 │   └── index.ts          # Shared app types
 ├── config/
+│   ├── routes.ts         # Canonical route contract (URLs, labels, aliases)
 │   └── site.ts           # Site metadata + nav config
 └── proxy.ts              # Request interception (session refresh + security headers)
 ```
@@ -272,7 +273,7 @@ segments. This is both a UX and an SEO requirement.
    `@/components/layout/breadcrumbs` as the **first content element** (above the page title).
    - First breadcrumb is always **Dashboard** → `/dashboard`
    - Last breadcrumb is the current page (no link, bold)
-   - Do **not** render breadcrumbs on `/dashboard`, `/settings*`, or first-level list pages (e.g. `/companies`)
+   - Do **not** render breadcrumbs on `/dashboard` or first-level public/list pages (e.g. `/companies`)
 3. **Dynamic segments** (e.g. `/docs/[slug]`) must pass a `resolveLabel` prop
    to map the slug to a human-readable title:
    ```tsx
@@ -280,10 +281,11 @@ segments. This is both a UX and an SEO requirement.
    ```
 4. **Route groups** like `(dashboard)` or `(auth)` are invisible in the URL
    and are automatically stripped from breadcrumbs.
-5. **`SEGMENT_LABELS`** in `src/components/layout/breadcrumbs.tsx` must be
-   updated when adding a new static route. If the segment is not in the map
-   and no `resolveLabel` is provided, the raw segment is title-cased
-   (`getting-started` → `Getting Started`).
+5. **`src/config/routes.ts` is the source of truth** for route hrefs, labels,
+   titles, aliases, sitemap visibility, and breadcrumb labels. Do not hardcode
+   new navigation hrefs or breadcrumb labels in components.
+6. **Redirect old semantic aliases.** If a route changes, add an alias in
+   `src/config/routes.ts` and a matching redirect in `next.config.ts`.
 
 ### Pattern: Nested layout with breadcrumbs
 
@@ -307,6 +309,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
 - ❌ Pages deeper than `/` without `<Breadcrumbs />`
 - ❌ Using non-descriptive slugs as route segments (`/p/123` instead of `/projects/123`)
 - ❌ Flat URL structures that don't reflect content hierarchy (`/invoice-detail` instead of `/invoices/[id]`)
+- ❌ Writing `<Link href="/settings/billing">` in new code instead of using `ROUTES` / `routes`
 
 ---
 
