@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/constants";
 
 interface Subscription {
   id: string;
@@ -100,7 +102,7 @@ export function BillingCard({ subscription, priceId }: BillingCardProps): React.
         </Button>
       ) : (
         <Button asChild variant="outline">
-          <a href="/pricing">View plans →</a>
+          <Link href={ROUTES.pricing}>View plans →</Link>
         </Button>
       )}
     </div>

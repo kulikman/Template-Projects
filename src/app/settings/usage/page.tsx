@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
+import { ROUTES } from "@/lib/constants";
 import { getPlanLimits, formatBytes, formatLimit } from "@/lib/plan-limits";
 
 export const metadata = { title: "Usage" };
@@ -133,12 +135,12 @@ export default async function UsagePage(): Promise<React.ReactElement> {
               Unlimited projects, 50 GB storage, AI features.
             </p>
           </div>
-          <a
-            href="/pricing"
+          <Link
+            href={ROUTES.pricing}
             className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 text-sm font-medium transition-colors"
           >
             Upgrade →
-          </a>
+          </Link>
         </div>
       )}
     </div>

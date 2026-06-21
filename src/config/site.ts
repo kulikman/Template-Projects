@@ -36,8 +36,9 @@ export const siteConfig = {
     github: "https://github.com/kulikman/Template-Projects",
   },
   nav: [
-    { title: "Home", href: "/" },
-    { title: "Pricing", href: "/pricing" },
-    { title: "Dashboard", href: "/dashboard" },
+    { title: routes.home.label, href: routes.home.href },
+    { title: routes.pricing.label, href: routes.pricing.href },
+    { title: routes.dashboard.label, href: routes.dashboard.href },
   ],
 } as const satisfies SiteConfig;
+import { routes } from "@/config/routes";

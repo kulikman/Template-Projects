@@ -9,6 +9,9 @@ import { Button } from "@/components/ui/button";
 export const metadata: Metadata = {
   title: "Pricing",
   description: `Simple, transparent pricing for ${siteConfig.name}.`,
+  alternates: {
+    canonical: "/pricing",
+  },
 };
 
 /**

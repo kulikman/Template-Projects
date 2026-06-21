@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+import { routes } from "./src/config/routes";
+
 const nextConfig: NextConfig = {
   // Type-safe <Link href={...}> — opts you into Next's typed routes.
   typedRoutes: true,
@@ -33,6 +35,16 @@ const nextConfig: NextConfig = {
             value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()",
           },
         ],
+      },
+    ];
+  },
+
+  async redirects() {
+    return [
+      {
+        source: "/settings/org",
+        destination: routes.settings.children.organization.href,
+        statusCode: 301,
       },
     ];
   },

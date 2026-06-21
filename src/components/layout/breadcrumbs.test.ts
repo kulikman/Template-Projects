@@ -3,11 +3,9 @@ import { describe, expect, it } from "vitest";
 import { getBreadcrumbItems } from "./breadcrumbs";
 
 describe("getBreadcrumbItems()", () => {
-  it("does not render on home, dashboard, and settings", () => {
+  it("does not render on home and dashboard", () => {
     expect(getBreadcrumbItems("/")).toEqual([]);
     expect(getBreadcrumbItems("/dashboard")).toEqual([]);
-    expect(getBreadcrumbItems("/settings")).toEqual([]);
-    expect(getBreadcrumbItems("/settings/billing")).toEqual([]);
   });
 
   it("does not render on first-level list pages", () => {
@@ -41,5 +39,19 @@ describe("getBreadcrumbItems()", () => {
     });
 
     expect(items.at(-1)?.label).toBe("Acme Inc");
+  });
+
+  it("uses route contract labels for settings routes", () => {
+    expect(getBreadcrumbItems("/settings/billing")).toEqual([
+      { href: "/dashboard", label: "Dashboard", isCurrent: false },
+      { href: "/settings", label: "Settings", isCurrent: false },
+      { href: "/settings/billing", label: "Billing", isCurrent: true },
+    ]);
+
+    expect(getBreadcrumbItems("/settings/org").at(-1)).toEqual({
+      href: "/settings/organization",
+      label: "Organization",
+      isCurrent: true,
+    });
   });
 });

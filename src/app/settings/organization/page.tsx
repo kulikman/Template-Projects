@@ -4,7 +4,12 @@ import { requireUser } from "@/lib/auth";
 import { getUserOrgs, OrgCreateForm } from "@/features/orgs";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata = { title: "Organizations" };
+export const metadata = {
+  title: "Organizations",
+  alternates: {
+    canonical: "/settings/organization",
+  },
+};
 
 const ROLE_LABEL: Record<string, string> = {
   owner: "Owner",
@@ -18,7 +23,7 @@ const ROLE_ICON: Record<string, React.ReactNode> = {
   member: <Users className="h-3 w-3" />,
 };
 
-export default async function OrgPage(): Promise<React.ReactElement> {
+export default async function OrganizationPage(): Promise<React.ReactElement> {
   await requireUser();
   const orgs = await getUserOrgs();
 

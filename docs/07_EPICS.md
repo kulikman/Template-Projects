@@ -117,7 +117,7 @@
 
 **Included:**
 - [x] `orgs` + `org_members` tables with RLS
-- [x] Create org form (`/settings/org`)
+- [x] Create org form (`/settings/organization`; legacy `/settings/org` redirects)
 - [x] Org list with member counts
 
 **To implement:**
