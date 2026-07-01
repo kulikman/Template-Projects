@@ -1,6 +1,6 @@
 # Agent Policy Status
 
-Generated: 2026-06-20T10:50:37.097Z
+Generated: 2026-06-26T16:33:47.446Z
 
 Source inventory: `docs/18_AGENT_REPO_INVENTORY.md`
 
@@ -10,7 +10,7 @@ Source inventory: `docs/18_AGENT_REPO_INVENTORY.md`
 - Active sync targets: 19
 - Excluded local repositories: 4
 - Missing policy version marker: 19
-- Repositories with dirty working tree: 0
+- Repositories with dirty working tree: 4
 - Missing AGENTS.md: 3
 - Missing CLAUDE.md: 7
 - Missing Cursor rules: 3
@@ -25,16 +25,16 @@ Source inventory: `docs/18_AGENT_REPO_INVENTORY.md`
 | 2SkyVC | kulikman/sky-ventures | React, Vite, Supabase, Supabase local | missing | 0 |
 | Elaurion-Brain | kulikman/elaurion_brain | Hono, MCP, verify script | missing | 0 |
 | Elaurion-Options | kulikman/Elaurion-Options | Next.js 16.2.6, React, Vite, Docker, Supabase local, verify script | missing | 0 |
-| Elliott-wave | kulikman/Elliott-wave | unknown | missing | 0 |
+| Elliott-wave | kulikman/Elliott-wave | unknown | missing | 12 |
 | Elurion-finance | kulikman/elaurion-finance | Next.js 16.2.6, React, Supabase, Stripe, Docker, Supabase local, verify script | missing | 0 |
-| Founder-OS | kulikman/Founder-OS | Next.js 15.5.18, React, MCP, Supabase, Stripe, Supabase local | missing | 0 |
+| Founder-OS | kulikman/Founder-OS | Next.js 15.5.18, React, MCP, Supabase, Stripe, Supabase local | missing | 1 |
 | Kulikov-world | kulikman/kulikov-world | unknown | current (1.0.0) | 0 |
 | My-Alfred | kulikman/my-alfred | Next.js 16.2.7, React, Supabase, Docker | missing | 0 |
 | Neo Map | kulikman/neo-map | Next.js 16.2.4, React | missing | 0 |
-| neosim-admin | kulikman/neosim-admin | Next.js 16.2.6, React, Supabase, Supabase local | missing | 0 |
+| neosim-admin | kulikman/neosim-admin | Next.js 16.2.6, React, Supabase, Supabase local | missing | 1 |
 | neosim-backend | kulikman/neosim-backend | unknown | missing | 0 |
 | neosim-mobile | kulikman/neosim-mobile | Flutter/Dart | current (1.0.0) | 0 |
-| neosim-web | kulikman/neosim-web | Next.js 16.2.6, React, Supabase, verify script | missing | 0 |
+| neosim-web | kulikman/neosim-web | Next.js 16.2.6, React, Supabase, verify script | missing | 1 |
 | Secret-project | kulikman/Secret-project | Next.js 16.2.6, React, Supabase, Docker, Supabase local, verify script | missing | 0 |
 | Open-design-kit | kulikman/open-design-kit | unknown | current (1.0.0) | 0 |
 | Theta Aurion | kulikman/theta-aurion | Next.js 16.2.6, React, Supabase, Stripe, Docker, Supabase local, verify script | missing | 0 |
@@ -43,20 +43,20 @@ Source inventory: `docs/18_AGENT_REPO_INVENTORY.md`
 
 | Repo | Path | Policy | Dirty | AGENTS | CLAUDE | Cursor rules |
 | --- | --- | --- | --- | --- | --- | --- |
+| Elliott-wave | Elliott-wave | missing | 12 | yes | yes | 1 |
+| Founder-OS | Founder-OS | missing | 1 | yes | yes | 3 |
+| neosim-admin | Neosim/neosim-admin | missing | 1 | yes | yes | 1 |
+| neosim-web | Neosim/neosim-web | missing | 1 | yes | yes | 1 |
 | 2Skymobile-CRM | 2Skymobile-CRM | missing | 0 | yes | yes | 3 |
 | 2SkyMobile-Partner | 2SkyMobile-Partner | missing | 0 | yes | yes | 1 |
 | 2Skymobile-web | 2Skymobile-web | missing | 0 | yes | yes | 2 |
 | 2SkyVC | 2SkyVC | missing | 0 | yes | no | 1 |
 | Elaurion-Brain | Elaurion-Brain | missing | 0 | yes | yes | 2 |
 | Elaurion-Options | Elaurion-Options | missing | 0 | yes | yes | 2 |
-| Elliott-wave | Elliott-wave | missing | 0 | yes | yes | 1 |
 | Elurion-finance | Elurion-finance | missing | 0 | yes | yes | 2 |
-| Founder-OS | Founder-OS | missing | 0 | yes | yes | 3 |
 | My-Alfred | My-Alfred | missing | 0 | yes | yes | 1 |
 | Neo Map | Neosim/Neo Map | missing | 0 | yes | yes | 1 |
-| neosim-admin | Neosim/neosim-admin | missing | 0 | yes | yes | 1 |
 | neosim-backend | Neosim/neosim-backend | missing | 0 | yes | no | 1 |
-| neosim-web | Neosim/neosim-web | missing | 0 | yes | yes | 1 |
 | Secret-project | Secret-project | missing | 0 | yes | yes | 2 |
 | Theta Aurion | Theta Aurion | missing | 0 | yes | yes | 2 |
 | 2SkyCRM | Архив/2SkyCRM | missing | 0 | no | no | 0 |
