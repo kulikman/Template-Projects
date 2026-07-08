@@ -1,3 +1,9 @@
+## [0.18.1](https://github.com/kulikman/Template-Projects/compare/v0.18.0...v0.18.1) (2026-07-08)
+
+### 🐛 Bug Fixes
+
+* **domain:** fix 3 hallucinations found in audit ([4afd211](https://github.com/kulikman/Template-Projects/commit/4afd211ca2f3e2a0361482e48110d6f92b7aa7f5))
+
 ## [0.18.0](https://github.com/kulikman/Template-Projects/compare/v0.17.0...v0.18.0) (2026-07-08)
 
 ### ✨ Features
