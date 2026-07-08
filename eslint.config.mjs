@@ -35,6 +35,8 @@ const eslintConfig = defineConfig([
     settings: {
       "boundaries/elements": [
         { type: "app", pattern: "src/app/**" },
+        // Domain: pure TypeScript interfaces — zero external deps, imported by all layers.
+        { type: "domain", pattern: "src/domain/**" },
         {
           type: "foundation",
           pattern: "src/{components,lib,hooks,types,config}/**",

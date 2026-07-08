@@ -11,6 +11,11 @@
 > At the start of a new session, read `docs/09_CURRENT_STATUS.md` and `docs/08_BACKLOG.md` before writing any code.
 > See `.claude/prompts.md` for structured prompts for each scenario.
 
+> **Architecture:** This project follows Clean Architecture + SOLID.
+> See `.claude/rules/clean-architecture.md` for patterns.
+> Canonical example: `src/features/orgs/` (use case with DI, domain interfaces, thin Server Actions).
+> Domain layer lives in `src/domain/` — pure TypeScript interfaces, zero external dependencies.
+
 ---
 
 ## Role

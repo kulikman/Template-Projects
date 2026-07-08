@@ -2,72 +2,91 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-const mocks = vi.hoisted(() => ({
-  createOrg: vi.fn(),
-  logger: {
-    info: vi.fn(),
-  },
-  writeAuditLog: vi.fn(),
-}));
+// No vi.mock() for lib/org, @/lib/audit, or @/lib/logger.
+// The use case accepts deps as a parameter — inject stubs directly.
+import { createOrgForUser, getCreateOrgErrorResponse, type CreateOrgDeps } from "./create-org";
 
-vi.mock("../lib/org", () => ({
-  createOrg: mocks.createOrg,
-}));
-
-vi.mock("@/lib/audit", () => ({
-  writeAuditLog: mocks.writeAuditLog,
-}));
-
-vi.mock("@/lib/logger", () => ({
-  logger: mocks.logger,
-}));
-
-import { createOrgForUser, getCreateOrgErrorResponse } from "./create-org";
+function makeStubs(): CreateOrgDeps {
+  return {
+    createOrg: vi.fn().mockResolvedValue({ id: "org-1", slug: "acme" }),
+    writeAuditLog: vi.fn().mockResolvedValue(undefined),
+    log: vi.fn(),
+  };
+}
 
 describe("createOrgForUser()", () => {
+  let deps: CreateOrgDeps;
+
   beforeEach(() => {
-    vi.clearAllMocks();
+    deps = makeStubs();
   });
 
-  it("creates an org and records audit/log context outside the route handler", async () => {
-    mocks.createOrg.mockResolvedValueOnce({ id: "org-1", slug: "acme" });
+  it("creates org and returns id + slug", async () => {
+    const result = await createOrgForUser({ name: "Acme", slug: "acme", userId: "user-1" }, deps);
 
-    await expect(
-      createOrgForUser({ name: "Acme", slug: "acme", userId: "user-1" })
-    ).resolves.toEqual({
-      id: "org-1",
-      slug: "acme",
-    });
-
-    expect(mocks.createOrg).toHaveBeenCalledWith({
+    expect(result).toEqual({ id: "org-1", slug: "acme" });
+    expect(deps.createOrg).toHaveBeenCalledWith({
       name: "Acme",
       slug: "acme",
       userId: "user-1",
     });
-    expect(mocks.writeAuditLog).toHaveBeenCalledWith({
-      userId: "user-1",
-      action: "profile.updated",
-      resource: "organization:org-1",
-      metadata: { event: "org_created", slug: "acme" },
-    });
-    expect(mocks.logger.info).toHaveBeenCalledWith("org created", {
+  });
+
+  it("writes audit log with org resource reference", async () => {
+    await createOrgForUser({ name: "Acme", slug: "acme", userId: "user-1" }, deps);
+
+    expect(deps.writeAuditLog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: "user-1",
+        resource: "organization:org-1",
+        metadata: expect.objectContaining({ event: "org_created", slug: "acme" }),
+      })
+    );
+  });
+
+  it("emits a log line with orgId and userId", async () => {
+    await createOrgForUser({ name: "Acme", slug: "acme", userId: "user-1" }, deps);
+
+    expect(deps.log).toHaveBeenCalledWith("org created", {
       orgId: "org-1",
       userId: "user-1",
     });
   });
+
+  it("propagates errors from createOrg without swallowing", async () => {
+    (deps.createOrg as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error("db down"));
+
+    await expect(
+      createOrgForUser({ name: "Acme", slug: "acme", userId: "user-1" }, deps)
+    ).rejects.toThrow("db down");
+  });
 });
 
 describe("getCreateOrgErrorResponse()", () => {
-  it("normalizes duplicate slug errors", () => {
+  it("normalizes duplicate slug errors to 409", () => {
     expect(getCreateOrgErrorResponse(new Error("duplicate key value violates unique"))).toEqual({
       error: "That slug is already taken.",
       status: 409,
     });
   });
 
-  it("keeps unknown create failures visible", () => {
+  it("normalizes 'unique' keyword variant", () => {
+    expect(getCreateOrgErrorResponse(new Error("unique constraint failed"))).toEqual({
+      error: "That slug is already taken.",
+      status: 409,
+    });
+  });
+
+  it("passes unknown errors through as 500", () => {
     expect(getCreateOrgErrorResponse(new Error("database unavailable"))).toEqual({
       error: "database unavailable",
+      status: 500,
+    });
+  });
+
+  it("handles non-Error thrown values", () => {
+    expect(getCreateOrgErrorResponse("oops")).toEqual({
+      error: "Failed to create organization",
       status: 500,
     });
   });

@@ -5,15 +5,10 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { ROUTES } from "@/lib/constants";
+import type { OrgMembership, OrgRole } from "@/domain/org";
 
-export type OrgRole = "owner" | "admin" | "member";
-
-export interface OrgMembership {
-  orgId: string;
-  orgName: string;
-  orgSlug: string;
-  role: OrgRole;
-}
+// Re-export domain types so existing imports via `@/features/orgs` keep working.
+export type { OrgMembership, OrgRole };
 
 /**
  * Return all orgs the current user belongs to, or [] when signed out.
