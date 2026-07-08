@@ -29,8 +29,11 @@ export interface CreateOrgParams {
 
 /**
  * Repository interface for org persistence.
- * Implemented by SupabaseOrgRepository in the infrastructure layer.
- * Use cases depend on this interface, not the concrete class.
+ *
+ * NOTE: The current infrastructure functions in `src/features/orgs/lib/org.ts`
+ * read userId from the auth session cookie internally and do NOT implement this
+ * interface directly. This interface describes the contract a proper DI-based
+ * repository would expose — wire it up when refactoring lib/org.ts into a class.
  */
 export interface OrgRepository {
   create(params: CreateOrgParams): Promise<{ id: string; slug: string }>;

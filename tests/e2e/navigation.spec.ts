@@ -31,11 +31,11 @@ test.describe("Protected route redirects (requires backend)", () => {
 });
 
 test.describe("Health check", () => {
-  test("GET /api/health returns 200 with ok: true", async ({ request }) => {
+  test("GET /api/health returns 200 with status: ok", async ({ request }) => {
     const response = await request.get("/api/health");
     expect(response.status()).toBe(200);
     const body = await response.json();
-    expect(body).toMatchObject({ ok: true });
+    expect(body).toMatchObject({ status: "ok" });
   });
 });
 

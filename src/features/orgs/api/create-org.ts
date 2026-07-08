@@ -54,7 +54,7 @@ export async function createOrgForUser(
 
   await deps.writeAuditLog({
     userId: params.userId,
-    action: "profile.updated",
+    action: "org.created",
     resource: `organization:${org.id}`,
     metadata: { event: "org_created", slug: org.slug },
   });
