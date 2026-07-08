@@ -4,6 +4,8 @@ import { z } from "zod";
 import { requireUser } from "@/lib/auth";
 import { createOrgForUser, getCreateOrgErrorResponse, getUserOrgs } from "@/features/orgs";
 import { logger } from "@/lib/logger";
+import { limit } from "@/lib/rate-limit";
+import { getClientIpFromHeaders } from "@/lib/request-ip";
 
 const createOrgSchema = z.object({
   name: z.string().min(1).max(100),
@@ -26,6 +28,15 @@ export async function GET(): Promise<NextResponse> {
 /** POST /api/orgs — create a new organization. */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const user = await requireUser();
+
+  const ip = getClientIpFromHeaders(request.headers);
+  const { success } = await limit(`orgs:create:${ip}`, { limit: 10, windowMs: 60_000 });
+  if (!success) {
+    return NextResponse.json(
+      { error: "Too many requests. Try again in a minute." },
+      { status: 429 }
+    );
+  }
 
   const body = await request.json().catch(() => null);
   const parsed = createOrgSchema.safeParse(body);

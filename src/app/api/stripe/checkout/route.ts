@@ -6,6 +6,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getOrCreateStripeCustomer, getStripe } from "@/lib/stripe";
 import { getServerEnv } from "@/lib/env";
 import { logger } from "@/lib/logger";
+import { limit } from "@/lib/rate-limit";
+import { getClientIpFromHeaders } from "@/lib/request-ip";
 
 const bodySchema = z.object({
   priceId: z.string().min(1),
@@ -23,6 +25,15 @@ const bodySchema = z.object({
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const user = await requireUser();
   const env = getServerEnv();
+
+  const ip = getClientIpFromHeaders(request.headers);
+  const { success } = await limit(`stripe:checkout:${ip}`, { limit: 5, windowMs: 60_000 });
+  if (!success) {
+    return NextResponse.json(
+      { error: "Too many requests. Try again in a minute." },
+      { status: 429 }
+    );
+  }
 
   const rawBody = await request.json().catch(() => null);
   const parsed = bodySchema.safeParse(rawBody);
