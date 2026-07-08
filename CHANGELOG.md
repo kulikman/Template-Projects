@@ -1,3 +1,9 @@
+## [0.18.0](https://github.com/kulikman/Template-Projects/compare/v0.17.0...v0.18.0) (2026-07-08)
+
+### ✨ Features
+
+* **api:** rate limiting for orgs and stripe routes; add playwright e2e specs ([75205e9](https://github.com/kulikman/Template-Projects/commit/75205e9e8efd1cebbd665ea59939026586c3177e))
+
 ## [0.17.0](https://github.com/kulikman/Template-Projects/compare/v0.16.1...v0.17.0) (2026-07-08)
 
 ### ✨ Features
