@@ -1,3 +1,13 @@
+## [0.17.0](https://github.com/kulikman/Template-Projects/compare/v0.16.1...v0.17.0) (2026-07-08)
+
+### ✨ Features
+
+* **arch:** add clean architecture domain layer and dependency injection ([8b60cb3](https://github.com/kulikman/Template-Projects/commit/8b60cb35e671a357490d5b087a0c0746754f0ddd))
+
+### 📝 Docs
+
+* **policy:** refresh repository sync status ([05aa4f9](https://github.com/kulikman/Template-Projects/commit/05aa4f9e1b9d4e71b386b6f1ccaee0185c931adc))
+
 ## [0.16.1](https://github.com/kulikman/Template-Projects/compare/v0.16.0...v0.16.1) (2026-06-21)
 
 ### 🐛 Bug Fixes
