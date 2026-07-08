@@ -15,7 +15,9 @@ export type AuditAction =
   | "billing.subscription_updated"
   | "billing.subscription_canceled"
   | "profile.updated"
-  | "profile.deleted";
+  | "profile.deleted"
+  | "org.created"
+  | "org.deleted";
 
 interface AuditParams {
   userId: string | null;
