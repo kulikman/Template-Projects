@@ -1,6 +1,6 @@
 "use server";
 
-import { createOrg } from "../lib/org";
+import { createOrgForUser } from "./create-org";
 import { logger } from "@/lib/logger";
 import { requireUser } from "@/lib/auth";
 
@@ -25,7 +25,7 @@ export async function createOrgAction(input: CreateOrgInput): Promise<CreateOrgR
     return { ok: false, error: "Slug must be 2–48 lowercase letters, numbers, or hyphens." };
 
   try {
-    await createOrg({ name, slug, userId: user.id });
+    await createOrgForUser({ name, slug, userId: user.id });
     return { ok: true };
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Failed to create organization.";
