@@ -12,18 +12,25 @@ export type { OrgMembership, OrgRole };
 
 /**
  * Return all orgs the current user belongs to, or [] when signed out.
+ *
+ * Pass `userId` when the caller has already authenticated (e.g. a Route Handler
+ * that called `requireUser()`) to avoid a second `auth.getUser()` round-trip.
  */
-export async function getUserOrgs(): Promise<OrgMembership[]> {
+export async function getUserOrgs(userId?: string): Promise<OrgMembership[]> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return [];
+  let resolvedUserId = userId;
+  if (!resolvedUserId) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return [];
+    resolvedUserId = user.id;
+  }
 
   const { data } = await supabase
     .from("org_members")
     .select("role, organizations(id, name, slug)")
-    .eq("user_id", user.id);
+    .eq("user_id", resolvedUserId);
 
   if (!data) return [];
 

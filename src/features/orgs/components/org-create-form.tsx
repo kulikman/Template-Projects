@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { getClientEnv } from "@/lib/env";
 import { createOrgAction } from "../api/actions";
 
 export function OrgCreateForm(): React.ReactElement {
@@ -66,7 +67,7 @@ export function OrgCreateForm(): React.ReactElement {
         </label>
         <div className="border-input bg-muted flex items-center rounded-md border">
           <span className="text-muted-foreground px-3 py-2 text-sm select-none">
-            app.example.com/
+            {new URL(getClientEnv().NEXT_PUBLIC_APP_URL).host}/
           </span>
           <input
             id="org-slug"

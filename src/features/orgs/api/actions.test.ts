@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   createOrgForUser: vi.fn(),
+  getCreateOrgErrorResponse: vi.fn(),
   requireUser: vi.fn(),
 }));
 
@@ -15,6 +16,7 @@ vi.mock("@/lib/auth", () => ({
 // createOrgForUser which handles audit logging internally.
 vi.mock("./create-org", () => ({
   createOrgForUser: mocks.createOrgForUser,
+  getCreateOrgErrorResponse: mocks.getCreateOrgErrorResponse,
 }));
 
 vi.mock("@/lib/logger", () => ({
@@ -28,6 +30,10 @@ describe("createOrgAction()", () => {
     vi.clearAllMocks();
     mocks.requireUser.mockResolvedValue({ id: "server-user-id" });
     mocks.createOrgForUser.mockResolvedValue({ id: "org-1", slug: "acme" });
+    mocks.getCreateOrgErrorResponse.mockReturnValue({
+      error: "That slug is already taken.",
+      status: 409,
+    });
   });
 
   it("derives userId from the server session instead of client input", async () => {
@@ -66,7 +72,7 @@ describe("createOrgAction()", () => {
 
     await expect(createOrgAction({ name: "Acme", slug: "acme" })).resolves.toEqual({
       ok: false,
-      error: "That slug is already taken. Choose a different one.",
+      error: "That slug is already taken.",
     });
   });
 });
