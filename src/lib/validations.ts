@@ -65,3 +65,22 @@ export const resetPasswordSchema = z
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
+/** Org name — 1–100 chars. */
+export const orgNameSchema = z
+  .string()
+  .min(1, "Name must be 1–100 characters.")
+  .max(100, "Name must be 1–100 characters.");
+
+/** Org slug — 2–48 lowercase letters, numbers, hyphens. */
+export const orgSlugSchema = z
+  .string()
+  .min(2, "Slug must be 2–48 lowercase letters, numbers, or hyphens.")
+  .max(48, "Slug must be 2–48 lowercase letters, numbers, or hyphens.")
+  .regex(/^[a-z0-9-]+$/, "Slug must be 2–48 lowercase letters, numbers, or hyphens.");
+
+/** Create-org body — used by the Server Action and the Route Handler. */
+export const createOrgSchema = z.object({
+  name: orgNameSchema,
+  slug: orgSlugSchema,
+});

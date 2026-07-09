@@ -1,27 +1,16 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { z } from "zod";
 
 import { requireUser } from "@/lib/auth";
 import { createOrgForUser, getCreateOrgErrorResponse, getUserOrgs } from "@/features/orgs";
 import { logger } from "@/lib/logger";
 import { limit } from "@/lib/rate-limit";
 import { getClientIpFromHeaders } from "@/lib/request-ip";
-
-const createOrgSchema = z.object({
-  name: z.string().min(1).max(100),
-  slug: z
-    .string()
-    .min(2)
-    .max(48)
-    .regex(/^[a-z0-9-]+$/, "Slug must be lowercase letters, numbers, and hyphens only"),
-});
+import { createOrgSchema } from "@/lib/validations";
 
 /** GET /api/orgs — list the current user's organizations. */
 export async function GET(): Promise<NextResponse> {
-  // requireUser() is the auth gate (redirects on no session); getUserOrgs
-  // resolves the user internally via auth.uid().
-  await requireUser();
-  const orgs = await getUserOrgs();
+  const user = await requireUser();
+  const orgs = await getUserOrgs(user.id);
   return NextResponse.json({ orgs });
 }
 
