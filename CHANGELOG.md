@@ -1,3 +1,9 @@
+## [0.18.2](https://github.com/kulikman/Template-Projects/compare/v0.18.1...v0.18.2) (2026-07-09)
+
+### 🐛 Bug Fixes
+
+* **arch:** fix 5 issues found in clean architecture review ([8531e13](https://github.com/kulikman/Template-Projects/commit/8531e132434dc94394f1a7a93610131a1d9b95e5))
+
 ## [0.18.1](https://github.com/kulikman/Template-Projects/compare/v0.18.0...v0.18.1) (2026-07-08)
 
 ### 🐛 Bug Fixes
