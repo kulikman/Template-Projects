@@ -46,10 +46,19 @@ src/
 │   ├── layout/                 # Header, Footer, Sidebar, Breadcrumbs
 │   └── [feature]/              # Feature-specific components
 │
-├── features/                   # Bounded feature modules
+├── features/                   # Bounded feature modules (import only via @/features/<name>)
+│   ├── orgs/                   # Multi-tenant organizations
+│   │   ├── api/                #   actions.ts (Server Actions), create-org.ts (use case + DI)
+│   │   ├── lib/                #   org.ts (Supabase queries, repository)
+│   │   ├── components/         #   org-create-form.tsx, org-switcher.tsx
+│   │   └── index.ts            #   public API re-export
 │   ├── onboarding/             # Onboarding wizard feature
 │   ├── notifications/          # In-app notifications + bell
 │   └── api-keys/               # API key management
+│
+├── domain/                     # Pure TypeScript domain interfaces (zero external deps)
+│   ├── org.ts                  #   OrgRole, OrgMembership, OrgRepository interface
+│   └── index.ts                #   re-exports
 │
 ├── lib/
 │   ├── supabase/               # client.ts, server.ts, admin.ts, middleware.ts
@@ -60,7 +69,10 @@ src/
 │   ├── env.ts                  # Zod-validated env vars
 │   ├── utils.ts                # cn() + shared utilities
 │   ├── constants.ts            # ROUTES map + app-wide constants
-│   └── validations.ts          # Shared Zod schemas
+│   ├── audit.ts                # AuditAction union + writeAuditLog()
+│   ├── auth.ts                 # requireUser() helper
+│   ├── rate-limit.ts           # Upstash sliding-window rate limiter
+│   └── validations.ts          # Shared Zod schemas (createOrgSchema, loginSchema…)
 │
 ├── hooks/                      # Custom React hooks
 ├── types/
@@ -72,16 +84,69 @@ src/
 
 ---
 
+## Clean Architecture Layers
+
+Dependency direction: **app → features → lib → domain** (never the reverse).
+
+```
+src/app/           [Frameworks & Drivers]
+  Server Actions, Route Handlers, React Components
+  → thin: validate input, compose deps, call use case, revalidate
+
+src/features/[name]/api/  [Use Cases / Application Layer]
+  Pure business logic orchestration
+  → accepts dependencies as function parameters (DI)
+  → testable without vi.mock() — pass stubs directly
+
+src/features/[name]/lib/  [Infrastructure / Interface Adapters]
+  Supabase queries, external API calls
+  → implements domain interfaces
+
+src/domain/        [Domain / Entities]
+  Pure TypeScript interfaces, entity types
+  → ZERO external dependencies
+```
+
+### Canonical pattern: Use Case with Dependency Injection
+
+```ts
+// src/features/orgs/api/create-org.ts
+export interface CreateOrgDeps {
+  createOrg: (params) => Promise<{ id: string; slug: string }>;
+  writeAuditLog: (entry) => Promise<void>;
+}
+
+export async function createOrgForUser(params, deps: CreateOrgDeps = defaultDeps) {
+  const org = await deps.createOrg(params);
+  await deps.writeAuditLog({ action: "org.created", ... });
+  return org;
+}
+```
+
+```ts
+// src/features/orgs/api/actions.ts  — thin Server Action
+export async function createOrgAction(input: unknown) {
+  const user = await requireUser();
+  const data = createOrgSchema.parse(input);
+  return createOrgForUser({ ...data, userId: user.id }); // deps injected by default
+}
+```
+
+---
+
 ## Key Architecture Rules
 
-1. **Business logic lives in `lib/` or `features/`, not in UI components.**
-2. **Route Handlers and Server Actions are thin** — they validate input (Zod), call lib functions, return responses.
-3. **Supabase access is isolated** — `lib/supabase/server.ts` for server, `lib/supabase/client.ts` for browser, `lib/supabase/admin.ts` for service-role (server-only, never import from `"use client"` files).
-4. **All mutations go through Server Actions** (`"use server"`) — never raw `fetch` to your own API from client.
-5. **Caching is opt-in** — use `"use cache"` directive. No implicit memoization (Next 16 behavior).
-6. **Auth is checked at every protected route** via `proxy.ts` + `supabase.auth.getUser()` in Server Actions.
-7. **External integrations are wrapped** — Stripe logic in `lib/stripe/`, email logic in `lib/email/`, etc.
-8. **Admin actions are logged** — write to `audit_logs` table for all destructive admin operations.
+1. **Business logic lives in `features/[name]/api/` use cases, not in Server Actions or UI components.**
+2. **Server Actions and Route Handlers are thin** — auth check → Zod parse → call use case → revalidate.
+3. **Use cases accept deps as parameters** — enables testing without vi.mock(); production deps are defaults.
+4. **Domain layer is pure** — `src/domain/` has zero external imports; only TypeScript built-ins.
+5. **Supabase access is isolated** — `lib/supabase/server.ts` for server, `lib/supabase/client.ts` for browser, `lib/supabase/admin.ts` for service-role (never import from `"use client"`).
+6. **All mutations go through Server Actions** (`"use server"`) — never raw `fetch` to your own API from client.
+7. **Caching is opt-in** — use `"use cache"` directive. No implicit memoization (Next 16 behavior).
+8. **Auth is checked at every protected route** via `proxy.ts` + `supabase.auth.getUser()`.
+9. **External integrations are wrapped** — Stripe in `lib/stripe/`, email in `lib/email/`, etc.
+10. **Admin actions are logged** — write to `audit_logs` via `lib/audit.ts` for all destructive operations.
+11. **Rate limiting** — `lib/rate-limit.ts` (Upstash sliding window) on all user-facing mutations.
 
 ---
 
@@ -124,17 +189,24 @@ api/webhooks/stripe/route.ts:
   - Sends subscriptionConfirmed email
 ```
 
-### Server Action Mutation Flow
+### Server Action Mutation Flow (Clean Architecture)
 
 ```text
 Client form submit
   ↓
-Server Action (src/features/[domain]/api/actions.ts)
-  1. supabase.auth.getUser() — verify auth
-  2. schema.parse(rawData) — validate with Zod
-  3. supabase.from(...) — mutate database
-  4. revalidateTag(...) — invalidate cache
-  5. Return success or throw
+Server Action (src/features/[domain]/api/actions.ts)  ← THIN
+  1. requireUser()          — verify auth
+  2. schema.parse(rawData)  — validate with Zod
+  3. callUseCase(data, deps) — delegate to use case
+  4. revalidateTag(...)     — invalidate cache
+  ↓
+Use Case (src/features/[domain]/api/[verb]-[noun].ts)  ← BUSINESS LOGIC
+  1. deps.repo.create(...)  — call injected repository
+  2. deps.writeAuditLog()   — side effects via injected deps
+  3. Return result
+  ↓
+Repository (src/features/[domain]/lib/[noun].ts)  ← INFRASTRUCTURE
+  supabase.from(...).insert(...)
   ↓
 Client: catch error → toast.error / toast.success
 ```

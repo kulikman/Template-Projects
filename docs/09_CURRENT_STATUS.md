@@ -7,42 +7,47 @@
 ---
 
 ## Last Updated
-[YYYY-MM-DD]
+2026-07-13
 
 ## Current Phase
-- [ ] Setup (configuring template for this project)
-- [ ] MVP Development
-- [ ] Beta
-- [ ] Production
+- [x] Template — production-ready, actively maintained
 
 ---
 
 ## Currently Working On
-[Describe the active task — be specific, e.g. "Implementing user profile edit form (TASK-005)"]
+Template maintenance complete. Ready for use in new projects.
 
 ---
 
-## Completed
-- [x] Template scaffolded (Next.js 16, Supabase, Stripe, email, onboarding, notifications, API keys, orgs)
-- [ ] Supabase project connected (SETUP-001)
-- [ ] Stripe configured (SETUP-002)
-- [ ] Resend configured (SETUP-003)
-- [ ] Core feature implemented
+## Completed (template scope)
+- [x] Next.js 16 + React 19.2 + Tailwind v4 + TypeScript 6 scaffold
+- [x] Supabase Auth, RLS, Storage, Realtime wired
+- [x] Stripe subscriptions + webhooks + plan limits
+- [x] Resend email (templates + send helper)
+- [x] Onboarding wizard (`src/features/onboarding/`)
+- [x] In-app notifications with Realtime bell (`src/features/notifications/`)
+- [x] API key management (`src/features/api-keys/`)
+- [x] Multi-tenant organizations (`src/features/orgs/`)
+- [x] Clean Architecture: `src/domain/` (pure interfaces), use cases with DI
+- [x] Rate limiting (Upstash sliding window) on org + Stripe routes
+- [x] Playwright E2E tests (navigation + health)
+- [x] Full `.claude/rules/` set (9 files incl. clean-architecture)
+- [x] Synced rules to 7 ecosystem repos (Elaurion-Options, neosim-web, neosim-backend, neosim-admin, Founder-OS, Secret-project, Elliott-wave)
 
 ---
 
 ## In Progress
-- [ ] [Task name]
+- [ ] —
 
 ---
 
 ## Blocked
-- [ ] [Blocker description and why it's blocked]
+- [ ] —
 
 ---
 
 ## Next Step
-[Concrete next task to do — reference the backlog ID, e.g. "SETUP-001: Configure Supabase project"]
+Fork this template for a new project → run SETUP-001 (Supabase) → SETUP-002 (Stripe) → SETUP-003 (Resend) → start feature backlog.
 
 ---
 
@@ -54,17 +59,17 @@ These areas must not be changed without explicit discussion:
 - `src/proxy.ts` — auth + security headers wiring
 - Payment webhook logic (`src/app/api/webhooks/stripe/`)
 - Auth callback logic (`src/app/auth/callback/`)
+- `src/domain/` — pure interfaces only, zero external deps
 
 ---
 
 ## Known Issues
-- Issue 1: [description]
-- Issue 2: [description]
+- None
 
 ---
 
 ## Recent Decisions
-- [YYYY-MM-DD]: [Decision summary] — see `15_DECISIONS_LOG.md` for details
+- 2026-07-13: Clean Architecture + DI pattern adopted — see `15_DECISIONS_LOG.md` DECISION-003
 
 ---
 
