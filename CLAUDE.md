@@ -482,6 +482,7 @@ Three files provide the global error safety net:
 9. No ignoring TypeScript errors. Fix them.
 10. No installing packages without justification in the commit message.
 11. No `middleware.ts` — use `src/proxy.ts` (Next 16 convention).
+12. No `Co-Authored-By` trailers for AI tools in commit messages. Commits are made by human contributors only.
 
 ---
 
@@ -555,8 +556,6 @@ tests:
 results (if applicable):
 - numbers before vs after
 - benchmark output, regression test pass, real-data backtest, etc.
-
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 ```
 
 Types: `feat`, `fix`, `refactor`, `chore`, `ci`, `docs`, `test`, `perf`.
@@ -583,8 +582,6 @@ tests:
 
 results:
 - bullet
-
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 COMMIT
 ```
 
