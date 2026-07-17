@@ -7,7 +7,7 @@
 ---
 
 ## Last Updated
-2026-07-13
+2026-07-17
 
 ## Current Phase
 - [x] Template — production-ready, actively maintained
@@ -32,7 +32,11 @@ Template maintenance complete. Ready for use in new projects.
 - [x] Rate limiting (Upstash sliding window) on org + Stripe routes
 - [x] Playwright E2E tests (navigation + health)
 - [x] Full `.claude/rules/` set (9 files incl. clean-architecture)
-- [x] Synced rules to 7 ecosystem repos (Elaurion-Options, neosim-web, neosim-backend, neosim-admin, Founder-OS, Secret-project, Elliott-wave)
+- [x] Synced `.claude/rules/` + `CLAUDE.md` to all 20 ecosystem repos (full ecosystem coverage)
+- [x] AI attribution (Co-Authored-By Claude/Anthropic) removed from git history across 21 repos via filter-branch/filter-repo + force push
+- [x] `includeCoAuthoredBy: false` added to `.claude/settings.json` in all repos
+- [x] Conventional Commits `commit-msg` hook deployed to all repos (bash ERE validation + commitlint fallback)
+- [x] CLAUDE.md prohibition #12 (No Co-Authored-By AI trailers) added to all repos
 
 ---
 
@@ -42,7 +46,8 @@ Template maintenance complete. Ready for use in new projects.
 ---
 
 ## Blocked
-- [ ] —
+- [ ] theta-aurion — attribution cleanup needs explicit user re-authorization to push
+- [ ] Secret-project — needs manual `git push --force origin main` from `/tmp/secret-project-clean`
 
 ---
 
@@ -70,6 +75,7 @@ These areas must not be changed without explicit discussion:
 
 ## Recent Decisions
 - 2026-07-13: Clean Architecture + DI pattern adopted — see `15_DECISIONS_LOG.md` DECISION-003
+- 2026-07-17: AI attribution removed from all repos; `includeCoAuthoredBy: false` policy enforced across ecosystem
 
 ---
 
