@@ -34,6 +34,8 @@ export interface CreateOrgParams {
  * read userId from the auth session cookie internally and do NOT implement this
  * interface directly. This interface describes the contract a proper DI-based
  * repository would expose — wire it up when refactoring lib/org.ts into a class.
+ *
+ * @public
  */
 export interface OrgRepository {
   create(params: CreateOrgParams): Promise<{ id: string; slug: string }>;
