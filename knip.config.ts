@@ -21,6 +21,10 @@ const config: KnipConfig = {
     // template-public APIs: not imported by in-repo code but exported for consumers
     "src/components/plan-gate.tsx",
     "src/lib/analytics.ts",
+    // domain-layer public barrel: re-exports @public-tagged types for
+    // consumers; the @public tag exempts individual exports but not the
+    // file itself from knip's "unused file" check.
+    "src/domain/index.ts",
   ],
   ignoreDependencies: [
     "tailwindcss", // loaded via PostCSS plugin, not imported in TS
