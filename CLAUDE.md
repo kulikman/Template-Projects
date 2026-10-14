@@ -70,6 +70,29 @@ Never claim something was verified unless the relevant checks were actually run.
 If a file, contract, env var, or integration is missing, state that explicitly
 and continue from the real repository state.
 
+---
+
+### CLAUDE.md is not a file inventory
+
+`CLAUDE.md` (and any project README) describes **rules, patterns, and intentions** —
+not the current state of the codebase. The "Built-in Features" section in a template
+CLAUDE.md lists features that *should* be scaffolded, not features that *are* implemented.
+
+**Before writing any task list, epic, or plan that references existing files or features:**
+
+1. Run `find src -name "*.tsx" -o -name "*.ts" | sort` or `ls src/features/` first.
+2. Every claim "X exists" or "Y is implemented" must cite a specific `path/to/file.ts:line`.
+3. If you cannot provide that citation, write "not yet implemented" — never invent.
+4. `CLAUDE.md` mentions X → that is NOT proof X exists in code. Verify with `grep`/`find`.
+
+**Pattern to follow:**
+```bash
+# Before writing a plan that references existing code:
+find src -name "*.tsx" | sort          # list actual files
+grep -r "ComponentName" src/ --include="*.tsx" -l  # verify component exists
+ls src/features/ 2>/dev/null           # verify feature directories
+```
+
 ## Protected Files And Sensitive Areas
 
 Do not edit these areas casually. Ask first unless the task explicitly targets them:
