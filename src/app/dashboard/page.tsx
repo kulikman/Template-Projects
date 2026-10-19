@@ -17,7 +17,7 @@ export default function DashboardPage(): React.ReactElement {
   return (
     <>
       <PageHeader title="Welcome to Dashboard" />
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <StatCard
           title="New Customers"
           value="3,897"
@@ -40,19 +40,19 @@ export default function DashboardPage(): React.ReactElement {
       <div className="mt-6">
         <RevenueCard />
       </div>
-      <div className="mt-6 grid gap-6 lg:grid-cols-12">
-        <div className="lg:col-span-7 xl:col-span-8">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="min-w-0 lg:col-span-7 xl:col-span-8">
           <MonthlySalesCard />
         </div>
-        <div className="lg:col-span-5 xl:col-span-4">
+        <div className="min-w-0 lg:col-span-5 xl:col-span-4">
           <StorageCard />
         </div>
       </div>
-      <div className="mt-6 grid gap-6 lg:grid-cols-12">
-        <div className="lg:col-span-5 xl:col-span-4">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="min-w-0 lg:col-span-5 xl:col-span-4">
           <InboxCard />
         </div>
-        <div className="lg:col-span-7 xl:col-span-8">
+        <div className="min-w-0 lg:col-span-7 xl:col-span-8">
           <ProjectsCard />
         </div>
       </div>
