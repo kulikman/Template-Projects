@@ -46,6 +46,7 @@
 | Payments | Stripe |
 | Email | Resend HTTP API + plain HTML templates |
 | Analytics | PostHog |
+| Charts | Recharts 3 (AreaChart, BarChart, RadialBarChart) |
 | Deployment | Vercel |
 | Package Manager | pnpm 10 |
 

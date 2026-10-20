@@ -123,3 +123,34 @@ The canonical orgs feature showed the pattern works: `create-org.ts` takes a `Cr
 - Positive: testable business logic, clear layer boundaries, easy to stub in tests and Storybook
 - Negative: 2–3 extra files per feature vs. a single Server Action
 - Risks: developers may bypass the pattern if not explained in CLAUDE.md (hence the rules file)
+
+---
+
+## DECISION-004: 2SkyMobile Brand Palette as Template Default
+
+### Date
+2026-10-20
+
+### Decision
+Replace the default shadcn/ui slate palette with 2SkyMobile brand colors (Electric Blue `#026BD4`, Astro dark `#0B0F1A`) using oklch color space throughout `globals.css`.
+
+### Context
+The template was initialized with the standard shadcn/ui slate/zinc tokens. When 2SkyMobile projects fork this template, they would need to manually replace every color token. Baking the brand palette in as the default eliminates that step and makes the template immediately on-brand.
+
+### Options Considered
+
+#### Option 1: Keep neutral slate palette
+Pros: maximally generic, works for any project
+Cons: every 2SkyMobile fork must re-apply the palette manually; risk of inconsistency
+
+#### Option 2: Apply 2SkyMobile palette as default (chosen)
+Pros: forks are immediately on-brand; oklch ensures perceptual uniformity; semantic tokens (--success, --info, --warning) are brand-neutral status colors
+Cons: slightly less generic — non-2SkyMobile forks need to swap the palette
+
+### Final Reason
+This template is maintained primarily for 2SkyMobile products. The brand palette is the sensible default. Non-2SkyMobile forks can replace the six root-level oklch values in `globals.css` in under a minute.
+
+### Consequences
+- Positive: forks start on-brand, oklch gives consistent perceptual contrast, dark mode is first-class
+- Negative: the template is no longer palette-neutral
+- Risks: none — palette change is CSS-only, no TypeScript or logic impact

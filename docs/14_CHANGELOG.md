@@ -26,6 +26,22 @@
 
 ---
 
+## [2026-10-20] — 2SkyMobile Brand + Dashboard UI
+
+### Added
+- **2SkyMobile brand palette**: Electric Blue `#026BD4` (`oklch(0.52 0.197 258)`) as primary color, Astro dark `#0B0F1A` for dark backgrounds — all tokens in oklch color space
+- **Semantic status tokens**: `--success` (#05a34a), `--info` (#66d1d1), `--warning` (#fbbc06), `--grid` (oklch with opacity) in both light and dark themes
+- **Dashboard shell**: `DashboardShell` with collapsible `AppSidebar` and `AppNavbar` — fully dark-mode ready
+- **Dashboard widgets**: `StatCard`, `RevenueCard` (Recharts AreaChart), `MonthlySalesCard` (BarChart), `StorageCard` (RadialBarChart), `InboxCard`, `ProjectsCard`, `Sparkline`
+- **New UI primitives**: `Avatar`, `Badge`, `Card`, `DropdownMenu`, `Input`, `Table` (shadcn-style, Tailwind v4 compatible)
+- `recharts@^3.10.1` added for chart components
+
+### Security
+- All high/critical dependency vulnerabilities resolved: brace-expansion, browserslist, fast-uri, nanoid, sharp, source-map-js patched via pnpm overrides
+- `pnpm audit:prod` now reports 0 high or critical findings
+
+---
+
 ## [Unreleased]
 
 ### Added
