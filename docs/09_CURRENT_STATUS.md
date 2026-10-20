@@ -7,7 +7,7 @@
 ---
 
 ## Last Updated
-2026-10-19
+2026-10-20
 
 ## Current Phase
 - [x] Template — production-ready, actively maintained
@@ -32,6 +32,11 @@ Template maintenance complete. Ready for use in new projects.
 - [x] Rate limiting (Upstash sliding window) on org + Stripe routes
 - [x] Playwright E2E tests (navigation + health)
 - [x] NobleUI demo1 dashboard port (Tailwind v4 + shadcn-style primitives): sidebar/navbar shell (`src/components/layout/dashboard-shell.tsx`), `/dashboard` page with placeholder data (`src/components/dashboard/`), NobleUI palette + Roboto in `globals.css`
+- [x] 2SkyMobile brand palette applied — Electric Blue (#026BD4 = oklch(0.52 0.197 258)) as primary, Astro dark (#0B0F1A) for dark mode; semantic tokens (--success, --info, --warning, --grid) in globals.css
+- [x] Dashboard UI shell — DashboardShell with AppSidebar + AppNavbar (src/components/layout/), collapsible sidebar, dark-mode-ready
+- [x] Dashboard widgets — StatCard, RevenueCard (Recharts AreaChart), MonthlySalesCard (BarChart), StorageCard (RadialBarChart), InboxCard, ProjectsCard, Sparkline
+- [x] New shadcn-style primitives — Avatar, Badge, Card, DropdownMenu, Input, Table
+- [x] All high/critical dependency vulnerabilities resolved (0 high/critical in pnpm audit:prod)
 - [x] Full `.claude/rules/` set (9 files incl. clean-architecture)
 - [x] Synced `.claude/rules/` + `CLAUDE.md` to all 20 ecosystem repos (full ecosystem coverage)
 - [x] AI attribution (Co-Authored-By Claude/Anthropic) removed from git history across 21 repos via filter-branch/filter-repo + force push
@@ -77,6 +82,7 @@ These areas must not be changed without explicit discussion:
 ## Recent Decisions
 - 2026-07-13: Clean Architecture + DI pattern adopted — see `15_DECISIONS_LOG.md` DECISION-003
 - 2026-07-17: AI attribution removed from all repos; `includeCoAuthoredBy: false` policy enforced across ecosystem
+- 2026-10-20: 2SkyMobile Electric Blue brand palette applied as template primary color; oklch color space throughout
 
 ---
 

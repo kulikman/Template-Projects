@@ -41,9 +41,10 @@ src/
 │   └── loading.tsx             # Global loading skeleton
 │
 ├── components/
-│   ├── ui/                     # shadcn/ui primitives (button, input, card…)
+│   ├── ui/                     # shadcn/ui primitives (button, input, card, avatar, badge, table…)
 │   ├── forms/                  # Reusable form components
-│   ├── layout/                 # Header, Footer, Sidebar, Breadcrumbs
+│   ├── layout/                 # Header, Breadcrumbs, DashboardShell, AppSidebar, AppNavbar
+│   ├── dashboard/              # Dashboard widgets (stat-card, revenue-card, inbox-card, etc.)
 │   └── [feature]/              # Feature-specific components
 │
 ├── features/                   # Bounded feature modules (import only via @/features/<name>)
@@ -213,6 +214,41 @@ Client: catch error → toast.error / toast.success
 
 ---
 
+## Dashboard Architecture
+
+The `/dashboard` route uses a dedicated shell layout with two layout components:
+
+```
+DashboardShell (src/components/layout/dashboard-shell.tsx)
+├── AppSidebar   (src/components/layout/app-sidebar.tsx)   — collapsible, nav driven by src/config/dashboard-nav.ts
+└── AppNavbar    (src/components/layout/app-navbar.tsx)    — top bar with search + user menu
+    └── page content (src/app/dashboard/page.tsx)
+        ├── StatCard × 4       — KPI numbers
+        ├── RevenueCard        — Recharts AreaChart (monthly revenue)
+        ├── MonthlySalesCard   — Recharts BarChart (channel breakdown)
+        ├── InboxCard          — recent messages table
+        ├── ProjectsCard       — projects table with progress bars
+        └── StorageCard        — Recharts RadialBarChart (storage usage)
+```
+
+Dashboard data currently comes from `src/components/dashboard/demo-data.ts` (static fixtures).
+Replace with real Supabase queries when wiring to production data.
+
+### Brand Palette
+
+All theme tokens live in `src/app/globals.css` in oklch color space:
+
+| Token | Light | Dark |
+|---|---|---|
+| `--primary` | `oklch(0.52 0.197 258)` = Electric Blue #026BD4 | `oklch(0.62 0.19 258)` |
+| `--background` | `oklch(1 0 0)` = white | `oklch(0.14 0.025 258)` = Astro dark #0B0F1A |
+| `--success` | `#05a34a` | `#05a34a` |
+| `--info` | `#66d1d1` | `#66d1d1` |
+| `--warning` | `#fbbc06` | `#fbbc06` |
+| `--grid` | `oklch(0.52 0.197 258 / 12%)` | `oklch(0.62 0.19 258 / 15%)` |
+
+---
+
 ## Known Architectural Constraints
 
 - Next.js 16 `params` and `searchParams` are async — always `await` them
@@ -220,3 +256,4 @@ Client: catch error → toast.error / toast.success
 - No `tailwind.config.ts` — theme tokens in `globals.css` under `@theme inline`
 - `service_role` client must never be imported from client-side code
 - Typed routes enabled (`typedRoutes: true`) — route typos fail at compile time
+- Dashboard widgets use `recharts` (AreaChart, BarChart, RadialBarChart) — import directly, not via barrel
