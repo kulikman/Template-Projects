@@ -7,7 +7,7 @@
 ---
 
 ## Last Updated
-2026-07-17
+2026-10-19
 
 ## Current Phase
 - [x] Template — production-ready, actively maintained
@@ -31,6 +31,7 @@ Template maintenance complete. Ready for use in new projects.
 - [x] Clean Architecture: `src/domain/` (pure interfaces), use cases with DI
 - [x] Rate limiting (Upstash sliding window) on org + Stripe routes
 - [x] Playwright E2E tests (navigation + health)
+- [x] NobleUI demo1 dashboard port (Tailwind v4 + shadcn-style primitives): sidebar/navbar shell (`src/components/layout/dashboard-shell.tsx`), `/dashboard` page with placeholder data (`src/components/dashboard/`), NobleUI palette + Roboto in `globals.css`
 - [x] Full `.claude/rules/` set (9 files incl. clean-architecture)
 - [x] Synced `.claude/rules/` + `CLAUDE.md` to all 20 ecosystem repos (full ecosystem coverage)
 - [x] AI attribution (Co-Authored-By Claude/Anthropic) removed from git history across 21 repos via filter-branch/filter-repo + force push
