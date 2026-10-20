@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
+import { routes } from "@/config/routes";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -109,7 +110,7 @@ function MobileNav({
  * Site-wide header with logo, desktop navigation, and a collapsible mobile menu.
  * Place inside the root layout above the main content area.
  */
-export function Header(): React.ReactElement {
+export function Header(): React.ReactElement | null {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   // React-recommended "reset state when a prop changes" pattern — keeps the
@@ -120,6 +121,9 @@ export function Header(): React.ReactElement {
     setTrackedPath(pathname);
     setIsMobileMenuOpen(false);
   }
+
+  // The dashboard ships its own sidebar + navbar shell (DashboardShell).
+  if (pathname.startsWith(routes.dashboard.href)) return null;
 
   return (
     <header className="border-border bg-background/80 sticky top-0 z-50 w-full border-b backdrop-blur-sm">
